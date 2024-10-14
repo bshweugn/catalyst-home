@@ -20,7 +20,7 @@ body {
   width: 100vw;
   box-sizing: border-box;
   background-size: contain;
-  padding: 0rem 1rem 0rem 1rem;
+  padding: 0rem 1rem 12rem 1rem;
   overflow-y: scroll;
 }
 
@@ -45,13 +45,14 @@ ion-toolbar {
 
 .header-collapse-condense {
   z-index: 9;
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
 
 .header-background {
-  -webkit-backdrop-filter: blur(20px)!important;
-  backdrop-filter: blur(20px)!important;
+  -webkit-backdrop-filter: blur(2rem)!important;
+  backdrop-filter: blur(2rem)!important;
+  /* background-color: transparent!important; */
 }
 
 ion-searchbar.search-field {
@@ -66,4 +67,8 @@ ion-searchbar.search-field {
 
 .header-ios ion-toolbar:last-of-type {
   --border-width: 0 0 0px;
+}
+
+.header-collapse-condense-inactive.header-collapse-condense ion-toolbar.in-toolbar ion-title{
+  visibility: visible!important;
 }

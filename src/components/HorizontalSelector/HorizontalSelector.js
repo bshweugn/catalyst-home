@@ -61,7 +61,7 @@ function HorizontalSelector({ values, append, selectedValue, setValue }) {
                     ref={splideRef} // Присваиваем ссылку на Splide инстанс
                 >
                     {values.map((value, index) => (
-                        <SplideSlide key={index}>
+                        <SplideSlide className={"horizontal-selector__slide"} key={index}>
                             <div className="horizontal-selector__item">
                                 <p className="horizontal-selector__value">{value}{append}</p>
                             </div>

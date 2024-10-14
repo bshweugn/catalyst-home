@@ -29,26 +29,37 @@ const ItemWindow = (args) => {
         }
     };
 
+    const updateStatusWidth = () => {
+        const currentWidth = statusRef.current?.offsetWidth || 0;
+        setStatusWidth(currentWidth + 32); // Добавляем дополнительные 32px для отступов
+    };
+
     useEffect(() => {
         const newStatus = renderDeviceStatus();
 
         if (newStatus !== deviceStatus) {
+            // Анимация исчезновения
             setIsFading(true);
 
             setTimeout(() => {
+                // Меняем статус устройства
                 setDeviceStatus(newStatus);
 
+                // Обновляем ширину через requestAnimationFrame после изменения текста
                 requestAnimationFrame(() => {
-                    const newWidth = statusRef.current.offsetWidth + 32;
-                    setStatusWidth(newWidth);
+                    updateStatusWidth();
                     setIsFading(false);
                 });
-            }, 200);
-        } else {
-            const currentWidth = statusRef.current?.offsetWidth || 'auto';
-            setStatusWidth(currentWidth + 32);
+            }, 300); // Время анимации исчезновения текста
         }
-    }, [args.device.status, args.device.dim, args.device.targetTemp]);
+    }, [args.visible, args.device.status, args.device.dim, args.device.targetTemp]);
+
+    // Вычисляем ширину блока при первом рендере, после полной отрисовки компонента
+    useEffect(() => {
+        requestAnimationFrame(() => {
+            updateStatusWidth(); // Обновляем ширину сразу после монтирования компонента
+        });
+    }, []); // Пустой массив зависимостей, чтобы сработать только при первом рендере
 
     return (
         <div className={`item-window ${!args.visible ? "item-window--hidden" : ""}`}>

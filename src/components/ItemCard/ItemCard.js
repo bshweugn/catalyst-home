@@ -67,7 +67,7 @@ const ItemCard = ({ device, editMode, opened, presentingElement, children, idFun
 
     const renderDeviceIcon = () => {
         if (device.currentTemp !== undefined) {
-            return <p className='item-card__temp'>{device.currentTemp}°</p>
+            return <p className={`item-card__temp ${maximized ? 'item-card__temp--huge' : ''}`}>{device.currentTemp}°</p>
         } else {
             return <device.icon size="1.6rem" fill={device.color} />
         }

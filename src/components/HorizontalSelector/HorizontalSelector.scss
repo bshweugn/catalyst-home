@@ -65,13 +65,14 @@
     &__fade:first-of-type {
         left: 0;
     }
+
+    &__slide.splide__slide {
+        opacity: 0.4;
+        transition: opacity 0.2s;
+    }
+    
+    &__slide.splide__slide.is-active {
+        opacity: 1;
+    }
 }
 
-.splide__slide {
-    opacity: 0.4;
-    transition: opacity 0.2s;
-}
-
-.splide__slide.is-active {
-    opacity: 1;
-}
