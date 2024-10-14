@@ -1,0 +1,40 @@
+/* src/VerticalSlider.css */
+.vertical-slider {
+    width: 6.5rem;
+    height: 18rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: relative;
+    border-radius: 2rem;
+    overflow: hidden;
+    // border: 1px solid rgba(0, 0, 0, 0.02);
+  }
+  
+  .vertical-slider__track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .vertical-slider__thumb {
+    background-color: rgba(255, 255, 255, 1);
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    transition: background-color .2s;
+  }
+  
+  .vertical-slider__value-display {
+    position: absolute;
+    top: 5px;
+    left: 60px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .vertical-slider__icon{
+    position: absolute;
+    bottom: 2rem;
+    left: 2.125rem;
+    opacity: 0.4;
+  }
+  

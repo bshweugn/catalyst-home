@@ -1,0 +1,17 @@
+.button {
+    height: fit-content;
+    padding: 1rem 2rem;
+    width: 100%;
+    background-color: transparent;
+    border-radius: 0.875rem;
+    color: rgb(0, 102, 255);
+
+    &--primary {
+        background-color: rgba(0, 0, 0, 0.08);
+        color: black;
+    }
+
+    &__label{
+        margin: 0;
+    }
+}

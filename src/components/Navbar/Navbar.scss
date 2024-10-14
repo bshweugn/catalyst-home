@@ -1,0 +1,14 @@
+.navbar {
+    position: fixed;
+    width: 100vw;
+    height: 3.75rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    bottom: 0;
+    right: 0;
+    padding-bottom: 1rem;
+    backdrop-filter: blur(2rem);
+
+    &__element {
+
+    }
+}

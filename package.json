@@ -2,20 +2,43 @@
   "name": "smart-home",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
+    "@capacitor/app": "6.0.1",
+    "@capacitor/camera": "^6.0.2",
+    "@capacitor/core": "6.1.2",
+    "@capacitor/haptics": "6.0.1",
+    "@capacitor/ios": "^6.1.2",
+    "@capacitor/keyboard": "6.0.2",
+    "@capacitor/status-bar": "6.0.1",
+    "@ionic/react": "^8.3.2",
+    "@ionic/react-router": "^8.3.2",
+    "@splidejs/react-splide": "^0.7.12",
+    "@splidejs/splide": "^4.1.4",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "capacitor-plugin-camera": "^2.0.2",
+    "capacitor-plugin-dynamsoft-barcode-reader": "^2.0.1",
+    "history": "^5.3.0",
+    "ionicons": "^7.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-ios-corners": "^1.0.0",
+    "react-multi-carousel": "^2.8.5",
+    "react-router-dom": "^5.3.4",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.29.0",
+    "sass": "^1.79.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cc": "node createBlock.js",
+    "ci": "node createIcon.js"
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +57,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@capacitor/cli": "6.1.2"
   }
 }

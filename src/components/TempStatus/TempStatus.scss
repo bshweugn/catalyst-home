@@ -1,0 +1,44 @@
+.temp-status {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    width: max-content;
+    margin-top: -0.25rem;
+    margin-right: 2rem;
+
+    &__pair {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding-right: 1rem;
+        box-sizing: content-box;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    &--without-separator &__pair{
+        border-right: none;
+    }
+
+    &__temp{
+        width: 100%;
+        font-size: 2rem;
+        line-height: 1.2;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    &__name{
+        font-size: 0.875rem;
+        line-height: 1.1;
+        font-weight: 'SemiBold';
+        margin: 0;
+    }
+
+    &__status{
+        font-size: 0.75rem;
+        line-height: 1.1;
+        margin: 0;
+        font-weight: 'Regular';
+        opacity: .5;
+    }
+}

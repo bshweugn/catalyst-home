@@ -1,0 +1,89 @@
+.header {
+    height: 3.125rem;
+    width: 100vw;
+    color: white;
+    transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.25rem 0 0.75rem;
+    box-sizing: border-box;
+
+    &__back {
+        position: absolute; 
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(2rem);
+        opacity: 1;
+        transition: .1s;
+    }
+
+
+    &--transparent &__title {
+        color: transparent;
+    }
+
+    &__user-profile-img {
+        height: 2.5rem;
+        width: 2.5rem;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        background-color: gray;
+        background-image: url('/assets/images/user.jpeg');
+    }
+
+
+    &__title {
+        position: absolute;
+        bottom: 0.45rem;
+        left: 4.5rem;
+        transform: translate(0, -50%);
+        font-size: 1.125rem;
+        font-weight: 500;
+        margin: 0;
+        transition: .1s;
+    }
+
+    &__actions {
+        display: flex;
+    }
+
+    &__secondary-actions {
+        height: fit-content;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    &__secondary-action {
+        height: 1.875rem;
+        width: 1.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(2rem);
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    &__primary-action {
+        margin: 0;
+        width: auto;
+        height: 1.875rem;
+        background-color: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(2rem);
+        padding: 0 0.75rem;
+        color: black;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}

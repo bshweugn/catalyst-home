@@ -1,0 +1,7 @@
+{
+  "name": "Catalyst Home",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

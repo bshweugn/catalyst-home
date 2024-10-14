@@ -1,0 +1,77 @@
+.horizontal-selector {
+    height: 6.5rem;
+    width: 18rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 2rem;
+    overflow: visible;
+    position: relative;
+    overflow: hidden;
+
+    &__wrapper {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 2rem;
+        position: relative;
+        z-index: 1; // Контейнер для слайдера
+    }
+
+    &__pointer {
+        position: absolute;
+        bottom: 0.2rem;
+        left: 50%;
+        transform: translate(-50%, 0) rotate(90deg);
+        opacity: 0.5;
+        z-index: 3; // Стрелка должна быть выше маски
+    }
+
+    &__item {
+        width: 5.25rem;
+        height: 6.5rem;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__value {
+        color: white;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-left: 0.25rem;
+    }
+
+    &__fade {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 33%;
+        pointer-events: none;
+        z-index: 2;
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+        transform: rotate(180deg);
+        pointer-events: none;
+        background-origin: border-box;
+    }
+
+    &__fade--second {
+        right: 0;
+        transform: rotate(0deg);
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+    }
+
+    &__fade:first-of-type {
+        left: 0;
+    }
+}
+
+.splide__slide {
+    opacity: 0.4;
+    transition: opacity 0.2s;
+}
+
+.splide__slide.is-active {
+    opacity: 1;
+}

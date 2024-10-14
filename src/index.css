@@ -1,13 +1,69 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
+  user-select: none;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+}
+
+.page {
+  height: max-content;
+  width: 100vw;
+  box-sizing: border-box;
+  background-size: contain;
+  padding: 0rem 1rem 0rem 1rem;
+  overflow-y: scroll;
+}
+
+ion-content {
+  --background: transparent;
+}
+
+.ion-content{
+  background-size: cover;
+  background-position: center;
+  padding-bottom: 5rem;
+}
+
+/* ion-header{
+  --opacity-scale: 1!important;
+} */
+
+ion-toolbar {
+  --background: transparent !important;
+  --color: white
+}
+
+.header-collapse-condense {
+  z-index: 9;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.header-background {
+  -webkit-backdrop-filter: blur(20px)!important;
+  backdrop-filter: blur(20px)!important;
+}
+
+ion-searchbar.search-field {
+  /* --bacdrop-filter: blur(2rem) */
+}
+
+.ion-page{
+  --ion-background-color: rgba(0, 0, 0, 0.2);
+  /* backdrop-filter: blur(2rem); */
+}
+
+
+.header-ios ion-toolbar:last-of-type {
+  --border-width: 0 0 0px;
 }

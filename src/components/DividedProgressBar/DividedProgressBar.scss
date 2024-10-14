@@ -1,0 +1,15 @@
+.divided-progress-bar {
+    display: flex;
+    gap: 5px;
+    height: fit-content;
+  
+  
+  &__division {
+    width: 0.5625rem;
+    height: 2rem;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s;
+  }
+  
+}

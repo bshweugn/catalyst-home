@@ -1,0 +1,17 @@
+.add-accessory-popup {
+
+    &__code-input {
+        padding: 1.6rem 1rem;
+        background-color: rgba(0, 0, 0, 0.08);
+        border-radius: 0.875rem;
+        font-size: 1.6rem;
+        text-align: center;
+        font-weight: 500;
+        width: 100%;
+        box-sizing: border-box;
+        outline: none;
+        border: none;
+        margin-bottom: 3rem;
+        margin-top: 0.2rem;
+    }
+}

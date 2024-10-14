@@ -1,0 +1,76 @@
+import React, { useEffect, useRef, useState } from "react";
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
+import './HorizontalSelector.scss';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import Pointer from "../icons/Pointer/Pointer";
+
+function HorizontalSelector({ values, append, selectedValue, setValue }) {
+    const splideRef = useRef(null); // Используем useRef для ссылки на Splide
+    const [initialSlideIndex, setInitialSlideIndex] = useState(null);
+
+    // Вычисляем индекс для прокрутки при первом рендере
+    useEffect(() => {
+        const index = values.indexOf(selectedValue);
+        if (index !== -1) {
+            setInitialSlideIndex(index);
+        }
+    }, [selectedValue, values]);
+
+    // Прокрутка к нужному слайду при изменении selectedValue
+    useEffect(() => {
+        splideRef.current.splide.go(initialSlideIndex);
+    }, [initialSlideIndex]);
+
+    const handleMove = () => {
+        Haptics.impact({ style: ImpactStyle.Light });
+    };
+
+    const handleChange = (newIndex) => {
+        const newValue = values[newIndex];
+        if (newValue !== selectedValue) {
+            setValue(newValue); // Обновляем значение только при изменении
+        }
+    };
+
+    const options = {
+        type: 'slide',
+        perPage: 4,
+        perMove: 1,
+        focus: 'center',
+        pagination: false,
+        arrows: false,
+        drag: true,
+        snap: true,
+        flickPower: 100,
+        trimSpace: false
+    };
+
+    return (
+        <div className="horizontal-selector">
+            <div className="horizontal-selector__fade" />
+            <div className="horizontal-selector__fade horizontal-selector__fade--second" />
+            <div className="horizontal-selector__pointer">
+                <Pointer size="0.75rem" color="black" />
+            </div>
+            <div className="horizontal-selector__wrapper">
+                <Splide
+                    options={options}
+                    onMove={handleMove}
+                    onActive={(splide, slide) => handleChange(slide.index)}
+                    ref={splideRef} // Присваиваем ссылку на Splide инстанс
+                >
+                    {values.map((value, index) => (
+                        <SplideSlide key={index}>
+                            <div className="horizontal-selector__item">
+                                <p className="horizontal-selector__value">{value}{append}</p>
+                            </div>
+                        </SplideSlide>
+                    ))}
+                </Splide>
+            </div>
+        </div>
+    );
+}
+
+export default HorizontalSelector;

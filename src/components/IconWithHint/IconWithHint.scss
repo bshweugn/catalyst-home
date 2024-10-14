@@ -1,0 +1,36 @@
+.icon-with-hint {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    height: max-content;
+    text-align: left;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+
+    &__icon {
+        height: fit-content;
+        width: fit-content;
+        margin-right: 1rem;
+        margin-top: 0.25rem;
+    }
+
+    &__pair{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: max-content;
+    }
+
+    &__title{
+        font-weight: 500;
+        margin: 0;
+    }
+
+    &__label{
+        opacity: 0.6;
+        margin: 0.2rem 0 0 0;
+    }
+}
