@@ -1,0 +1,35 @@
+.text-input {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+    margin: 0.5rem 0;
+  
+    &__field {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background-color: rgba(0, 0, 0, 0.3);
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.6rem;
+      outline: none;
+      transition: border-color 0.2s;
+  
+      &:focus {
+        border-color: #3880ff;
+      }
+  
+      &::placeholder {
+        color: #aaa;
+      }
+    }
+
+    &__label{
+        margin: 0 0 0.5rem 0;
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+    }
+  }
+  

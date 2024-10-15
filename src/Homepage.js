@@ -38,6 +38,7 @@ import HorizontalSelector from './components/HorizontalSelector/HorizontalSelect
 import ItemWindow from './components/ItemWindow/ItemWindow';
 import MainWidgetsRow from './components/MainWidgetsRow/MainWidgetsRow';
 import ActionButton from './components/ActionButton/ActionButton';
+import RoomWindow from './components/RoomWindow/RoomWindow';
 
 function Homepage(args) {
     const [editMode, setEditMode] = useState(false);
@@ -47,6 +48,7 @@ function Homepage(args) {
     const [presentingElement, setPresentingElement] = useState(null);
 
     const [itemID, setItemID] = useState(0);
+    const [roomID, setRoomID] = useState(0);
 
     const [color, setColor] = useState("rgba(0, 0, 0, 0.1)");
 
@@ -129,6 +131,11 @@ function Homepage(args) {
         icon: Lightbulb
     };
 
+    const mainRoom = {
+        id: 1,
+        name: 'Гостиная'
+    }
+
     return (
         <>
             <Background image={background} />
@@ -147,6 +154,11 @@ function Homepage(args) {
                 <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={temp} setValue={setTemp} />
                 <ActionButton active icon={Power} labels={["Вкл.", "Выкл."]} />
             </ItemWindow>
+
+
+            <RoomWindow room={mainRoom} visible={roomID === mainRoom.id} idFunc={setRoomID}>
+            
+            </RoomWindow>
 
             <IonHeader>
                 <Header
@@ -187,7 +199,7 @@ function Homepage(args) {
 
                 <div className='page'>
                     <NotificationWidget iconColor={"#FF5500"} icon={MotionIcon} buttonIcon={VideoIcon} title="Безопасность" label="Обнаружено движение" />
-                    <ItemsList roomName={"Гостиная"}>
+                    <ItemsList roomName={"Гостиная"} roomID={1} func={setRoomID}>
                         <ItemCard opened={lampDevice.id === itemID} idFunc={setItemID} device={lampDevice} editMode={editMode} presentingElement={presentingElement} />
                         <ItemCard opened={thermostatDevice.id === itemID} idFunc={setItemID} device={thermostatDevice} editMode={editMode} presentingElement={presentingElement}>
                         </ItemCard>

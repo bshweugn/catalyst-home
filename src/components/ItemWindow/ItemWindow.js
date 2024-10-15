@@ -38,28 +38,24 @@ const ItemWindow = (args) => {
         const newStatus = renderDeviceStatus();
 
         if (newStatus !== deviceStatus) {
-            // Анимация исчезновения
             setIsFading(true);
 
             setTimeout(() => {
-                // Меняем статус устройства
                 setDeviceStatus(newStatus);
 
-                // Обновляем ширину через requestAnimationFrame после изменения текста
                 requestAnimationFrame(() => {
                     updateStatusWidth();
                     setIsFading(false);
                 });
-            }, 300); // Время анимации исчезновения текста
+            }, 300);
         }
     }, [args.visible, args.device.status, args.device.dim, args.device.targetTemp]);
 
-    // Вычисляем ширину блока при первом рендере, после полной отрисовки компонента
     useEffect(() => {
         requestAnimationFrame(() => {
-            updateStatusWidth(); // Обновляем ширину сразу после монтирования компонента
+            updateStatusWidth();
         });
-    }, []); // Пустой массив зависимостей, чтобы сработать только при первом рендере
+    }, []);
 
     return (
         <div className={`item-window ${!args.visible ? "item-window--hidden" : ""} ${args.vertical ? "item-window--vertical" : ""}`}>

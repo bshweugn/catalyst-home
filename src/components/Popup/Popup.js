@@ -69,7 +69,7 @@ const Popup = (args) => {
         <div className={finalClassName}>
             <div 
                 className="popup__window" 
-                style={{ height: `${contentHeight + 64 + 16 + 32}px`, bottom: `${keyboardHeight}px` }}
+                style={{ height: `${contentHeight + 64 + 32}px`, bottom: `${keyboardHeight}px` }}
             >
                 <div className='popup__close-btn' onClick={() => {args.func(false); setIsInitialRender(true)}}>
                     <Close size="0.6rem" fill={"gray"} />
