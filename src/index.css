@@ -45,7 +45,7 @@ ion-toolbar {
 
 .header-collapse-condense {
   z-index: 9;
-  margin-top: 2rem;
+  margin-top: 2.2rem;
   margin-bottom: 0.5rem;
 }
 
@@ -60,7 +60,7 @@ ion-searchbar.search-field {
 }
 
 .ion-page{
-  --ion-background-color: rgba(0, 0, 0, 0.2);
+  /* --ion-background-color: rgba(255, 255, 255, 0.573); */
   /* backdrop-filter: blur(2rem); */
 }
 

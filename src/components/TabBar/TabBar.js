@@ -35,9 +35,6 @@ const TabBar = (args) => {
                 <div></div>
                 <div></div>
                 <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
             </div>
         </div>
     );

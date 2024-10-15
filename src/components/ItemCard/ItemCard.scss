@@ -38,11 +38,6 @@
         // left: calc(3.125rem + 0.75rem * 2);
         transition: .2s;
         bottom: 0.8rem;
-
-        p {
-            margin: 0;
-            text-align: left;
-        }
     }
 
     &--maximized {
@@ -54,6 +49,7 @@
     &--active {
         background-color: white;
         color: black;
+        backdrop-filter: none;
     }
 
     &--edit-mode {
@@ -71,13 +67,15 @@
 
     &__item-name {
         font-weight: 500;
-        line-height: 1.2;
+        line-height: 1;
+        margin: 0;
     }
 
     &__item-status {
         font-size: 0.75rem;
         opacity: 0.6;
-        line-height: 1.3;
+        line-height: 1;
+        margin: 0.25rem 0 0 0
     }
 
     &__item-icon {
@@ -125,11 +123,11 @@
 
     &__max-btn {
         position: absolute;
-        top: -0.5rem;
-        right: -0.5rem;
+        top: -0.6rem;
+        right: -0.6rem;
         height: 1.6rem;
         width: 1.6rem;
-        background-color: rgb(194, 194, 194);
+        background-color: rgb(227, 227, 227);
         border-radius: 50%;
         // background-image: url("/assets/icons/remove.png");
         background-size: 50%;

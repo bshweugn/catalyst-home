@@ -62,7 +62,7 @@ const ItemWindow = (args) => {
     }, []); // Пустой массив зависимостей, чтобы сработать только при первом рендере
 
     return (
-        <div className={`item-window ${!args.visible ? "item-window--hidden" : ""}`}>
+        <div className={`item-window ${!args.visible ? "item-window--hidden" : ""} ${args.vertical ? "item-window--vertical" : ""}`}>
             <div className='item-window__back' />
             <div className='item-window__header'>
                 <div className='item-window__item-icon'>

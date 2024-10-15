@@ -11,8 +11,8 @@ const NotificationWidget = (args) => {
                 <div className='notification-widget__title'>{args.title}</div>
                 <div className='notification-widget__label'>{args.label}</div>
             </div>
-            <div className='notification-widget__action-btn'>
-                <args.buttonIcon size="1.625rem" fill={args.iconColor} className='notification-widget__btn-icon' />
+            <div className='notification-widget__action-btn' style={{backgroundColor: `${args.iconColor}`}}>
+                <args.buttonIcon size="1.625rem" fill={'white'} className='notification-widget__btn-icon' />
             </div>
         </div>
     );

@@ -7,16 +7,19 @@
     padding-top: calc(var(--ion-safe-area-top) + 0rem);
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(3rem) saturate(1.6);
-    transition: .3s;
+    transition: opacity .3s 0s, max-height 0s 0s;
     z-index: 100;
+    max-height: 200rem;
 
     &--hidden {
         opacity: 0;
         pointer-events: none;
+        max-height: 0;
+        transition: opacity .3s 0s, max-height 0s .3s;
     }
 
     &--hidden &__content {
-        transform: scale(0.9);
+        transform: scale(0.85);
         filter: blur(1rem);
     }
 
@@ -32,7 +35,7 @@
 
     &__header {
         position: relative;
-        padding: 1rem;
+        padding: 0.75rem 1rem;
         box-sizing: border-box;
         display: flex;
         align-items: center;
@@ -65,7 +68,7 @@
     }
 
     &__room-name {
-        margin: 0 0 1rem 0;
+        margin: 0.25rem 0 1rem 0;
     }
 
     &__item-name {
@@ -86,6 +89,7 @@
         transition: width 0.3s ease, padding 0.3s ease;
         position: relative;
         height: 2rem;
+        overflow: hidden;
 
         p {
             opacity: 1;
@@ -109,5 +113,9 @@
         height: calc(100% - 7rem);
         align-items: center;
         gap: 1.5rem;
+    }
+
+    &--vertical &__content-wrapper{
+        flex-direction: column;
     }
 }

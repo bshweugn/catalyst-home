@@ -13,8 +13,9 @@ function MainWidgetsRow({ children }) {
         drag: true,
         snap: true,
         gap: '0.5rem',
-        fixedWidth: '100%',
-        padding: { left: '1rem', right: '1rem' }
+        fixedWidth: 'fit-content',
+        padding: { left: '1rem', right: '1rem' },
+        flickPower: 300,
     };
 
     return (

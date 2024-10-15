@@ -1,0 +1,23 @@
+.modal-header {
+    height: 4rem;
+    align-items: center;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    font-weight: 500;
+    padding: 0 1rem;
+    box-sizing: border-box;
+
+    &__title {
+        margin: 0;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &__btn{
+        color: rgb(0, 110, 255);
+    }
+}

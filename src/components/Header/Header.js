@@ -13,7 +13,7 @@ const Header = (args) => {
                 <div></div>
                 <div></div>
             </div>
-            <div className='header__user-profile-img'/>
+            <div className='header__user-profile-img' onClick={args.openProfileModal}/>
             <h2 className='header__title'>{args.title}</h2>
             <div className='header__actions'>
                 <div className='header__secondary-actions'>

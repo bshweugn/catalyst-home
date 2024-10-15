@@ -37,6 +37,7 @@ import HueSelector from './components/HueSelector/HueSelector';
 import HorizontalSelector from './components/HorizontalSelector/HorizontalSelector';
 import ItemWindow from './components/ItemWindow/ItemWindow';
 import MainWidgetsRow from './components/MainWidgetsRow/MainWidgetsRow';
+import ActionButton from './components/ActionButton/ActionButton';
 
 function Homepage(args) {
     const [editMode, setEditMode] = useState(false);
@@ -102,7 +103,7 @@ function Homepage(args) {
         type: 'LAMP',
         name: 'Второй свет',
         roomName: 'Гостиная',
-        active: true,
+        active: false,
         dimmable: true,
         dim: 100,
         status: 'ON',
@@ -142,8 +143,9 @@ function Homepage(args) {
                 <HueSelector setColorFunc={setColor} colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} />
             </ItemWindow>
 
-            <ItemWindow device={thermostatDevice} visible={thermostatDevice.id === itemID} idFunc={setItemID}>
+            <ItemWindow vertical device={thermostatDevice} visible={thermostatDevice.id === itemID} idFunc={setItemID}>
                 <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={temp} setValue={setTemp} />
+                <ActionButton active icon={Power} labels={["Вкл.", "Выкл."]} />
             </ItemWindow>
 
             <IonHeader>
@@ -154,6 +156,7 @@ function Homepage(args) {
                     secondaryActions={[args.setAccessoryMode]}
                     primaryLabel={["Править", "Готово"]}
                     primaryAction={[editMode, setEditMode]}
+                    openProfileModal={args.openProfileModal}
                 />
             </IonHeader>
 
@@ -178,7 +181,7 @@ function Homepage(args) {
                             <TempStatus temp="25" name="Термостат" status="Подогрев до 27°" />
                             <TempStatus className="temp-status--without-separator" temp="32" name="Тёплый пол" status="Текущая" />
                         </Row> */}
-                        <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={11} percentage={20} />
+                        <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={14} percentage={20} />
                     </MainWidget>
                 </MainWidgetsRow>
 
@@ -189,8 +192,8 @@ function Homepage(args) {
                         <ItemCard opened={thermostatDevice.id === itemID} idFunc={setItemID} device={thermostatDevice} editMode={editMode} presentingElement={presentingElement}>
                         </ItemCard>
                         <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} />
-                        <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} />
-                        <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} />
+                        {/* <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} />
+                        <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} /> */}
                     </ItemsList>
                 </div>
             </IonContent>

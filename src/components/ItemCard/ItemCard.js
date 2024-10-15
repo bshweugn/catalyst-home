@@ -45,11 +45,13 @@ const ItemCard = ({ device, editMode, opened, presentingElement, children, idFun
     };
 
     const handleCardClick = () => {
-        idFunc(device.id)
-        hapticsImpactLight();
+        if (!editMode) {
+            idFunc(device.id)
+            hapticsImpactLight();
+        }
     };
 
-    const finalClassName = `item-card ${shakeClass} ${opened? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""}`;
+    const finalClassName = `item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""}`;
 
     useEffect(() => {
         let timeoutId;
