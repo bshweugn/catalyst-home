@@ -14,7 +14,8 @@ import avatar from './assets/images/user.jpeg';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 import { Provider } from 'react-redux';
-import store from './store';
+import store, { persistor } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 function App() {
   const [addAccessoryMode, setAccessoryMode] = useState(false);
@@ -37,28 +38,30 @@ function App() {
 
   return (
     <Provider store={store}>
-      <IonApp>
-        <Homepage currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} />
-        <TabBar activeTab={currentPage} setActiveTab={setCurrentPage} />
+      <PersistGate loading={null} persistor={persistor}>
+        <IonApp>
+          <Homepage currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} />
+          <TabBar activeTab={currentPage} setActiveTab={setCurrentPage} />
 
-        {/* Profile Modal */}
-        <IonModal
-          isOpen={isProfileModalOpen}
-          ref={profileModal}
-          presentingElement={pageRef.current || undefined}
-          onDidDismiss={() => setProfileModalOpen(false)}
-        >
-          <IonHeader>
-            <ModalHeader title="Профиль" action={dismissProfileModal} />
-          </IonHeader>
-          <IonContent className="ion-padding">
-            <ProfileInfo avatar={avatar} name="Евгений Башаримов" mail="bshv.evgn@gmail.com" />
-          </IonContent>
-        </IonModal>
+          {/* Profile Modal */}
+          <IonModal
+            isOpen={isProfileModalOpen}
+            ref={profileModal}
+            presentingElement={pageRef.current || undefined}
+            onDidDismiss={() => setProfileModalOpen(false)}
+          >
+            <IonHeader>
+              <ModalHeader title="Профиль" action={dismissProfileModal} />
+            </IonHeader>
+            <IonContent className="ion-padding">
+              <ProfileInfo avatar={avatar} name="Евгений Башаримов" mail="bshv.evgn@gmail.com" />
+            </IonContent>
+          </IonModal>
 
-        {/* Add Accessory Popup */}
-        <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} />
-      </IonApp>
+          {/* Add Accessory Popup */}
+          <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} />
+        </IonApp>
+      </PersistGate>
     </Provider>
   );
 }

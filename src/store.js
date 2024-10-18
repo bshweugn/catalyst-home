@@ -1,4 +1,13 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore, createSlice, combineReducers } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // Для использования локального хранилища
+import background from './assets/images/background.jpg';
+
+// Создание конфигурации для persist
+const persistConfig = {
+    key: 'root',
+    storage, // используем локальное хранилище
+};
 
 const devicesSlice = createSlice({
     name: 'devices',
@@ -50,14 +59,13 @@ const roomsSlice = createSlice({
         removeRoom: (state, action) => {
             const { id } = action.payload;
             let rID = "id" + id;
-            delete state[action.payload.rID];
+            delete state[rID];
         },
         changeRoomOrder: (state, action) => {
             const { newOrder } = action.payload;
-            let rID;
             newOrder.forEach((room, index) => {
-                rID= "id" + room.id;
-                state[rID].order = room.order;
+                const rID = "id" + room.id;
+                state[rID].order = index; // Установите порядок комнаты
             });
         },
     }
@@ -68,7 +76,6 @@ const glanceSlice = createSlice({
     initialState: {
         temp: { visible: true, data: [456]},
         air: {visible: true, data: []},
-
     },
     reducers: {
         changeGlanceVisibility: (state, action) => {
@@ -83,14 +90,43 @@ const glanceSlice = createSlice({
     }
 });
 
-export const { toggleDeviceStatus, setDeviceDim, setThermostatTemp } = devicesSlice.actions;
-export const { addRoom, removeRoom, changeRoomOrder } = roomsSlice.actions;
-
-const store = configureStore({
-    reducer: {
-        devices: devicesSlice.reducer,
-        rooms: roomsSlice.reducer,
+const settingsSlice = createSlice({
+    name: 'settings',
+    initialState: {
+        haptics: { enabled: true },
+        holdMode: { enabled: true },
+        background: { image: background },
+        maximizedCards: { id: [] }
+    },
+    reducers: {
+        changeParameter: (state, action) => {
+            const { name, parameter, value } = action.payload;
+            state[name][parameter] = value; // Обновляем параметр
+        }
     }
 });
+
+// Экспорт действий
+export const { toggleDeviceStatus, setDeviceDim, setThermostatTemp } = devicesSlice.actions;
+export const { addRoom, removeRoom, changeRoomOrder } = roomsSlice.actions;
+export const { changeParameter } = settingsSlice.actions;
+
+// Объединение редьюсеров
+const rootReducer = combineReducers({
+    devices: devicesSlice.reducer,
+    rooms: roomsSlice.reducer,
+    settings: settingsSlice.reducer,
+    glance: glanceSlice.reducer,
+});
+
+// Создание персистируемого редьюсера
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+    reducer: persistedReducer, // Используем персистируемый редьюсер
+});
+
+// Создание persistor
+export const persistor = persistStore(store);
 
 export default store;

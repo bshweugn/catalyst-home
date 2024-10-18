@@ -11,7 +11,7 @@ import Background from './components/Background/Background';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { toggleDeviceStatus, setDeviceDim, setThermostatTemp, changeRoomOrder } from './store';
+import { toggleDeviceStatus, setDeviceDim, setThermostatTemp, changeRoomOrder, changeParameter } from './store';
 
 import background from './assets/images/background.jpg';
 import background1 from './assets/images/background1.jpg';
@@ -49,13 +49,19 @@ import ToggleList from './components/ToggleList/ToggleList';
 import DraggableList from './components/DraggableList/DraggableList';
 
 function Homepage(args) {
+    const dispatch = useDispatch();
+    const devices = useSelector(state => state.devices);
+    const rooms = useSelector(state => state.rooms);
+
+    const settings = useSelector((state) => state.settings);
+    const [pageBackground, setPageBackground] = useState(settings.background.image);
+
     const [editMode, setEditMode] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [moreMode, setMoreMode] = useState(false);
     const pageRef = useRef(null);
     const [presentingElement, setPresentingElement] = useState(null);
 
-    const [pageBackground, setPageBackground] = useState(background);
 
     const [houseName, setHouseName] = useState('Мой дом');
 
@@ -65,14 +71,15 @@ function Homepage(args) {
     const [roomID, setRoomID] = useState(0);
 
 
-    const dispatch = useDispatch();
-    const devices = useSelector(state => state.devices);
-    const rooms = useSelector(state => state.rooms);
-
-
     useEffect(() => {
         setPresentingElement(pageRef.current);
     }, []);
+
+
+    useEffect(() => {
+        dispatch(changeParameter({ name: 'background', parameter: 'image', value: pageBackground }));
+    }, [pageBackground]);
+    
 
 
     useEffect(() => {
