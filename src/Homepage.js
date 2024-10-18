@@ -1,27 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
-import ItemCard from './components/ItemCard/ItemCard';
 import ItemsList from './components/ItemsList/ItemsList';
-import Navbar from './components/Navbar/Navbar';
-import PageTitle from './components/PageTitle/PageTitle';
-import plus from './assets/icons/plus.svg';
 import PlusIcon from './components/icons/PlusIcon/PlusIcon';
 import MainWidget from './components/MainWidget/MainWidget';
 import TempStatus from './components/TempStatus/TempStatus';
 import Row from './components/Row/Row';
-import DividedProgressBar from './components/DividedProgressBar/DividedProgressBar';
 import ProgressStatus from './components/ProgressStatus/ProgressStatus';
-import NotificationWidget from './components/NotificationWidget/NotificationWidget';
-import MotionIcon from './components/icons/MotionIcon/MotionIcon';
-import VideoIcon from './components/icons/VideoIcon/VideoIcon';
-import Lightbulb from './components/icons/Lightbulb/Lightbulb';
-import RobotVacuum from './components/icons/RobotVacuum/RobotVacuum';
 import Background from './components/Background/Background';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { toggleDeviceStatus, setDeviceDim, setThermostatTemp } from './store';
+import { toggleDeviceStatus, setDeviceDim, setThermostatTemp, changeRoomOrder } from './store';
 
 import background from './assets/images/background.jpg';
 import background1 from './assets/images/background1.jpg';
@@ -37,30 +27,15 @@ import background9 from './assets/images/background9.JPG';
 import Drop from './components/icons/Drop/Drop';
 import { Link } from 'react-router-dom/cjs/react-router-dom';
 import { IonContent, IonHeader, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
-import Popup from './components/Popup/Popup';
-import Power from './components/icons/Power/Power';
-import Scanner from './components/Scanner/Scanner';
-import ScannerPreview from './components/ScannerPreview/ScannerPreview';
-import AddAccessoryPopup from './components/AddAccessoryPopup/AddAccessoryPopup';
-import LampCard from './components/ devices/LampCard';
-import { colorFill } from 'ionicons/icons';
-import LightControl from './components/LightControl/LightControl';
-import VerticalSlider from './components/VerticalSlider/VerticalSlider';
-import Sun from './components/icons/Sun/Sun';
-import HueSelector from './components/HueSelector/HueSelector';
-import HorizontalSelector from './components/HorizontalSelector/HorizontalSelector';
 import ItemWindow from './components/ItemWindow/ItemWindow';
 import MainWidgetsRow from './components/MainWidgetsRow/MainWidgetsRow';
-import ActionButton from './components/ActionButton/ActionButton';
 import RoomWindow from './components/RoomWindow/RoomWindow';
 import More from './components/icons/More/More';
 import Window from './components/Window/Window';
-import BtnCard from './components/BtnCard/BtnCard';
 import House from './components/icons/House/House';
 import Reorder from './components/icons/Reorder/Reorder';
 import Section from './components/Section/Section';
 import TextInput from './components/TextInput/TextInput';
-import DropdownSelect from './components/DropdownSelect/DropdownSelect';
 import Avatar from './assets/images/user.jpeg'
 import Egor from './assets/images/egor.jpeg'
 import Tema from './assets/images/tema.jpeg'
@@ -68,6 +43,10 @@ import Tema from './assets/images/tema.jpeg'
 
 import PeopleList from './components/PeopleList/PeopleList';
 import BackgroundSelector from './components/BackgroundSelector/BackgroundSelector';
+import Bell from './components/icons/Bell/Bell';
+import Glance from './components/icons/Glance/Glance';
+import ToggleList from './components/ToggleList/ToggleList';
+import DraggableList from './components/DraggableList/DraggableList';
 
 function Homepage(args) {
     const [editMode, setEditMode] = useState(false);
@@ -117,6 +96,17 @@ function Homepage(args) {
         };
     }, []);
 
+    const [toggleStates, setToggleStates] = useState([
+        { label: 'Удержание для действия', value: true, setter: (value) => handleToggleChange(0, value) },
+        { label: 'Тактильный отклик', value: true, setter: (value) => handleToggleChange(1, value) },
+    ]);
+
+    const handleToggleChange = (index, value) => {
+        const newToggles = [...toggleStates];
+        newToggles[index].value = value;
+        setToggleStates(newToggles);
+    };
+
     const mainRoom = {
         id: 1,
         name: 'Гостиная'
@@ -141,11 +131,32 @@ function Homepage(args) {
         },
     ];
 
+    const [values, setValues] = useState([]);
+    const [labels, setLabels] = useState([]);
+
+
+    useEffect(() => {
+        const roomLabels = Object.keys(rooms).map(roomId => rooms[roomId].name);
+        const roomIDs = Object.keys(rooms).map(roomId => rooms[roomId].id);
+        setLabels(roomLabels);
+        setValues(roomIDs);
+
+    }, [rooms]);
+
+    // const handleOrderChange = (newValues) => {
+    //     dispatch(changeRoomOrder({ newOrder: newValues }));
+    // };
+
+    const handleOrderChange = (order) => {
+        // console.log("Новый порядок комнат:", order);
+        dispatch(changeRoomOrder({ newOrder: order }));
+        console.log(rooms);
+    };
 
     const cards = [
         {
             title: "Настройка дома",
-            label: "Настройте Ваш дом под себя",
+            label: "Общий доступ, люди, оформление",
             icon: House,
             content: (
                 <>
@@ -156,9 +167,37 @@ function Homepage(args) {
             ),
         },
         {
-            title: "Порядок секций",
-            label: "Измените порядок отображения",
+            title: "Отображение",
+            label: "Порядок секций, взаимодействие",
             icon: Reorder,
+            content: (
+                <>
+                    <ToggleList toggles={toggleStates} label="Взаимодействие" />
+                    <DraggableList
+                        onChange={handleOrderChange}
+                        label="Порядок секций"
+                        items={Object.values(rooms).sort((a, b) => a.order - b.order)}
+                        labelField="name"
+                        valueField="id"
+                        onDropComplete={handleOrderChange}
+                    />
+                </>
+            ),
+        },
+        {
+            title: "Уведомления",
+            label: "Настройки уведомлений",
+            icon: Bell,
+            content: (
+                <>
+                    <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
+                </>
+            ),
+        },
+        {
+            title: "Glance",
+            label: "Настройка отображения Glance",
+            icon: Glance,
             content: (
                 <>
                     <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
@@ -166,6 +205,8 @@ function Homepage(args) {
             ),
         }
     ]
+
+
 
     return (
         <>
@@ -221,20 +262,25 @@ function Homepage(args) {
                     </MainWidgetsRow>
 
                     <div className='page'>
-                        {/* <p>{devices.id123.id}</p> */}
-                        {Object.keys(rooms).map(roomId => (
-                            <ItemsList
-                                key={roomId}
-                                roomName={rooms[roomId].name}
-                                roomID={rooms[roomId].id}
-                                func={setRoomID}
-                                devices={Object.keys(devices).filter(deviceId => devices[deviceId].roomID === rooms[roomId].id).map(deviceId => devices[deviceId])}
-                                editMode={editMode}
-                                setItemID={setItemID}
-                                openedID={itemID}
-                            />
-                        ))}
+                        {Object.keys(rooms)
+                            .sort((a, b) => rooms[a].order - rooms[b].order)
+                            .map(roomId => (
+                                <ItemsList
+                                    key={roomId}
+                                    roomName={rooms[roomId].name}
+                                    roomID={rooms[roomId].id}
+                                    func={setRoomID}
+                                    devices={Object.keys(devices)
+                                        .filter(deviceId => devices[deviceId].roomID === rooms[roomId].id)
+                                        .map(deviceId => devices[deviceId])
+                                    }
+                                    editMode={editMode}
+                                    setItemID={setItemID}
+                                    openedID={itemID}
+                                />
+                            ))}
                     </div>
+
 
                 </Section>
 

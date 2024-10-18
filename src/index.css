@@ -76,3 +76,11 @@ ion-toolbar{
 .header-collapse-condense-inactive.header-collapse-condense ion-toolbar.in-toolbar ion-title{
   visibility: visible!important;
 }
+
+/* .page{
+  transition: .3s;
+}
+
+body:has(.btn-card__expanded) .page{
+  opacity: 0;
+} */

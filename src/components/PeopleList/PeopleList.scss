@@ -1,10 +1,10 @@
 .people-list {
     color: white;
-    margin-top: 1rem;
+    margin-top: 2rem;
 
     &__wrapper{
         background-color: rgba(0, 0, 0, 0.3);
-        border-radius: 0.7rem;
+        border-radius: 0.8rem;
     }
 
     &__title{
@@ -22,5 +22,7 @@
         box-sizing: border-box;
         font-size: 0.875rem;
         width: calc(100vw - 2rem);
+        line-height: 1.2;
+        opacity: 0.6;
     }
 }

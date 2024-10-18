@@ -1,5 +1,5 @@
 .btn-card {
-    width: 50%;
+    width: calc(50% - 0.75rem / 2);
     height: auto;
     aspect-ratio: 1 / 1.2;
     background-color: rgba(0, 0, 0, 0.3);
@@ -17,7 +17,9 @@
 
     &--hidden {
         opacity: 0;
-        transform: scale(0.9);
+        pointer-events: none;
+        // transform: scale(0.9);
+        // filter: blur(2rem);
     }
 
     &--invisible-content &__text,

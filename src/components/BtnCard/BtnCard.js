@@ -64,7 +64,7 @@ const BtnCard = ({ shouldClose, ...args }) => {
                         left: cardPosition.left,
                         width: cardPosition.width,
                         height: cardPosition.height,
-                        transition: '0.4s cubic-bezier(0.37, 0.01, 0.11, 0.99), opacity 0.2s',
+                        transition: (isClosing ? '0.4s cubic-bezier(0.27, -0.01, 0.01, 1.12), opacity 0.2s' : '0.4s cubic-bezier(0.27, -0.01, 0, 1.18), opacity 0.2s'),
                     }}
                     ref={(expandedCard) => {
                         if (expandedCard && !isClosing) {

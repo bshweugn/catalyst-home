@@ -12,6 +12,10 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
     const [maximized, setMaximized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
     const [active, setActive] = useState(device.active);
+    const [isHolding, setIsHolding] = useState(false);
+    const [isHeld, setIsHeld] = useState(false);
+
+    const holdTimeout = useRef(null);
 
     const [, drop] = useDrop({
         accept: 'item',
@@ -49,7 +53,8 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
     }, [editMode]);
 
     const handleCardClick = () => {
-        if (!editMode) {
+        if (!editMode && !isHolding) {
+            console.log(editMode, isHolding)
             idFunc(device.id);
             hapticsImpactLight();
         }
@@ -63,29 +68,29 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
         await Haptics.impact({ style: ImpactStyle.Medium });
     };
 
-    const handleActionClick = async () => {
-        setActive(!active);
-        hapticsImpactMedium();
+    const startHold = (e) => {
+        setIsHolding(true);
+        holdTimeout.current = setTimeout(() => {
+            setIsHolding(true);
+            setIsHeld(true);
+            hapticsImpactMedium();
+        }, 100);
+        setIsHolding(true);
+    };
 
-        // Example API call commented out for safety
-        // if (!device.apiEndpoint) return;
-        // try {
-        //     const response = await fetch(device.apiEndpoint, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({ id: device.id, newStatus: !active })
-        //     });
-        //     if (response.ok) {
-        //         setActive(!active);
-        //         hapticsImpactMedium();
-        //     } else {
-        //         console.error('Failed to update device status');
-        //     }
-        // } catch (error) {
-        //     console.error('Error occurred while updating device status:', error);
-        // }
+    const stopHold = (e) => {
+        hapticsImpactMedium();
+        e.stopPropagation();
+        if (holdTimeout.current) {
+            clearTimeout(holdTimeout.current);
+        }
+
+        if (isHeld) {
+            setActive((prevActive) => !prevActive);
+        }
+
+        setIsHeld(false);
+        setTimeout(() => setIsHolding(false), 100);
     };
 
     return (
@@ -99,7 +104,11 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
                 {maximized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
             </div>
             {!device.isSensor && (
-                <div className='item-card__action-btn' onClick={(e) => { e.stopPropagation(); handleActionClick(); }}>
+                <div
+                    className='item-card__action-btn'
+                    onTouchStart={startHold}
+                    onTouchEnd={stopHold}
+                >
                     <Power size="1rem" fill={!active ? "white" : "black"} />
                 </div>
             )}

@@ -38,8 +38,8 @@ const devicesSlice = createSlice({
 const roomsSlice = createSlice({
     name: 'rooms',
     initialState: {
-        id0: { id: 0, name: 'Гостиная' },
-        id1: { id: 1, name: 'Ванная' },
+        id0: { id: 0, order: 0, name: 'Гостиная' },
+        id1: { id: 1, order: 1, name: 'Ванная' },
     },
     reducers: {
         addRoom: (state, action) => {
@@ -52,11 +52,39 @@ const roomsSlice = createSlice({
             let rID = "id" + id;
             delete state[action.payload.rID];
         },
+        changeRoomOrder: (state, action) => {
+            const { newOrder } = action.payload;
+            let rID;
+            newOrder.forEach((room, index) => {
+                rID= "id" + room.id;
+                state[rID].order = room.order;
+            });
+        },
+    }
+});
+
+const glanceSlice = createSlice({
+    name: 'glance',
+    initialState: {
+        temp: { visible: true, data: [456]},
+        air: {visible: true, data: []},
+
+    },
+    reducers: {
+        changeGlanceVisibility: (state, action) => {
+            const { name, visible } = action.payload;
+            state[name].visible = visible;
+        },
+
+        changeGlanceData: (state, action) => {
+            const { name, visible } = action.payload;
+            state[name].visible = visible;
+        },
     }
 });
 
 export const { toggleDeviceStatus, setDeviceDim, setThermostatTemp } = devicesSlice.actions;
-export const { addRoom, removeRoom } = roomsSlice.actions;
+export const { addRoom, removeRoom, changeRoomOrder } = roomsSlice.actions;
 
 const store = configureStore({
     reducer: {
