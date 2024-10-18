@@ -3,28 +3,28 @@ import './TabBar.scss';
 import Star from '../icons/Star/Star';
 import House from '../icons/House/House';
 import Play from '../icons/Play/Play';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const TabBar = (args) => {
     const finalClassName = 'tab-bar ' + (args.className || '');
 
-    const [activeTab, setActiveTab] = useState(0);
 
     return (
         <div className="tab-bar-wrapper">
             <div className={finalClassName}>
-                <div className={`tab-bar__pair ${activeTab === 0 ? "tab-bar__pair--active" : ""}`} onClick={() => setActiveTab(0)}>
+                <div className={`tab-bar__pair ${args.activeTab === 0 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(0)}>
                     <div className='tab-bar__icon'>
                         <House size='1.5rem' color="white" />
                     </div>
                     <p className='tab-bar__label'>Мой дом</p>
                 </div>
-                <div className={`tab-bar__pair ${activeTab === 1 ? "tab-bar__pair--active" : ""}`} onClick={() => setActiveTab(1)}>
+                <div className={`tab-bar__pair ${args.activeTab === 1 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(1)}>
                     <div className='tab-bar__icon'>
                         <Star size='1.5rem' color="white" />
                     </div>
                     <p className='tab-bar__label'>Избранное</p>
                 </div>
-                <div className={`tab-bar__pair ${activeTab === 2 ? "tab-bar__pair--active" : ""}`} onClick={() => setActiveTab(2)}>
+                <div className={`tab-bar__pair ${args.activeTab === 2 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(2)}>
                     <div className='tab-bar__icon'>
                         <Play size='1.5rem' color="white" />
                     </div>

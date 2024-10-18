@@ -1,0 +1,26 @@
+.people-list {
+    color: white;
+    margin-top: 1rem;
+
+    &__wrapper{
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 0.7rem;
+    }
+
+    &__title{
+        margin: 0 0 0.5rem 0;
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+    }
+
+    &__description {
+        margin: 0.5rem 0 0.5rem 0;
+        padding-left: 0.5rem;
+        padding-right: 2rem;
+        box-sizing: border-box;
+        font-size: 0.875rem;
+        width: calc(100vw - 2rem);
+    }
+}

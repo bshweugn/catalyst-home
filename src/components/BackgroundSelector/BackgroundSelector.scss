@@ -1,0 +1,52 @@
+.background-selector {
+    width: 100%;
+    margin-top: 2rem;
+    height: fit-content;
+
+    &__wrapper {
+        border-radius: 0.7rem;
+        background-color: rgba(0, 0, 0, 0.3);
+        width: 100%;
+        overflow: hidden;
+    }
+
+
+    &__list {
+        width: 100%;
+        padding: calc(0.85rem - 4px);
+        display: flex;
+        flex-direction: row;
+        gap: calc(0.5rem - 6px);
+        overflow-x: scroll;
+    }
+
+    &__image-container {
+        border: 2px solid rgba(255, 255, 255, 0.0);
+        border-radius: 0.5rem;
+        padding: 0.15rem;
+        transition: .2s;
+
+        &--active {
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+    }
+
+    &__image {
+        height: 10rem;
+        width: auto;
+        aspect-ratio: 9 / 20;
+        background-position: center;
+        background-size: cover;
+        border-radius: 0.3rem;
+    }
+
+    &__label {
+        margin: 0 0 0.5rem 0;
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+        min-width: max-content;
+        width: max-content;
+    }
+}

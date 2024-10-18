@@ -1,0 +1,134 @@
+.window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    padding-top: calc(var(--ion-safe-area-top) + 0rem);
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3rem) saturate(1.6);
+    transition: opacity .3s 0s, max-height 0s 0s;
+    z-index: 100;
+    max-height: 200rem;
+    color: white;
+
+    &--hidden {
+        opacity: 0;
+        pointer-events: none;
+        max-height: 0;
+        transition: opacity .3s 0s, max-height 0s .3s;
+    }
+
+    &--hidden &__content {
+        transform: translateY(3rem);
+        filter: blur(1rem);
+    }
+
+
+    &__content {
+        height: calc(100% - var(--ion-safe-area-top) - 9rem);
+        z-index: 20;
+        opacity: 1;
+        display: flex;
+        flex-direction: column;
+        transition: .3s;
+    }
+
+    &--hidden {
+        opacity: 0;
+        pointer-events: none;
+        max-height: 0;
+        transition: opacity .3s 0s, max-height 0s .3s;
+    }
+
+    &__header {
+        position: relative;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 500;
+        z-index: 20;
+        color: white;
+        height: 2.6875rem;
+    }
+
+    &__back-btn {
+        position: absolute;
+        left: 0.5rem;
+        top: 50%;
+        transform: translate(calc(-100% - 1rem), -50%);
+        opacity: 0;
+        transition: .3s;
+
+        &--visible {
+            opacity: 1;
+            transform: translate(0, -50%);
+        }
+    }
+
+    &__header:has(.window__back-btn--visible) &__header-title {
+        left: 2.2rem;
+    }
+
+    &__header-title {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translate(0, -50%);
+        margin: 0;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+    &__close-btn,
+    .window__back-btn {
+        color: white;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    &__close-btn {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translate(0, -50%);
+    }
+
+    &__content {
+        height: calc(100% - var(--ion-safe-area-top) - 9rem);
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    &__content-wrapper {
+        display: flex;
+        transition: transform 0.4s cubic-bezier(0, 0, 0.37, 0.99);
+        width: 100%;
+        height: 100%;
+        position: relative;
+        align-items: flex-start;
+        padding: 1rem;
+        box-sizing: border-box;
+        gap: 0.75rem;
+    }
+
+    &__content-slide {
+        padding: 1rem;
+        display: flex;
+        flex-direction: row;
+        min-width: 100%;
+        gap: 0.75rem;
+        box-sizing: border-box;
+    }
+
+    &__content-slide.active {
+        /* Можно добавить стили для активного слайда */
+    }
+
+    &--vertical &__content-wrapper {
+        flex-direction: column;
+    }
+}

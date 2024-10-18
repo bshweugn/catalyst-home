@@ -1,0 +1,13 @@
+.section {
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 0;
+
+    &--visible {
+        opacity: 1;
+        pointer-events: auto;
+        max-height: 1000rem;
+    }
+}

@@ -19,7 +19,21 @@ import Lightbulb from './components/icons/Lightbulb/Lightbulb';
 import RobotVacuum from './components/icons/RobotVacuum/RobotVacuum';
 import Background from './components/Background/Background';
 
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { toggleDeviceStatus, setDeviceDim, setThermostatTemp } from './store';
+
 import background from './assets/images/background.jpg';
+import background1 from './assets/images/background1.jpg';
+import background2 from './assets/images/background2.jpg';
+import background3 from './assets/images/background3.jpeg';
+import background4 from './assets/images/background4.JPG';
+import background5 from './assets/images/background5.JPG';
+import background6 from './assets/images/background6.JPG';
+import background7 from './assets/images/background7.JPG';
+import background8 from './assets/images/background8.JPG';
+import background9 from './assets/images/background9.JPG';
+
 import Drop from './components/icons/Drop/Drop';
 import { Link } from 'react-router-dom/cjs/react-router-dom';
 import { IonContent, IonHeader, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
@@ -39,29 +53,48 @@ import ItemWindow from './components/ItemWindow/ItemWindow';
 import MainWidgetsRow from './components/MainWidgetsRow/MainWidgetsRow';
 import ActionButton from './components/ActionButton/ActionButton';
 import RoomWindow from './components/RoomWindow/RoomWindow';
+import More from './components/icons/More/More';
+import Window from './components/Window/Window';
+import BtnCard from './components/BtnCard/BtnCard';
+import House from './components/icons/House/House';
+import Reorder from './components/icons/Reorder/Reorder';
+import Section from './components/Section/Section';
+import TextInput from './components/TextInput/TextInput';
+import DropdownSelect from './components/DropdownSelect/DropdownSelect';
+import Avatar from './assets/images/user.jpeg'
+import Egor from './assets/images/egor.jpeg'
+import Tema from './assets/images/tema.jpeg'
+
+
+import PeopleList from './components/PeopleList/PeopleList';
+import BackgroundSelector from './components/BackgroundSelector/BackgroundSelector';
 
 function Homepage(args) {
     const [editMode, setEditMode] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const [addAccessoryMode, setAccessoryMode] = useState(false);
+    const [moreMode, setMoreMode] = useState(false);
     const pageRef = useRef(null);
     const [presentingElement, setPresentingElement] = useState(null);
+
+    const [pageBackground, setPageBackground] = useState(background);
+
+    const [houseName, setHouseName] = useState('Мой дом');
+
+    const [optionIndex, setOptionIndex] = useState(0);
 
     const [itemID, setItemID] = useState(0);
     const [roomID, setRoomID] = useState(0);
 
-    const [color, setColor] = useState("rgba(0, 0, 0, 0.1)");
 
-    const [temp, setTemp] = useState("16");
+    const dispatch = useDispatch();
+    const devices = useSelector(state => state.devices);
+    const rooms = useSelector(state => state.rooms);
+
 
     useEffect(() => {
         setPresentingElement(pageRef.current);
     }, []);
 
-
-    useEffect(() => {
-        console.log(temp);
-    }, [temp])
 
     useEffect(() => {
         const handleScroll = () => {
@@ -84,88 +117,80 @@ function Homepage(args) {
         };
     }, []);
 
-    const lampDevice = {
-        id: 123,
-        type: 'LAMP',
-        name: 'Главный свет',
-        roomName: 'Гостиная',
-        active: true,
-        dimmable: true,
-        dim: 100,
-        status: 'ON',
-        apiEndpoint: '/api/devices/lamp/lamp123/toggle',
-        actionEnabled: true,
-        color: "#FFD700",
-        actionIcon: Power,
-        icon: Lightbulb
-    };
-
-    const lampDevice2 = {
-        id: 124,
-        type: 'LAMP',
-        name: 'Второй свет',
-        roomName: 'Гостиная',
-        active: false,
-        dimmable: true,
-        dim: 100,
-        status: 'ON',
-        apiEndpoint: '/api/devices/lamp/lamp123/toggle',
-        actionEnabled: true,
-        color: "#FFD700",
-        actionIcon: Power,
-        icon: Lightbulb
-    };
-
-    const thermostatDevice = {
-        id: 456,
-        type: 'THERMOSTAT',
-        name: 'Термостат',
-        roomName: 'Гостиная',
-        active: false,
-        currentTemp: 25,
-        targetTemp: temp,
-        status: (25 < temp ? 'HEATING' : 25 == temp ? 'HOLD' : 'COOLNG'),
-        apiEndpoint: '/api/devices/thermostat/thermostat456',
-        actionEnabled: false,
-        actionIcon: Power,
-        icon: Lightbulb
-    };
-
     const mainRoom = {
         id: 1,
         name: 'Гостиная'
     }
 
+
+    const peopleData = [
+        {
+            image: Avatar,
+            name: 'Евгений Башаримов',
+            role: 'Жилец (Владелец)',
+        },
+        {
+            image: Tema,
+            name: 'Тёма Сорокин',
+            role: 'Жилец',
+        },
+        {
+            image: Egor,
+            name: 'Егор Булко',
+            role: 'Гость',
+        },
+    ];
+
+
+    const cards = [
+        {
+            title: "Настройка дома",
+            label: "Настройте Ваш дом под себя",
+            icon: House,
+            content: (
+                <>
+                    <TextInput value={houseName} label="Имя дома" setValue={setHouseName} placeholder={""} />
+                    <PeopleList people={peopleData} />
+                    <BackgroundSelector background={pageBackground} setBackground={setPageBackground} label="Фоновое&nbsp;изображение" images={[background, background1, background2, background3, background4, background5, background6, background7, background8, background9]} />
+                </>
+            ),
+        },
+        {
+            title: "Порядок секций",
+            label: "Измените порядок отображения",
+            icon: Reorder,
+            content: (
+                <>
+                    <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
+                </>
+            ),
+        }
+    ]
+
     return (
         <>
-            <Background image={background} />
+            <Background image={pageBackground} />
 
-            <ItemWindow device={lampDevice} visible={lampDevice.id === itemID} idFunc={setItemID}>
-                <VerticalSlider sliderIcon={Sun} color={color} />
-                <HueSelector setColorFunc={setColor} colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} />
-            </ItemWindow>
+            {Object.keys(devices).map(deviceId => (
+                <ItemWindow
+                    key={`window-${deviceId}`}
+                    device={devices[deviceId]}
+                    rooms={rooms}
+                    visible={devices[deviceId].id === itemID}
+                    idFunc={setItemID}
+                />
+            ))}
 
-            <ItemWindow device={lampDevice2} visible={lampDevice2.id === itemID} idFunc={setItemID}>
-                <VerticalSlider sliderIcon={Sun} color={color} />
-                <HueSelector setColorFunc={setColor} colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} />
-            </ItemWindow>
+            <RoomWindow room={mainRoom} visible={roomID === mainRoom.id} idFunc={setRoomID}></RoomWindow>
 
-            <ItemWindow vertical device={thermostatDevice} visible={thermostatDevice.id === itemID} idFunc={setItemID}>
-                <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={temp} setValue={setTemp} />
-                <ActionButton active icon={Power} labels={["Вкл.", "Выкл."]} />
-            </ItemWindow>
-
-
-            <RoomWindow room={mainRoom} visible={roomID === mainRoom.id} idFunc={setRoomID}>
-            
-            </RoomWindow>
+            <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} />
 
             <IonHeader>
                 <Header
                     title={"Мой дом"}
                     transparent={!isScrolled}
-                    secondaryIcons={[PlusIcon]}
-                    secondaryActions={[args.setAccessoryMode]}
+                    secondaryIcons={[PlusIcon, More]}
+                    secondaryActions={[args.setAccessoryMode, setMoreMode]}
                     primaryLabel={["Править", "Готово"]}
                     primaryAction={[editMode, setEditMode]}
                     openProfileModal={args.openProfileModal}
@@ -176,38 +201,43 @@ function Homepage(args) {
 
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">Мой дом</IonTitle>
+                        <IonTitle size="large">{args.currentPage === 0 ? houseName : args.currentPage === 1 ? "Избранное" : "Автоматизация"}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
 
-                <MainWidgetsRow>
-                    <MainWidget title="Климат" badge="Сейчас">
-                        <Row>
-                            <TempStatus temp="25" name="Термостат" status="Подогрев до 27°" />
-                            <TempStatus className="temp-status--without-separator" temp="32" name="Тёплый пол" status="Текущая" />
-                        </Row>
-                        {/* <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={11} percentage={20} /> */}
-                    </MainWidget>
-                    <MainWidget title="Качество воздуха" badge="Сейчас">
-                        {/* <Row>
-                            <TempStatus temp="25" name="Термостат" status="Подогрев до 27°" />
-                            <TempStatus className="temp-status--without-separator" temp="32" name="Тёплый пол" status="Текущая" />
-                        </Row> */}
-                        <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={14} percentage={20} />
-                    </MainWidget>
-                </MainWidgetsRow>
 
-                <div className='page'>
-                    <NotificationWidget iconColor={"#FF5500"} icon={MotionIcon} buttonIcon={VideoIcon} title="Безопасность" label="Обнаружено движение" />
-                    <ItemsList roomName={"Гостиная"} roomID={1} func={setRoomID}>
-                        <ItemCard opened={lampDevice.id === itemID} idFunc={setItemID} device={lampDevice} editMode={editMode} presentingElement={presentingElement} />
-                        <ItemCard opened={thermostatDevice.id === itemID} idFunc={setItemID} device={thermostatDevice} editMode={editMode} presentingElement={presentingElement}>
-                        </ItemCard>
-                        <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} />
-                        {/* <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} />
-                        <ItemCard opened={lampDevice2.id === itemID} idFunc={setItemID} device={lampDevice2} editMode={editMode} presentingElement={presentingElement} /> */}
-                    </ItemsList>
-                </div>
+                <Section visible={args.currentPage === 0}>
+
+                    <MainWidgetsRow>
+                        <MainWidget title="Климат" badge="Сейчас">
+                            <Row>
+                                <TempStatus temp="25" name="Термостат" status="Подогрев до 27°" />
+                                <TempStatus className="temp-status--without-separator" temp="32" name="Тёплый пол" status="Текущая" />
+                            </Row>
+                        </MainWidget>
+                        <MainWidget title="Качество воздуха" badge="Сейчас">
+                            <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={14} percentage={20} />
+                        </MainWidget>
+                    </MainWidgetsRow>
+
+                    <div className='page'>
+                        {/* <p>{devices.id123.id}</p> */}
+                        {Object.keys(rooms).map(roomId => (
+                            <ItemsList
+                                key={roomId}
+                                roomName={rooms[roomId].name}
+                                roomID={rooms[roomId].id}
+                                func={setRoomID}
+                                devices={Object.keys(devices).filter(deviceId => devices[deviceId].roomID === rooms[roomId].id).map(deviceId => devices[deviceId])}
+                                editMode={editMode}
+                                setItemID={setItemID}
+                                openedID={itemID}
+                            />
+                        ))}
+                    </div>
+
+                </Section>
+
             </IonContent>
         </>
     );

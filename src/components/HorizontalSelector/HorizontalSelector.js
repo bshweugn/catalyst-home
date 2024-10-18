@@ -5,19 +5,17 @@ import './HorizontalSelector.scss';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Pointer from "../icons/Pointer/Pointer";
 
-function HorizontalSelector({ values, append, selectedValue, setValue }) {
-    const splideRef = useRef(null); // Используем useRef для ссылки на Splide
+function HorizontalSelector({ values, append, selectedValue, setValue, id }) {
+    const splideRef = useRef(null);
     const [initialSlideIndex, setInitialSlideIndex] = useState(null);
 
-    // Вычисляем индекс для прокрутки при первом рендере
     useEffect(() => {
         const index = values.indexOf(selectedValue);
         if (index !== -1) {
-            setInitialSlideIndex(index);
+            setInitialSlideIndex(index); 
         }
     }, [selectedValue, values]);
 
-    // Прокрутка к нужному слайду при изменении selectedValue
     useEffect(() => {
         splideRef.current.splide.go(initialSlideIndex);
     }, [initialSlideIndex]);
@@ -28,9 +26,8 @@ function HorizontalSelector({ values, append, selectedValue, setValue }) {
 
     const handleChange = (newIndex) => {
         const newValue = values[newIndex];
-        if (newValue !== selectedValue) {
-            setValue(newValue); // Обновляем значение только при изменении
-        }
+        console.log(newValue + "+")
+            setValue(newValue);
     };
 
     const options = {
@@ -58,7 +55,7 @@ function HorizontalSelector({ values, append, selectedValue, setValue }) {
                     options={options}
                     onMove={handleMove}
                     onActive={(splide, slide) => handleChange(slide.index)}
-                    ref={splideRef} // Присваиваем ссылку на Splide инстанс
+                    ref={splideRef}
                 >
                     {values.map((value, index) => (
                         <SplideSlide className={"horizontal-selector__slide"} key={index}>

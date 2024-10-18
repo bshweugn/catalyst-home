@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import './HueSelector.scss';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Pointer from "../icons/Pointer/Pointer";
 
-function HueSelector({ setColorFunc, colors }) {
+function HueSelector({ colors, color, setColor }) {
+    const sliderRef = useRef(null);
+    const [isProgrammaticChange, setIsProgrammaticChange] = useState(false); // Флаг для отслеживания программных изменений
+
     const settings = {
         infinite: false,
         arrows: false,
@@ -22,10 +25,23 @@ function HueSelector({ setColorFunc, colors }) {
             }
         },
         afterChange: (currentSlide) => {
-            Haptics.impact({ style: ImpactStyle.Light });
-            setColorFunc(colors[currentSlide]); // Устанавливаем цвет для текущего слайда
+            if (!isProgrammaticChange) {
+                // Haptics.impact({ style: ImpactStyle.Light });
+                setColor(currentSlide);
+            }
+            setIsProgrammaticChange(false);
         }
     };
+
+    useEffect(() => {
+        if (sliderRef.current) {
+            const initialSlideIndex = color;
+            if (initialSlideIndex !== -1) {
+                setIsProgrammaticChange(true); // Устанавливаем флаг перед программным изменением
+                sliderRef.current.slickGoTo(initialSlideIndex);
+            }
+        }
+    }, [color, colors]);
 
     return (
         <div className="hue-selector">
@@ -36,7 +52,7 @@ function HueSelector({ setColorFunc, colors }) {
             <div className="hue-selector__wrapper">
                 <div className="hue-selector__fade" />
                 <div className="hue-selector__fade hue-selector__fade--second" />
-                <Slider {...settings}>
+                <Slider ref={sliderRef} {...settings}>
                     {colors.map((color, index) => (
                         <div
                             className="hue-selector__item"

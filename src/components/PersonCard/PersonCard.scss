@@ -1,0 +1,54 @@
+.person-card {
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    position: relative;
+
+    &__info {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-left: 3.5rem;
+        min-width: max-content;
+    }
+
+    &__image {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translate(0, -50%);
+    }
+
+    &__name {
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 0 0 0.25rem 0;
+    }
+
+    &__role {
+        margin: 0;
+        font-size: 0.75rem;
+        opacity: 0.6;
+    }
+
+    &__arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    &__arrow-icon {
+        display: block;
+    }
+
+    
+}

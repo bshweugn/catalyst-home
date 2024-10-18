@@ -24,7 +24,7 @@
     &--opened{
         transform: scale(1.15);
         filter: blur(0.5rem);
-        opacity: 0;
+        opacity: 0!important;
     }
 
     &__item-info {
@@ -44,6 +44,10 @@
         grid-row: 2 span;
         height: 14.75rem;
         // border-radius: 1.5rem;
+    }
+
+    &--maximized &__temp{
+        font-size: 2.5rem;
     }
 
     &--active {
@@ -93,11 +97,7 @@
         font-weight: 600;
         font-size: 1.6rem;
         line-height: 1;
-        // transition: font-size .2s;
-
-        &--huge{
-            font-size: 2.5rem;
-        }
+        // transition: .2s;
     }
 
     &--sensor &__item-icon {

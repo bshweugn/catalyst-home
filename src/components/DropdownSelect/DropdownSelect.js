@@ -21,7 +21,7 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label }) =
                 <p className="dropdown-select__selected-option">{selectedOption ? selectedOption : 'Не выбрано'}</p>
             </div>
 
-            <div className={"dropdown-select__options " + (isOpen ? "dropdown-select__options--open" : "")} style={{maxHeight: (isOpen ? (55 * (options.length + 1)) + "px" : "46px")}}>
+            <div className={"dropdown-select__options " + (isOpen ? "dropdown-select__options--open" : "")} style={{maxHeight: (isOpen ? (48 * (options.length + 1)) + "px" : "46px")}}>
                 {options.map((option, index) => (
                     <div
                         key={index}

@@ -64,6 +64,10 @@ ion-searchbar.search-field {
   /* backdrop-filter: blur(2rem); */
 }
 
+ion-toolbar{
+  filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.4));
+}
+
 
 .header-ios ion-toolbar:last-of-type {
   --border-width: 0 0 0px;

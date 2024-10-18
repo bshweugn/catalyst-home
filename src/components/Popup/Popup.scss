@@ -9,6 +9,7 @@
     opacity: 1;
     transition: .3s;
     z-index: 100;
+    box-sizing: border-box;
 
     &--hidden {
         background-color: rgba(0, 0, 0, 0);
@@ -30,6 +31,7 @@
         border-radius: 2.6rem 2.6rem 0 0;
         padding: 2rem 2rem 3rem 2rem;
         transition: 0.3s cubic-bezier(0.46, 0.27, 0.28, 0.89);
+        box-sizing: border-box;
     }
 
     &__title{
