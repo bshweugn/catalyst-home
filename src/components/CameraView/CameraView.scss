@@ -1,0 +1,73 @@
+.camera-view {
+    height: fit-content;
+    width: 100%;
+    // padding-top: 5.25rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.125rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2rem) saturate(1.3);
+    box-sizing: border-box;
+    position: relative;
+    color: rgb(255, 255, 255);
+    height: auto;
+    justify-content: center;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    outline: 1px solid rgba(255, 255, 255, 0.1);
+    outline-offset: -1px;
+
+    &__container {
+        height: 100%;
+        width: 100%;
+        background-color: gray;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    &__info{
+        position: absolute;
+        top: 0.875rem;
+        left: 1rem;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        filter: drop-shadow(0 0 0.75rem black);
+    }
+
+    &__camera-name{
+        margin: 0;
+        font-weight: 500;
+    }
+
+    &__camera-status{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0rem 0 0 0;
+    }
+
+    &__rec-icon{
+        width: 0.4rem;
+        height: 0.4rem;
+        background-color: red;
+        border-radius: 50%;
+        margin-right: 0.25rem;
+    }
+
+    &__rec-status{
+        font-size: 0.75rem;
+        opacity: 0.8;
+        margin: 0;
+    }
+
+    &__delay{
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin: 0;
+    }
+}

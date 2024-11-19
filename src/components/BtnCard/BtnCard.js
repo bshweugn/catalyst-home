@@ -5,7 +5,7 @@ const BtnCard = ({ shouldClose, ...args }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const [cardPosition, setCardPosition] = useState({});
-    const [contentVisible, setContentVisible] = useState(false); // Добавлено для управления прозрачностью
+    const [contentVisible, setContentVisible] = useState(false);
     const cardRef = useRef(null);
 
     const handleClick = () => {
@@ -13,7 +13,6 @@ const BtnCard = ({ shouldClose, ...args }) => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
         
-        // Сохраняем позицию карточки с учётом скролла
         setCardPosition({
             top: rect.top + scrollTop,
             left: rect.left + scrollLeft,
@@ -22,11 +21,11 @@ const BtnCard = ({ shouldClose, ...args }) => {
         });
 
         setIsExpanded(true);
-        setTimeout(() => setContentVisible(true, 0)); // Показываем контент через 0.4 секунды после открытия
+        setTimeout(() => setContentVisible(true, 0));
     };
 
     const handleClose = () => {
-        setContentVisible(false); // Прозрачность контента на этапе закрытия
+        setContentVisible(false);
         setIsClosing(true);
         setTimeout(() => {
             setIsExpanded(false);
@@ -64,7 +63,8 @@ const BtnCard = ({ shouldClose, ...args }) => {
                         left: cardPosition.left,
                         width: cardPosition.width,
                         height: cardPosition.height,
-                        transition: (isClosing ? '0.4s cubic-bezier(0.27, -0.01, 0.01, 1.12), opacity 0.2s' : '0.4s cubic-bezier(0.27, -0.01, 0, 1.18), opacity 0.2s'),
+                        borderRadius: '0.5rem',
+                        transition: (isClosing ? '0.4s cubic-bezier(0.27, -0.01, 0, 1), opacity 0.2s' : '0.5s cubic-bezier(0.27, -0.01, 0, 1.18), opacity 0.2s'),
                     }}
                     ref={(expandedCard) => {
                         if (expandedCard && !isClosing) {
@@ -74,13 +74,15 @@ const BtnCard = ({ shouldClose, ...args }) => {
                                 expandedCard.style.width = '100%';
                                 expandedCard.style.height = '100%';
                                 expandedCard.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                                expandedCard.style.borderRadius = '0.5rem';
                             }, 0);
                         } else if (expandedCard && isClosing) {
-                            expandedCard.style.top = `${cardPosition.top - 126}px`;
+                            expandedCard.style.top = `${cardPosition.top - 128}px`;
                             expandedCard.style.left = `${cardPosition.left}px`;
                             expandedCard.style.width = `${cardPosition.width}px`;
                             expandedCard.style.height = `${cardPosition.height}px`;
                             expandedCard.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                            expandedCard.style.borderRadius = '1.5rem';
                         }
                     }}
                 >

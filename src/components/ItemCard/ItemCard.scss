@@ -3,7 +3,7 @@
     flex-direction: column;
     width: 100%;
     padding: 0.75rem;
-    height: 7rem;
+    height: 6.5rem;
     box-sizing: border-box;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 1.375rem;
@@ -41,7 +41,7 @@
 
     &--maximized {
         grid-row: 2 span;
-        height: 14.75rem;
+        height: 13.75rem;
         // border-radius: 1.5rem;
     }
 
@@ -114,13 +114,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.3s 0.05s cubic-bezier(0.25, 0.01, 0.04, 1.58), filter 0.2s 0.05s, background-color 0.2s 0.05s;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.0);
+        transition: transform 0.3s 0.05s cubic-bezier(0.25, 0.01, 0.04, 1.58), filter 0.2s 0.05s, box-shadow 0.2s 0.05s, background-color 0.2s 0.05s;
 
         &:active{
             transform: scale(1.6);
             // backdrop-filter: blur(1rem);
-            background-color: rgb(0, 0, 0);
-            filter: invert(1);
+            background-color: rgb(255, 255, 255);
+            filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.41));
+        }
+
+        &:active svg{
+            fill: black!important;
         }
 
     }
@@ -131,10 +136,11 @@
 
     &--active &__action-btn {
         background-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0);
 
         &:active{
-            background-color: rgb(220, 220, 220);
-            filter: invert(0);
+            background-color: rgb(255, 255, 255);
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
         }
     }
 

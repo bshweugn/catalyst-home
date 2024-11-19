@@ -47,13 +47,18 @@ import Bell from './components/icons/Bell/Bell';
 import Glance from './components/icons/Glance/Glance';
 import ToggleList from './components/ToggleList/ToggleList';
 import DraggableList from './components/DraggableList/DraggableList';
+import CameraView from './components/CameraView/CameraView';
+import CamerasRow from './components/CamerasRow/CamerasRow';
+import CameraWindow from './components/CameraWindow/CameraWindow';
+import CamerasList from './components/CamerasList/CamerasList';
 
 function Homepage(args) {
     const dispatch = useDispatch();
     const devices = useSelector(state => state.devices);
+    const cameras = useSelector(state => state.cameras);
     const rooms = useSelector(state => state.rooms);
-
     const settings = useSelector((state) => state.settings);
+
     const [pageBackground, setPageBackground] = useState(settings.background.image);
 
     const [editMode, setEditMode] = useState(false);
@@ -79,7 +84,7 @@ function Homepage(args) {
     useEffect(() => {
         dispatch(changeParameter({ name: 'background', parameter: 'image', value: pageBackground }));
     }, [pageBackground]);
-    
+
 
 
     useEffect(() => {
@@ -229,6 +234,16 @@ function Homepage(args) {
                 />
             ))}
 
+            {Object.keys(cameras).map(cameraId => (
+                <CameraWindow
+                    key={`window-${cameraId}`}
+                    camera={cameras[cameraId]}
+                    rooms={rooms}
+                    visible={cameras[cameraId].id === itemID}
+                    idFunc={setItemID}
+                />
+            ))}
+
             <RoomWindow room={mainRoom} visible={roomID === mainRoom.id} idFunc={setRoomID}></RoomWindow>
 
             <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} />
@@ -267,6 +282,21 @@ function Homepage(args) {
                             <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={14} percentage={20} />
                         </MainWidget>
                     </MainWidgetsRow>
+
+                    {/* <CamerasRow>
+                        <CameraView name="Кухня" isRecording={true} image={background1} delay={2} />
+                        <CameraView name="Гостиная" isRecording={false} image={background2} delay={4} />
+                        <CameraView name="Улица" isRecording={true} image={background3} delay={2} />
+                    </CamerasRow> */}
+
+                    <CamerasList
+                        func={setRoomID}
+                        rooms={rooms}
+                        cameras={cameras}
+                        editMode={editMode}
+                        setItemID={setItemID}
+                        openedID={itemID}
+                    />
 
                     <div className='page'>
                         {Object.keys(rooms)

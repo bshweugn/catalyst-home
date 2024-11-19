@@ -4,10 +4,10 @@ import Back from '../icons/Back/Back';
 import BtnCard from '../BtnCard/BtnCard';
 
 const Window = ({ visible, vertical, title, idFunc, cards }) => {
-    const [openCardIndex, setOpenCardIndex] = useState(null); // Храним индекс открытой карточки
+    const [openCardIndex, setOpenCardIndex] = useState(null);
 
     const handleCardClick = (index) => {
-        setOpenCardIndex(index); // Устанавливаем индекс открытой карточки
+        setOpenCardIndex(index);
     };
 
     const handleCloseCard = () => {

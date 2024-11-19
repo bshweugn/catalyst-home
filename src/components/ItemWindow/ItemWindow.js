@@ -7,9 +7,13 @@ import ActionButton from '../ActionButton/ActionButton';
 import Sun from '../icons/Sun/Sun';
 import Power from '../icons/Power/Power';
 import { useDispatch } from 'react-redux';
-import { setThermostatTemp, toggleDeviceStatus } from '../../store';
+import { setFav, setThermostatTemp, toggleDeviceStatus } from '../../store';
 import { renderItemIcon, renderItemStatus } from '../../itemInfo';
 import TextInput from '../TextInput/TextInput';
+import StarOutline from '../icons/StarOutline/StarOutline';
+import Star from '../icons/Star/Star';
+import TempIndicator from '../TempIndicator/TempIndicator';
+import Gear from '../icons/Gear/Gear';
 
 const ItemWindow = (args) => {
     const dispatch = useDispatch();
@@ -43,6 +47,7 @@ const ItemWindow = (args) => {
         if (args.device.type === 'THERMOSTAT') {
             return (
                 <>
+                    <TempIndicator temp={args.device.currentTemp} />
                     <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={args.device.targetTemp} setValue={(newTemp) => handleTempChange(args.device.id, newTemp)} id={args.device.id} />
                     <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} />
                 </>
@@ -61,7 +66,16 @@ const ItemWindow = (args) => {
     const [deviceStatus, setDeviceStatus] = useState(renderItemStatus(args.device));
     const [statusWidth, setStatusWidth] = useState('auto');
     const [isFading, setIsFading] = useState(false);
+    const [isFav, setIsFav] = useState(args.device.favourite);
     const statusRef = useRef(null);
+
+    const handleFavChange = (dID, fav) => {
+        dispatch(setFav({ id: dID, favourite: fav }));
+    };
+
+    useEffect(() => {
+        handleFavChange(args.device.id, isFav);
+    }, [isFav])
 
     const updateStatusWidth = () => {
         const currentWidth = statusRef.current?.offsetWidth || 0;
@@ -108,6 +122,15 @@ const ItemWindow = (args) => {
                 </div>
                 <div className='item-window__content-wrapper'>
                     {renderDeviceControls()}
+                </div>
+            </div>
+            <div className='item-window__toolbar'>
+                <div className='item-window__tool-btn item-window__tool-btn--circle' onClick={() => setIsFav(!isFav)}>
+                    {isFav ? <Star size="1.2rem" color="white" /> : <StarOutline size="1.2rem" color="white" />}
+                </div>
+                <div className='item-window__tool-btn'>
+                    <p className='item-window__tool-btn-label'>Параметры</p>
+                    {/* <Gear size="1.2rem" color="white" /> */}
                 </div>
             </div>
         </div>

@@ -1,0 +1,11 @@
+.temp-indicator {
+    margin-bottom: 0rem;
+    margin-left: 1rem;
+
+    &__temp {
+        font-size: 5rem;
+        margin: 0;
+        font-weight: 700;
+        color: white;
+    }
+}

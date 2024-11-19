@@ -48,7 +48,7 @@ function HorizontalSelector({ values, append, selectedValue, setValue, id }) {
             <div className="horizontal-selector__fade" />
             <div className="horizontal-selector__fade horizontal-selector__fade--second" />
             <div className="horizontal-selector__pointer">
-                <Pointer size="0.75rem" color="black" />
+                <Pointer size="0.75rem" color="white" />
             </div>
             <div className="horizontal-selector__wrapper">
                 <Splide
