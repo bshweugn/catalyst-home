@@ -9,12 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name="users")
 @Data
 @Builder
 @NoArgsConstructor
@@ -31,6 +33,7 @@ public class User {
     private String email;
 
     @Lob
+    @Column(columnDefinition = "BYTEA")
     private byte[] profilePicture;
 
     @Column(name="is_resident", nullable=false)
