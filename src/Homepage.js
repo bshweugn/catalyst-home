@@ -73,6 +73,7 @@ function Homepage(args) {
     const [optionIndex, setOptionIndex] = useState(0);
 
     const [itemID, setItemID] = useState(0);
+    const [cameraID, setCameraID] = useState(0);
     const [roomID, setRoomID] = useState(0);
 
 
@@ -239,8 +240,8 @@ function Homepage(args) {
                     key={`window-${cameraId}`}
                     camera={cameras[cameraId]}
                     rooms={rooms}
-                    visible={cameras[cameraId].id === itemID}
-                    idFunc={setItemID}
+                    visible={cameras[cameraId].id === cameraID}
+                    idFunc={setCameraID}
                 />
             ))}
 
