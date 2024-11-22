@@ -187,6 +187,11 @@
         overflow: hidden;
         transition: .3s;
 
+        &--inactive{
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
         &:active{
             transform: scale(1.1);
         }
@@ -356,9 +361,14 @@
 
     &__camera-joystick-arrow {
         opacity: 0.2;
+        transition: .2s;
 
         &--second {
             transform: rotate(180deg);
+        }
+
+        &--current{
+            opacity: 1;
         }
     }
 }

@@ -17,6 +17,7 @@ import Gear from '../icons/Gear/Gear';
 import { IonSpinner } from '@ionic/react';
 import Tap from '../icons/Tap/Tap';
 import Back from '../icons/Back/Back';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 const SECONDS_PER_PIXEL = 1;
 
@@ -37,6 +38,8 @@ const CameraWindow = (args) => {
     const [isScrolling, setIsScrolling] = useState(false);
 
     const [isManualScroll, setIsManualScroll] = useState(false);
+
+    const [currJoystickZone, setCurrJoystickZone] = useState(-1);
 
 
     useEffect(() => {
@@ -65,6 +68,7 @@ const CameraWindow = (args) => {
 
     useEffect(() => {
         if (!isLive) {
+            Haptics.impact({ style: ImpactStyle.Light });
             startAutoScroll(); // Начинаем прокрутку, если перестали быть LIVE
         }
     }, [isLive]);
@@ -95,7 +99,7 @@ const CameraWindow = (args) => {
     };
 
     const stopManualScroll = () => {
-        setIsManualScroll(false);
+        setTimeout(setIsManualScroll(false), 1000);
     };
 
     const handleScroll = () => {
@@ -107,6 +111,9 @@ const CameraWindow = (args) => {
 
         if (isManualScroll) {
             const delta = scrollLeft - maxScrollLeft;
+            // if(delta % 20 ==  0){
+            //     Haptics.impact({ style: ImpactStyle.Light });
+            // }
             setDelta(delta);
         }
 
@@ -122,6 +129,7 @@ const CameraWindow = (args) => {
     const joystickWrapperRef = useRef(null);
 
     const handleTouchStart = (event) => {
+        Haptics.impact({ style: ImpactStyle.Medium });
         const touch = event.touches[0];
         const rect = joystickWrapperRef.current.getBoundingClientRect();
         setJoystickPosition({
@@ -132,17 +140,49 @@ const CameraWindow = (args) => {
     };
 
     const handleTouchMove = (event) => {
-        event.preventDefault();
         const touch = event.touches[0];
         const rect = joystickWrapperRef.current.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const touchX = touch.clientX - rect.left - centerX;
+        const touchY = touch.clientY - rect.top - centerY;
+
         setJoystickPosition({
-            x: touch.clientX - rect.left - rect.width / 2,
-            y: touch.clientY - rect.top - rect.height / 2,
+            x: touchX,
+            y: touchY,
         });
+
+        // Размер центрального квадрата
+        const centralSize = 20;
+        const halfCentralSize = centralSize / 2;
+
+        // Определяем зону
+        let zone;
+        if (
+            touchX > -halfCentralSize &&
+            touchX < halfCentralSize &&
+            touchY > -halfCentralSize &&
+            touchY < halfCentralSize
+        ) {
+            zone = "center";
+        } else if (Math.abs(touchY) > Math.abs(touchX)) {
+            zone = touchY < 0 ? 0 : 1;
+        } else {
+            zone = touchX < 0 ? 2 : 3;
+        }
+
+        setCurrJoystickZone(zone);
     };
+
+    useEffect(() => {
+        if (currJoystickZone !== -1) {
+            Haptics.impact({ style: ImpactStyle.Light });
+        }
+    }, [currJoystickZone]);
 
     const handleTouchEnd = () => {
         setMoving(false);
+        setCurrJoystickZone(-1);
         setTimeout(() => setJoystickPosition({ x: 0, y: 0 }), 200);
     };
 
@@ -154,7 +194,7 @@ const CameraWindow = (args) => {
                 </div>
                 {args.camera.xDeg !== null && (
                     <div
-                        className="camera-window__camera-joystick-wrapper"
+                        className={`camera-window__camera-joystick-wrapper ${(!isLive) ? "camera-window__camera-joystick-wrapper--inactive" : ""}`}
                         ref={joystickWrapperRef}
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
@@ -163,12 +203,12 @@ const CameraWindow = (args) => {
                         <div
                             className="camera-window__camera-joystick-inner">
                             <div className={`camera-window__camera-joystick-arrows-pair ${moving ? 'camera-window__camera-joystick-arrows-pair--moving' : ''}`}>
-                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow' />
-                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow camera-window__camera-joystick-arrow--second' />
+                                <Back fill="white" size="0.875rem" className={`camera-window__camera-joystick-arrow ${currJoystickZone == 2 ? 'camera-window__camera-joystick-arrow--current' : ''}`} />
+                                <Back fill="white" size="0.875rem" className={`camera-window__camera-joystick-arrow camera-window__camera-joystick-arrow--second ${currJoystickZone == 3 ? 'camera-window__camera-joystick-arrow--current' : ''}`} />
                             </div>
                             <div className={`camera-window__camera-joystick-arrows-pair camera-window__camera-joystick-arrows-pair--second ${moving ? 'camera-window__camera-joystick-arrows-pair--moving' : ''}`}>
-                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow' />
-                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow camera-window__camera-joystick-arrow--second' />
+                                <Back fill="white" size="0.875rem" className={`camera-window__camera-joystick-arrow ${currJoystickZone == 0 ? 'camera-window__camera-joystick-arrow--current' : ''}`} />
+                                <Back fill="white" size="0.875rem" className={`camera-window__camera-joystick-arrow camera-window__camera-joystick-arrow--second ${currJoystickZone == 1 ? 'camera-window__camera-joystick-arrow--current' : ''}`} />
                             </div>
                             <Tap fill="white" size="2rem" className={`camera-window__camera-joystick-icon ${moving ? 'camera-window__camera-joystick-icon--moving' : ''}`} />
                             <div style={{
