@@ -15,9 +15,136 @@ import Star from '../icons/Star/Star';
 import TempIndicator from '../TempIndicator/TempIndicator';
 import Gear from '../icons/Gear/Gear';
 import { IonSpinner } from '@ionic/react';
+import Tap from '../icons/Tap/Tap';
+import Back from '../icons/Back/Back';
+
+const SECONDS_PER_PIXEL = 1;
 
 const CameraWindow = (args) => {
     const dispatch = useDispatch();
+
+    const scrubberWrapperRef = useRef(null);
+
+    const [baseTime, setBaseTime] = useState(() => new Date().getTime()); // Базовое текущее время в миллисекундах
+    const [displayedTime, setDisplayedTime] = useState(baseTime); // Отображаемое время, учитывающее прокрутку
+
+    const [moving, setMoving] = useState(false);
+
+    const [delta, setDelta] = useState(0);
+
+    const [isLive, setIsLive] = useState(true);
+
+    const [isScrolling, setIsScrolling] = useState(false);
+
+    const [isManualScroll, setIsManualScroll] = useState(false);
+
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setBaseTime(new Date().getTime());
+        }, 1000);
+
+        return () => clearInterval(timer); // Очищаем таймер при размонтировании
+    }, []);
+
+    useEffect(() => {
+        // Обновляем отображаемое время при изменении baseTime или delta
+        const deltaSeconds = delta * SECONDS_PER_PIXEL;
+        const newTime = baseTime + deltaSeconds * 1000;
+        setDisplayedTime(newTime);
+    }, [baseTime, delta, isLive, isManualScroll]); // Зависимость от baseTime и delta
+
+
+    useEffect(() => {
+        if (scrubberWrapperRef.current) {
+            const scrubberWrapper = scrubberWrapperRef.current;
+            scrubberWrapper.scrollLeft = scrubberWrapper.scrollWidth;
+            startAutoScroll();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isLive) {
+            startAutoScroll(); // Начинаем прокрутку, если перестали быть LIVE
+        }
+    }, [isLive]);
+
+    const startAutoScroll = () => {
+        if (isScrolling) return; // Предотвращаем дублирование таймера
+
+        setIsScrolling(true);
+        const interval = setInterval(() => {
+            if (!scrubberWrapperRef.current) return;
+
+            const scrubberWrapper = scrubberWrapperRef.current;
+            const scrollLeft = scrubberWrapper.scrollLeft;
+            const maxScrollLeft = scrubberWrapper.scrollWidth - scrubberWrapper.clientWidth;
+
+            if (scrollLeft < maxScrollLeft) {
+                scrubberWrapper.scrollLeft += 1; // Прокрутка на 1 пиксель
+            } else {
+                clearInterval(interval); // Останавливаем прокрутку, когда достигнут конец
+                setIsScrolling(false);
+                setIsLive(true); // Устанавливаем LIVE
+            }
+        }, 1000); // 1 пиксель в секунду
+    };
+
+    const startManualScroll = () => {
+        setIsManualScroll(true);
+    };
+
+    const stopManualScroll = () => {
+        setIsManualScroll(false);
+    };
+
+    const handleScroll = () => {
+        if (!scrubberWrapperRef.current) return;
+
+        const scrubberWrapper = scrubberWrapperRef.current;
+        const scrollLeft = scrubberWrapper.scrollLeft;
+        const maxScrollLeft = scrubberWrapper.scrollWidth - scrubberWrapper.clientWidth;
+
+        if (isManualScroll) {
+            const delta = scrollLeft - maxScrollLeft;
+            setDelta(delta);
+        }
+
+        setIsLive(scrollLeft >= maxScrollLeft - 1);
+    };
+
+    const formatTime = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('ru-RU', { hour12: false });
+    };
+
+    const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
+    const joystickWrapperRef = useRef(null);
+
+    const handleTouchStart = (event) => {
+        const touch = event.touches[0];
+        const rect = joystickWrapperRef.current.getBoundingClientRect();
+        setJoystickPosition({
+            x: touch.clientX - rect.left - rect.width / 2,
+            y: touch.clientY - rect.top - rect.height / 2,
+        });
+        setMoving(true);
+    };
+
+    const handleTouchMove = (event) => {
+        event.preventDefault();
+        const touch = event.touches[0];
+        const rect = joystickWrapperRef.current.getBoundingClientRect();
+        setJoystickPosition({
+            x: touch.clientX - rect.left - rect.width / 2,
+            y: touch.clientY - rect.top - rect.height / 2,
+        });
+    };
+
+    const handleTouchEnd = () => {
+        setMoving(false);
+        setTimeout(() => setJoystickPosition({ x: 0, y: 0 }), 200);
+    };
 
     const renderDeviceControls = () => {
         return (
@@ -25,11 +152,51 @@ const CameraWindow = (args) => {
                 <div className='camera-window__camera-view'>
                     <IonSpinner color={"light"}></IonSpinner>
                 </div>
-                {args.camera.xDeg !== null ? <div className='camera-window__camera-joystick-wrapper'>
-                    <div className='camera-window__camera-joystick-inner'>
-                        <div className='camera-window__camera-joystick'></div>
+                {args.camera.xDeg !== null && (
+                    <div
+                        className="camera-window__camera-joystick-wrapper"
+                        ref={joystickWrapperRef}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        <div
+                            className="camera-window__camera-joystick-inner">
+                            <div className={`camera-window__camera-joystick-arrows-pair ${moving ? 'camera-window__camera-joystick-arrows-pair--moving' : ''}`}>
+                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow' />
+                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow camera-window__camera-joystick-arrow--second' />
+                            </div>
+                            <div className={`camera-window__camera-joystick-arrows-pair camera-window__camera-joystick-arrows-pair--second ${moving ? 'camera-window__camera-joystick-arrows-pair--moving' : ''}`}>
+                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow' />
+                                <Back fill="white" size="0.875rem" className='camera-window__camera-joystick-arrow camera-window__camera-joystick-arrow--second' />
+                            </div>
+                            <Tap fill="white" size="2rem" className={`camera-window__camera-joystick-icon ${moving ? 'camera-window__camera-joystick-icon--moving' : ''}`} />
+                            <div style={{
+                                transform: `translate(${joystickPosition.x}px, ${joystickPosition.y}px) translate(-50%, -50%)`,
+                            }}
+                                className={`camera-window__camera-joystick ${moving ? 'camera-window__camera-joystick--moving' : ''}`}></div>
+                        </div>
                     </div>
-                </div> : <></>}
+                )}
+                <div className='camera-window__scrubber-control'>
+                    <p className='camera-window__scrubber-current-time'>{(!isLive) ? formatTime(displayedTime) : "LIVE"}</p>
+                    <div className='camera-window__scrubber-inner'>
+                        <div className='camera-window__scrubber-fade' />
+                        <div className='camera-window__scrubber-fade camera-window__scrubber-fade--second' />
+                        <div className='camera-window__scrubber-now' />
+                        <div className='camera-window__scrubber-wrapper' ref={scrubberWrapperRef} onScroll={handleScroll}
+                            onMouseDown={startManualScroll}
+                            onMouseUp={stopManualScroll}
+                            onTouchStart={startManualScroll}
+                            onTouchEnd={stopManualScroll}>
+                            <div className='camera-window__scrubber'>
+                                <div className='camera-window__scrubber-handle'></div>
+                                <div className='camera-window__scrubber-handle camera-window__scrubber-handle--disabled'></div>
+                                <div className='camera-window__scrubber-handle'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </>
         )
     };
