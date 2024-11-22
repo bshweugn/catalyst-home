@@ -295,8 +295,8 @@ function Homepage(args) {
                         rooms={rooms}
                         cameras={cameras}
                         editMode={editMode}
-                        setItemID={setItemID}
-                        openedID={itemID}
+                        setItemID={setCameraID}
+                        openedID={cameraID}
                     />
 
                     <div className='page'>

@@ -55,7 +55,7 @@ const camerasSlice = createSlice({
     initialState: {
         id123: { id: 123, name: "Кухня", roomID: 2, favourite: true, xDeg: 90, yDeg: 45, isRecording: true, delay: 2 },
         id456: { id: 456, name: "Гостиная", roomID: 0, favourite: false, xDeg: null, yDeg: null, isRecording: false, delay: 4 },
-        id124: { id: 124, name: "Улица", roomID: 4, favourite: false, xDeg: 0, yDeg: 0, isRecording: true, delay: 2 },
+        id124: { id: 124, name: "Улица – гараж", roomID: 4, favourite: false, xDeg: 0, yDeg: 0, isRecording: true, delay: 2 },
     },
 
     reducers: {

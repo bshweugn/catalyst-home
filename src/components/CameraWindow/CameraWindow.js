@@ -14,16 +14,24 @@ import StarOutline from '../icons/StarOutline/StarOutline';
 import Star from '../icons/Star/Star';
 import TempIndicator from '../TempIndicator/TempIndicator';
 import Gear from '../icons/Gear/Gear';
+import { IonSpinner } from '@ionic/react';
 
 const CameraWindow = (args) => {
     const dispatch = useDispatch();
 
     const renderDeviceControls = () => {
-        if (args.camera.xDeg !== null) {
-            <div>
-                <p>Кручение и верчение</p>
-            </div>
-        }
+        return (
+            <>
+                <div className='camera-window__camera-view'>
+                    <IonSpinner color={"light"}></IonSpinner>
+                </div>
+                {args.camera.xDeg !== null ? <div className='camera-window__camera-joystick-wrapper'>
+                    <div className='camera-window__camera-joystick-inner'>
+                        <div className='camera-window__camera-joystick'></div>
+                    </div>
+                </div> : <></>}
+            </>
+        )
     };
 
     const [isFav, setIsFav] = useState(args.camera.favourite);
@@ -42,6 +50,10 @@ const CameraWindow = (args) => {
         <div className={`camera-window ${!args.visible ? "camera-window--hidden" : ""}`}>
             <div className='camera-window__back' />
             <div className='camera-window__header'>
+                <div className='camera-window__item-info'>
+                    <p className='camera-window__item-name'>{args.camera.name}</p>
+                    <p className='camera-window__room-name'>{args.rooms["id" + args.camera.roomID]?.name} · {args.camera.isRecording ? 'Запись' : 'Запись приостановлена'}</p>
+                </div>
                 <div className='camera-window__item-icon'>
                     {renderItemIcon(args.camera)}
                 </div>
@@ -49,10 +61,6 @@ const CameraWindow = (args) => {
                 <p className='camera-window__close-btn' onClick={() => args.idFunc(0)}>Готово</p>
             </div>
             <div className='camera-window__content'>
-                <div className='camera-window__item-info'>
-                    <p className='camera-window__item-name'>{args.camera.name}</p>
-                    <p className='camera-window__room-name'>{args.rooms[("id" + args.camera.roomID)].name}</p>
-                </div>
                 <div className='camera-window__content-wrapper'>
                     {renderDeviceControls()}
                 </div>

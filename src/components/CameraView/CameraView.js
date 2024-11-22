@@ -1,11 +1,11 @@
 import React from 'react';
 import './CameraView.scss';
 
-const CameraView = ({ camera, rooms, className }) => {
+const CameraView = ({ camera, rooms, className, idFunc, id }) => {
     const finalClassName = 'camera-view ' + (className || '');
 
     return (
-        <div className={finalClassName}>
+        <div className={finalClassName} onClick={() => idFunc(id)}>
             {/* <div className="camera-view__container" style={{ backgroundImage: `url(${camera.image})` }}> */}
             <div className="camera-view__container">
 

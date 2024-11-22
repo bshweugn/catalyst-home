@@ -5,7 +5,7 @@
     width: 100vw;
     height: 100vh;
     padding-top: calc(var(--ion-safe-area-top) + 0rem);
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(3rem) saturate(1.6);
     transition: opacity .3s 0s, max-height 0s 0s;
     z-index: 100;
@@ -26,7 +26,7 @@
 
 
     &__content {
-        padding: 1rem;
+        padding: 1rem 0;
         height: calc(100% - var(--ion-safe-area-top) - 9rem);
         z-index: 20;
         opacity: 1;
@@ -40,7 +40,7 @@
         padding: 0.75rem 1rem;
         box-sizing: border-box;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         font-weight: 500;
         z-index: 20;
@@ -66,7 +66,7 @@
         height: fit-content;
         text-align: center;
         color: white;
-        align-items: center;
+        align-items: flex-start;
         transition: .3s .1s;
     }
 
@@ -116,6 +116,7 @@
         height: calc(100% - 7rem);
         align-items: center;
         gap: 1.5rem;
+        flex-direction: column;
     }
 
     &--vertical &__content-wrapper {
@@ -157,5 +158,23 @@
 
     &__tool-btn-label {
         margin: 0;
+    }
+
+    &__camera-view{
+        background-color: black;
+        height: auto;
+        width: calc(100% + 2rem);
+        aspect-ratio: 16 / 9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+    }
+
+    &__camera-joystick-wrapper{
+        height: 6rem;
+        width: 6rem;
+        border-radius: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.3);
     }
 }

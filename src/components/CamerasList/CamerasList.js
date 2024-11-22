@@ -17,6 +17,7 @@ const CamerasList = ({ cameras, rooms, editMode, setItemID, openedID }) => {
                     camera={camera}
                     editMode={editMode}
                     idFunc={setItemID}
+                    id={camera.id}
                     opened={camera.id === openedID}
                 />
             ))}
