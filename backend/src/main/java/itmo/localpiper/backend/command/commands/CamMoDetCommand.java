@@ -1,6 +1,10 @@
 package itmo.localpiper.backend.command.commands;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import itmo.localpiper.backend.command.Command;
+import itmo.localpiper.backend.service.CameraService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,10 +13,12 @@ import lombok.Data;
 public class CamMoDetCommand implements Command{
     private Long camera_id;
 
+    @Autowired
+    private CameraService cameraService;
+
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+        cameraService.changeStatus(camera_id, "MOTION_DETECTED");
     }
     
 }

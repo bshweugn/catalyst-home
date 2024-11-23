@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class MoveToCommand implements Command{
-    private String to;
-    private String from;
-    public MoveToCommand(String to, String from) {
-        if (from == null || from.isEmpty()) {
+    private Long to;
+    private Long from;
+    public MoveToCommand(Long to, Long from) {
+        if (from == null) {
             this.to = to;
             this.from = null;
         } else {
