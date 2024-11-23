@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.Camera;
 
 @Repository
-public interface CameraRepository extends CrudRepository<Long, Camera>{
+public interface CameraRepository extends CrudRepository<Camera, Long>{
     
 }
