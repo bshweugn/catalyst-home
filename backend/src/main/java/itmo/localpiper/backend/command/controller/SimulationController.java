@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.controller;
+package itmo.localpiper.backend.command.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
