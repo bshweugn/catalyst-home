@@ -16,16 +16,36 @@ public class SimulationLoggingAspect {
 
     @Before("execution(* itmo.localpiper.backend.Command.execute(..))")
     public void logBeforeCommandExecution(JoinPoint joinPoint) {
-        String className = joinPoint.getTarget().getClass().getSimpleName();
-        Object[] args = joinPoint.getArgs();
-
-        logger.info("Executing command: {}", className);
-        logger.info("Arguments: {}", args.length > 0 ? args : "No arguments provided");
+        logger.info(buildLogMessage(joinPoint, "STARTED"));
     }
 
     @After("execution(* itmo.localpiper.backend.Command.execute(..))")
     public void logAfterCommandExecution(JoinPoint joinPoint) {
+        logger.info(buildLogMessage(joinPoint, "COMPLETED"));
+    }
+
+    private String buildLogMessage(JoinPoint joinPoint, String status) {
         String className = joinPoint.getTarget().getClass().getSimpleName();
-        logger.info("Completed execution of command: {}", className);
+        String methodName = joinPoint.getSignature().getName();
+        Object[] args = joinPoint.getArgs();
+
+        return String.format(
+            "Method %s.%s - Status: %s | Args: %s",
+            className,
+            methodName,
+            status,
+            args.length > 0 ? arrayToString(args) : "No arguments"
+        );
+    }
+
+    private String arrayToString(Object[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < args.length; i++) {
+            sb.append(args[i]);
+            if (i < args.length - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
 }
