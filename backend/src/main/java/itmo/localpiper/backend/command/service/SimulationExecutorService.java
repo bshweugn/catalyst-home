@@ -10,7 +10,7 @@ import itmo.localpiper.backend.command.CommandParser;
 import itmo.localpiper.backend.command.CommandRegistry;
 
 @Service
-public class SumulationExecutorService {
+public class SimulationExecutorService {
     @Autowired
     private CommandRegistry commandRegistry;
 
