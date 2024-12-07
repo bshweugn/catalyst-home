@@ -1,135 +1,68 @@
-import { IonContent, IonFab, IonFabButton, IonFabList, IonIcon, IonPage } from '@ionic/react';
-import './Scanner.scss';
-import QRCodeScanner from '../QRCodeScanner/QRCodeScanner';
-import { RouteComponentProps } from 'react-router';
-import { useEffect, useRef, useState } from 'react';
-import { ellipsisHorizontalOutline, flashlightOutline, closeOutline} from 'ionicons/icons';
-import { TextResult } from 'capacitor-plugin-dynamsoft-barcode-reader';
+import React, { useState, useEffect } from "react";
+import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
+import "./Scanner.scss";
 
+const Scanner = ({ scannedData, setScannedData, className, scanning }) => {
+    const [isScanning, setIsScanning] = useState(false);
+    const [error, setError] = useState("");
 
-const Scanner = (props)  => {
-  const [viewBox,setViewBox] = useState("0 0 720 1280");
-  const continuousScan = useRef(false);
-  const scanned = useRef(false);
-  const [torchOn,setTorchOn] = useState(false);
-  const [barcodeResults,setBarcodeResults] = useState([]);
-  const ionBackground = useRef("");
-  
-  useEffect(() => {
-    ionBackground.current = document.documentElement.style.getPropertyValue('--ion-background-color');
-    return () => {
-      document.documentElement.style.setProperty('--ion-background-color', ionBackground.current);
-    }
-  }, []);
+    useEffect(() => {
+        let isMounted = true; // Чтобы избежать утечек памяти
 
-  useEffect(() => {
-    const state = props.location.state
-    if (state) {
-      if (state.continuousScan) {
-        continuousScan.current = state.continuousScan;
-      }
-    }
-  }, [props.location.state]);
+        const startScanning = async () => {
+            try {
+                setError("");
 
-  const toggleTorch = () => {
-    if (torchOn == false) {
-      setTorchOn(true);
-    }else{
-      setTorchOn(false);
-    }
-  }
-  
-  const goBack = () => {
-    document.documentElement.style.setProperty('--ion-background-color', ionBackground.current);
-    props.history.goBack();
-  }
+                // Проверка и запрос разрешений
+                const status = await BarcodeScanner.checkPermission({ force: true });
+                if (!status.granted) {
+                    setError("Permission denied for accessing camera");
+                    return;
+                }
 
-  const onPlayed = (result) => {
-    console.log(result);
-    document.documentElement.style.setProperty('--ion-background-color', 'transparent');
-    let width = parseInt(result.resolution.split("x")[0]);
-    let height = parseInt(result.resolution.split("x")[1]);
-    let box;
-    if (result.orientation === "PORTRAIT") {
-      box = "0 0 "+height+" "+width;
-    }else{
-      box = "0 0 "+width+" "+height;
-    }
-    setViewBox(box);
-  }
+                // Скрываем фон и запускаем сканирование
+                BarcodeScanner.hideBackground(); 
+                setIsScanning(true);
 
-  const onScanned = (results) => {
-    console.log(results);
-    if (continuousScan.current) {
-      setBarcodeResults(results);
-    }else{
-      if (results.length>0 && scanned.current === false) {
-        document.documentElement.style.setProperty('--ion-background-color', ionBackground.current);
-        scanned.current = true;
-        props.history.replace({ state: {results:results} });
-        props.history.goBack();
-      }
-    }
-    
-  }
+                const result = await BarcodeScanner.startScan(); // Запускаем сканирование
 
-  const getPointsData = (lr) => {
-    let pointsData = lr.x1+","+lr.y1 + " ";
-    pointsData = pointsData+ lr.x2+","+lr.y2 + " ";
-    pointsData = pointsData+ lr.x3+","+lr.y3 + " ";
-    pointsData = pointsData+ lr.x4+","+lr.y4;
-    return pointsData;
-  }
+                if (isMounted) {
+                    if (result.hasContent) {
+                        setScannedData(result.content);
+                    } else {
+                        setError("No QR code content found");
+                    }
+                }
+            } catch (err) {
+                if (isMounted) setError("Error accessing the camera or scanning");
+            } finally {
+                if (isMounted) setIsScanning(false);
+            }
+        };
 
-  const getViewBoxWidth = () => {
-    return parseInt(viewBox.split(" ")[2]);
-  }
+        if (scanning) {
+            startScanning();
+        } else {
+            // Останавливаем сканирование
+            BarcodeScanner.showBackground();
+            BarcodeScanner.stopScan();
+            setIsScanning(false);
+        }
 
-  return (
-    <IonPage>
-      <IonContent fullscreen>
-        <QRCodeScanner 
-          torchOn={torchOn}
-          onPlayed={onPlayed}
-          onScanned={onScanned}
-        />
-        <svg
-          viewBox={viewBox}
-          preserveAspectRatio="xMidYMid slice"
-          className="overlay"
-          xmlns="<http://www.w3.org/2000/svg>"
-        >
-          {barcodeResults.map((tr,idx) => (
-            <polygon key={"poly-"+idx} xmlns="<http://www.w3.org/2000/svg>"
-            points={getPointsData(tr)}
-            className="barcode-polygon"
-            />
-          ))}
-          {barcodeResults.map((tr,idx) => (
-            <text key={"text-"+idx} xmlns="<http://www.w3.org/2000/svg>"
-            x={tr.x1}
-            y={tr.y1}
-            fill="red"
-            fontSize={getViewBoxWidth()/460*10}
-            >{tr.barcodeText}</text>
-          ))}
-        </svg>
-        <IonFab vertical="bottom" horizontal="start" slot="fixed">
-          <IonFabButton>
-            <IonIcon icon={ellipsisHorizontalOutline} />
-          </IonFabButton>
-          <IonFabList side="top">
-            <IonFabButton onClick={toggleTorch}>
-              <IonIcon icon={flashlightOutline} />
-            </IonFabButton>
-            <IonFabButton onClick={() => {goBack()}}>
-              <IonIcon icon={closeOutline} />
-            </IonFabButton>
-          </IonFabList>
-        </IonFab>
-      </IonContent>
-    </IonPage>
-  );
+        return () => {
+            isMounted = false; // Прерываем асинхронные вызовы
+        };
+    }, [scanning, setScannedData]);
+
+    const finalClassName = "scanner " + (className || "");
+
+    return (
+        <div className={finalClassName}>
+            {scannedData && <p>Scanned Data: {scannedData}</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            {isScanning && <p>Scanning...</p>}
+        </div>
+    );
 };
 
 export default Scanner;

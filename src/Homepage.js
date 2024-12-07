@@ -69,6 +69,7 @@ function Homepage(args) {
 
 
     const [houseName, setHouseName] = useState('Мой дом');
+    const [dragging, setDragging] = useState(false);
 
     const [optionIndex, setOptionIndex] = useState(0);
 

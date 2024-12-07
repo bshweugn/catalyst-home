@@ -153,7 +153,7 @@ const CameraWindow = (args) => {
         });
 
         // Размер центрального квадрата
-        const centralSize = 20;
+        const centralSize = 30;
         const halfCentralSize = centralSize / 2;
 
         // Определяем зону
@@ -164,7 +164,7 @@ const CameraWindow = (args) => {
             touchY > -halfCentralSize &&
             touchY < halfCentralSize
         ) {
-            zone = "center";
+            zone = -1;
         } else if (Math.abs(touchY) > Math.abs(touchX)) {
             zone = touchY < 0 ? 0 : 1;
         } else {

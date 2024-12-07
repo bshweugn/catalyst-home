@@ -48,7 +48,7 @@ const AddAccessoryPopup = (args) => {
                 </div>
             ) : (
                 <>
-                    <ScannerPreview />
+                    <ScannerPreview active={args.visible}/>
                     <IconWithHint icon={QR} title="Отсканируйте код настройки" label="Код может располагаться на устройстве, упаковке или документации."/>
                     <Button onClick={handleManualInput} label="Ввести код вручную" />
                 </>
