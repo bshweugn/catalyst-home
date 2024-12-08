@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.Action;
 
 @Repository
-public interface ActionRepository extends CrudRepository<Long, Action>{
+public interface ActionRepository extends CrudRepository<Action, Long>{
     
 }

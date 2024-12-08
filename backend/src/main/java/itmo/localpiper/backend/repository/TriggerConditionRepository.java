@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.TriggerCondition;
 
 @Repository
-public interface TriggerConditionRepository extends CrudRepository<Long, TriggerCondition>{
+public interface TriggerConditionRepository extends CrudRepository<TriggerCondition, Long>{
     
 }

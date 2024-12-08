@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.Device;
 
 @Repository
-public interface DeviceRepository extends CrudRepository<Long, Device>{
+public interface DeviceRepository extends CrudRepository<Device, Long>{
     
 }

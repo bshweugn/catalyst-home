@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.VideoRecording;
 
 @Repository
-public interface VideoRecordingRepository extends CrudRepository<Long, VideoRecording>{
+public interface VideoRecordingRepository extends CrudRepository<VideoRecording, Long>{
     
 }

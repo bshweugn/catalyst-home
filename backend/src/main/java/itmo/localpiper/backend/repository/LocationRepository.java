@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.Location;
 
 @Repository
-public interface LocationRepository extends CrudRepository<Long, Location>{
+public interface LocationRepository extends CrudRepository<Location, Long>{
     
 }

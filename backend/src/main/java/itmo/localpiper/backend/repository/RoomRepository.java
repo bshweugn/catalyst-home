@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.Room;
 
 @Repository
-public interface RoomRepository extends CrudRepository<Long, Room>{
+public interface RoomRepository extends CrudRepository<Room, Long>{
     
 }

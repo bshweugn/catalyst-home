@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.House;
 
 @Repository
-public interface HouseRepository extends CrudRepository<Long, House>{
+public interface HouseRepository extends CrudRepository<House, Long>{
 
 }

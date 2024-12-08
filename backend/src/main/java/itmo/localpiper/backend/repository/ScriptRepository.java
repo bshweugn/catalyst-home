@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import itmo.localpiper.backend.model.Script;
 
 @Repository
-public interface ScriptRepository extends CrudRepository<Long, Script>{
+public interface ScriptRepository extends CrudRepository<Script, Long>{
     
 }
