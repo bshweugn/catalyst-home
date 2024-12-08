@@ -1,8 +1,11 @@
 package itmo.localpiper.backend.model;
 
 import java.util.List;
+import java.util.Map;
 
+import itmo.localpiper.backend.util.JsonConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,6 +44,10 @@ public class Device {
 
     @Column(name="charging")
     private Boolean charging;
+
+    @Convert(converter=JsonConverter.class)
+    @Column(name="features", columnDefinition="json")
+    private Map<String, Object> features;
 
     @ManyToOne
     @JoinColumn(name="room_id", nullable=false)
