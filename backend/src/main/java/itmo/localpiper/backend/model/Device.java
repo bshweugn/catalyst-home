@@ -27,6 +27,9 @@ public class Device {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="name", nullable=false)
+    private String name;
+
     @Column(name="device_type", nullable = false)
     private String deviceType;
 

@@ -1,0 +1,154 @@
+{
+    "devices": {
+        "010001": {
+            "type": "LAMP",
+            "features": ["BRIGHTNESS", "COLOR_TEMPERATURE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "010002": {
+            "type": "LAMP",
+            "features": ["BRIGHTNESS", "COLOR", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "010003": {
+            "type": "LAMP",
+            "features": ["BRIGHTNESS", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "010004": {
+            "type": "LAMP",
+            "features": ["STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "020001": {
+            "type": "RELAY",
+            "features": ["STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "030001": {
+            "type": "CURTAIN",
+            "features": ["PERCENTAGE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "030002": {
+            "type": "CURTAIN",
+            "features": ["STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "040001": {
+            "type": "VALVE",
+            "features": ["STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "050001": {
+            "type": "THERMOSTAT",
+            "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "050002": {
+            "type": "THERMOSTAT",
+            "features": ["CURRENT_TEMP", "TARGET_TEMP", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "060001": {
+            "type": "THERMOSTAT",
+            "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "WIND_MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "060002": {
+            "type": "THERMOSTAT",
+            "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "060003": {
+            "type": "THERMOSTAT",
+            "features": ["CURRENT_TEMP", "TARGET_TEMP", "WIND_MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "070001": {
+            "type": "HUMIDIFIER",
+            "features": ["CURRENT_HUM", "TARGET_HUM", "MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "070002": {
+            "type": "HUMIDIFIER",
+            "features": ["CURRENT_HUM", "TARGET_HUM", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "070003": {
+            "type": "HUMIDIFIER",
+            "features": ["STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "080001": {
+            "type": "AIR_PURIFIER",
+            "features": ["CURRENT_POLLUTION", "MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "080002": {
+            "type": "AIR_PURIFIER",
+            "features": ["CURRENT_POLLUTION", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "090001": {
+            "type": "FAN",
+            "features": ["SPEED", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "090002": {
+            "type": "FAN",
+            "features": ["STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "100001": {
+            "type": "ROBOT_VACUUM",
+            "features": ["STATE", "SUCTION_POWER"],
+            "manufacturer": "Catalyst"
+        },
+
+        "110001": {
+            "type": "CAMERA",
+            "features": ["RECHARGING", "ROTATION", "MOTION_SENSOR", "RECORDING", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "110002": {
+            "type": "CAMERA",
+            "features": ["ROTATION", "MOTION_SENSOR", "RECORDING", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "110003": {
+            "type": "CAMERA",
+            "features": ["MOTION_SENSOR", "RECORDING", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "110004": {
+            "type": "CAMERA",
+            "features": ["RECHARGING", "MOTION_SENSOR", "RECORDING", "STATE"],
+            "manufacturer": "Catalyst"
+        }
+
+    }
+}
