@@ -45,9 +45,9 @@ public class Device {
     @Column(name="charging")
     private Boolean charging;
 
-    @Convert(converter=JsonConverter.class)
-    @Column(name="features", columnDefinition="json")
-    private Map<String, Object> features;
+    @Convert(converter = JsonConverter.class)
+    @Column(name = "features")
+    private Map<String, Object> features;    
 
     @ManyToOne
     @JoinColumn(name="room_id", nullable=false)
