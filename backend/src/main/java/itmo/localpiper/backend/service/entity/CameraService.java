@@ -31,6 +31,12 @@ public class CameraService {
         cameraRepository.save(camera);
     }
 
+    public void rename(Long id, String newName) {
+        Camera camera = cameraRepository.findById(id).get();
+        camera.setName(newName);
+        cameraRepository.save(camera);
+    }
+
     public void move(Long cameraId, Long newRoomId) {
         Camera camera = cameraRepository.findById(cameraId).get();
         Room room = roomRepository.findById(newRoomId).get();

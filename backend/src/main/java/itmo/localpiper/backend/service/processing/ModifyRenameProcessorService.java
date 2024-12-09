@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import itmo.localpiper.backend.dto.request.EntityRenameRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.service.entity.ActionService;
+import itmo.localpiper.backend.service.entity.CameraService;
+import itmo.localpiper.backend.service.entity.DeviceService;
 import itmo.localpiper.backend.service.entity.FloorService;
 import itmo.localpiper.backend.service.entity.HouseService;
 import itmo.localpiper.backend.service.entity.LocationService;
@@ -43,6 +45,12 @@ public class ModifyRenameProcessorService extends AbstractProcessor<EntityRename
     @Autowired
     private TriggerConditionService triggerConditionService;
 
+    @Autowired
+    private CameraService cameraService;
+
+    @Autowired
+    private DeviceService deviceService;
+
     @Override
     protected Object send(EntityRenameRequest request) {
         Long id = request.getId();
@@ -59,6 +67,8 @@ public class ModifyRenameProcessorService extends AbstractProcessor<EntityRename
                 case ACTION -> actionService.rename(id, newName);
                 case SCRIPT -> scriptService.rename(id, newName);
                 case TRIGGER -> triggerConditionService.rename(id, newName);
+                case CAMERA -> cameraService.rename(id, newName);
+                case DEVICE -> deviceService.rename(id, newName);
                 default -> throw new IllegalArgumentException("Unsupported entity: " + entity);
             }
         }

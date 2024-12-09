@@ -8,5 +8,7 @@ public enum Renamable {
     ROOM,
     TRIGGER,
     SCRIPT,
-    ACTION
+    ACTION,
+    DEVICE,
+    CAMERA
 }

@@ -46,6 +46,11 @@ public class DeviceService {
         }
     }
     
+    public void rename(Long id, String newName) {
+        Device device = deviceRepository.findById(id).get();
+        device.setName(newName);
+        deviceRepository.save(device);
+    }
 
     public void move(Long deviceId, Long newRoomId) {
         Device device = deviceRepository.findById(deviceId).get();
