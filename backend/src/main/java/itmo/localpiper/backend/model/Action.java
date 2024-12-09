@@ -1,5 +1,8 @@
 package itmo.localpiper.backend.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,4 +33,16 @@ public class Action {
 
     @Column(name="has_parameter", nullable=false)
     private Boolean hasParameter;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        node.put("device_type", deviceType);
+        node.put("has_parameter", hasParameter);
+        
+        return node.toString();
+    }
 }

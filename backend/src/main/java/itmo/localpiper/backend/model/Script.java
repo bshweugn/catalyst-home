@@ -2,6 +2,10 @@ package itmo.localpiper.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,4 +46,19 @@ public class Script {
 
     @ManyToMany(mappedBy="scripts")
     private List<TriggerCondition> triggerConditions;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        node.put("file", file);
+        node.put("is_active", isActive);
+        try {
+            node.set("user", objectMapper.readTree(user.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        return node.toString();
+    }
 }

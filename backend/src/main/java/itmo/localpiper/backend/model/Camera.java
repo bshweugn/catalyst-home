@@ -2,6 +2,10 @@ package itmo.localpiper.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -60,4 +64,25 @@ public class Camera {
 
     @ManyToMany(mappedBy="cameras")
     private List<TriggerCondition> triggerConditions;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        node.put("camera_type", camera_type);
+        node.put("status", status);
+        node.put("battery_level", batteryLevel);
+        node.put("charging", charging);
+        node.put("motion_sensor_enabled", motionSensorEnabled);
+        node.put("x_rotate_percent", xRotatePercent);
+        node.put("y_rotate_percent", yRotatePercent);
+        node.put("is_recording", isRecording);
+        try {
+            node.set("room", objectMapper.readTree(room.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        return node.toString();
+    }
 }

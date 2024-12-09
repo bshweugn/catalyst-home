@@ -1,5 +1,6 @@
 package itmo.localpiper.backend.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 .charging(false)
                 .features(mp)
                 .room(room)
+                .triggerConditions(new ArrayList<>())
                 .build();
         deviceRepository.save(device);
     }

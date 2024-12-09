@@ -2,6 +2,10 @@ package itmo.localpiper.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,4 +41,17 @@ public class Floor {
 
     @OneToMany(mappedBy = "floor", cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Room> rooms;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        try {
+            node.set("house", objectMapper.readTree(house.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        return node.toString();
+    }
 }

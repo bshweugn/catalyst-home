@@ -1,5 +1,9 @@
 package itmo.localpiper.backend.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,4 +38,24 @@ public class UserDeviceActionRel {
     @ManyToOne
     @JoinColumn(name="action_id", nullable = false)
     private Action action;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        try {
+            node.set("user", objectMapper.readTree(user.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        try {
+            node.set("device", objectMapper.readTree(device.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        try {
+            node.set("action", objectMapper.readTree(action.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        return node.toString();
+    }
 }

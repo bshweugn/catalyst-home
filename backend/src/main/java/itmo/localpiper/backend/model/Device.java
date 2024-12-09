@@ -3,6 +3,10 @@ package itmo.localpiper.backend.model;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import itmo.localpiper.backend.util.JsonConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -46,7 +50,7 @@ public class Device {
     private Boolean charging;
 
     @Convert(converter = JsonConverter.class)
-    @Column(name = "features")
+    @Column(name = "features", nullable=false)
     private Map<String, Object> features;    
 
     @ManyToOne
@@ -55,4 +59,22 @@ public class Device {
 
     @ManyToMany(mappedBy="devices")
     private List<TriggerCondition> triggerConditions;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        node.put("device_type", deviceType);
+        node.put("status", status);
+        node.put("battery_level", batteryLevel);
+        node.put("charging", charging);
+        node.set("features", objectMapper.valueToTree(features));
+        try {
+            node.set("room", objectMapper.readTree(room.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        return node.toString();
+    }
 }

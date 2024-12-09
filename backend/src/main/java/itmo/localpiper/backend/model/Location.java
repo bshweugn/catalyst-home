@@ -1,5 +1,8 @@
 package itmo.localpiper.backend.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,4 +34,15 @@ public class Location {
 
     @Column(name="y_coordinate", nullable=false)
     private Double yCoordinate;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        node.put("x_coordinate", xCoordinate);
+        node.put("y_coordinate", yCoordinate);
+        return node.toString();
+    }
 }

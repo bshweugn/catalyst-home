@@ -21,7 +21,7 @@ public class DeviceFeatureDefsRegistryConfig {
     
     @Bean
     @SuppressWarnings("unused")
-    public Map<String, Map<String, FeatureDefinition>> defsRegistry(
+    Map<String, Map<String, FeatureDefinition>> defsRegistry(
         Map<String, FeatureDefinition> featureRegistry
     ) throws IOException {
         Path path = ResourceUtils.getFile("classpath:device_features.json").toPath();

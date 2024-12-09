@@ -2,6 +2,10 @@ package itmo.localpiper.backend.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,4 +39,18 @@ public class VideoRecording {
     @ManyToOne
     @JoinColumn(name="camera_id", nullable=false)
     private Camera camera;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("time", time.toString());
+        node.put("source", source);
+        try {
+            node.set("camera", objectMapper.readTree(camera.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        return node.toString();
+    }
 }

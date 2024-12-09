@@ -2,6 +2,9 @@ package itmo.localpiper.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,5 +44,18 @@ public class User {
 
     @ManyToMany
     private List<House> houses;
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("id", id);
+        node.put("name", name);
+        node.put("email", email);
+        node.put("profile_picture", profilePicture);
+        node.put("is_resident", isResident);
+        
+        return node.toString();
+    }
 
 }

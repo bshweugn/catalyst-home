@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.AttributeConverter;
@@ -27,14 +28,13 @@ public class JsonConverter implements AttributeConverter<Map<String, Object>, St
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> convertToEntityAttribute(String dbData) {
         if (dbData == null || dbData.isEmpty()) {
             return new HashMap<>();
         }
         try {
-            return objectMapper.readValue(dbData, Map.class);
+            return objectMapper.readValue(dbData, new TypeReference<Map<String, Object>>() {});
         } catch (IOException e) {
             throw new IllegalArgumentException("Error converting JSON to Map", e);
         }

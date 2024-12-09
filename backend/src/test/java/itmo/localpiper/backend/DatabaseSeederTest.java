@@ -20,7 +20,6 @@ import itmo.localpiper.backend.repository.HouseRepository;
 import itmo.localpiper.backend.repository.LocationRepository;
 import itmo.localpiper.backend.repository.RoomRepository;
 import itmo.localpiper.backend.repository.UserRepository;
-import itmo.localpiper.backend.util.JsonUtils;
 import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
@@ -75,7 +74,7 @@ public class DatabaseSeederTest {
 
         // Verify Device
         List<Device> devices = deviceRepository.findAll();
-        System.out.println(JsonUtils.toPrettyJson(devices.get(0)));
+        System.out.println(devices.get(0).toJson());
         assertEquals(1, devices.size());
         assertEquals("Smart Lamp", devices.get(0).getName());
     }

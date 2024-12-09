@@ -3,6 +3,9 @@ package itmo.localpiper.backend.service.processing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import itmo.localpiper.backend.dto.request.EntityInfoRequest;
 import itmo.localpiper.backend.dto.response.InfoResponse;
 import itmo.localpiper.backend.repository.ActionRepository;
@@ -18,7 +21,6 @@ import itmo.localpiper.backend.repository.UserDeviceActionRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.repository.VideoRecordingRepository;
 import itmo.localpiper.backend.util.enums.EntityType;
-import itmo.localpiper.backend.util.JsonUtils;
 
 @Service
 public class GetInfoProcessorService extends AbstractProcessor<EntityInfoRequest, InfoResponse>{
@@ -65,40 +67,40 @@ public class GetInfoProcessorService extends AbstractProcessor<EntityInfoRequest
         Long id = request.getId();
         if (null != type) switch (type) {
             case ACTION -> {
-                return JsonUtils.toPrettyJson(actionRepository.findById(id).get());
+                return actionRepository.findById(id).get().toJson();
             }
             case CAMERA -> {
-                return JsonUtils.toPrettyJson(cameraRepository.findById(id).get());
+                return cameraRepository.findById(id).get().toJson();
             }
             case DEVICE -> {
-                return JsonUtils.toPrettyJson(deviceRepository.findById(id).get());
+                return deviceRepository.findById(id).get().toJson();
             }
             case FLOOR -> {
-                return JsonUtils.toPrettyJson(floorRepository.findById(id).get());
+                return floorRepository.findById(id).get().toJson();
             }
             case HOUSE -> {
-                return JsonUtils.toPrettyJson(houseRepository.findById(id).get());
+                return houseRepository.findById(id).get().toJson();
             }
             case LOCATION -> {
-                return JsonUtils.toPrettyJson(locationRepository.findById(id).get());
+                return locationRepository.findById(id).get().toJson();
             }
             case ROOM -> {
-                return JsonUtils.toPrettyJson(roomRepository.findById(id).get());
+                return roomRepository.findById(id).get().toJson();
             }
             case SCRIPT -> {
-                return JsonUtils.toPrettyJson(scriptRepository.findById(id).get());
+                return scriptRepository.findById(id).get().toJson();
             }
             case TRIGGER -> {
-                return JsonUtils.toPrettyJson(triggerConditionRepository.findById(id).get());
+                return triggerConditionRepository.findById(id).get().toJson();
             }
             case USER -> {
-                return JsonUtils.toPrettyJson(userRepository.findById(id).get());
+                return userRepository.findById(id).get().toJson();
             }
             case UDAR -> {
-                return JsonUtils.toPrettyJson(udarRepository.findById(id).get());
+                return udarRepository.findById(id).get().toJson();
             }
             case VIDEO -> {
-                return JsonUtils.toPrettyJson(videoRecordingRepository.findById(id).get());
+                return videoRecordingRepository.findById(id).get().toJson();
             }
             default -> {
                 throw new IllegalArgumentException("Unknown device type: " + type);
@@ -109,7 +111,14 @@ public class GetInfoProcessorService extends AbstractProcessor<EntityInfoRequest
 
     @Override
     protected InfoResponse pack(Object result) {
-        return new InfoResponse((String)result);
+    try {
+        ObjectMapper mapper = new ObjectMapper();
+        Object json = mapper.readValue((String) result, Object.class);
+        String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        return new InfoResponse(prettyJson);
+    } catch (JsonProcessingException e) {
+        throw new RuntimeException("Error prettifying JSON", e);
+    }
     }
     
 }

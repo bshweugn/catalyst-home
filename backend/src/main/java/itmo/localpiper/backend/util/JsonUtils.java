@@ -2,6 +2,7 @@ package itmo.localpiper.backend.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class JsonUtils {
 
@@ -11,6 +12,12 @@ public class JsonUtils {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        // Register the custom serializer
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(Object.class, new EntitySerializer());
+        mapper.registerModule(module);
+
         return mapper;
     }
 
@@ -44,4 +51,5 @@ public class JsonUtils {
         }
     }
 }
+
 
