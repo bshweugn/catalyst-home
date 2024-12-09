@@ -8,7 +8,7 @@ import itmo.localpiper.backend.command.CommandRegistry;
 import itmo.localpiper.backend.command.commands.CamMoDetCommand;
 import itmo.localpiper.backend.command.commands.MoveToCommand;
 import itmo.localpiper.backend.command.commands.PickUpRbCommand;
-import itmo.localpiper.backend.service.CameraService;
+import itmo.localpiper.backend.service.entity.CameraService;
 
 @Configuration
 public class CommandConfig {
