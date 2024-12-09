@@ -18,6 +18,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void create(String name, String email, byte[] profilePicture, Boolean isResident) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setProfilePicture(profilePicture);
+        user.setIsResident(isResident);
+
+        userRepository.save(user);
+    }
     public void delete(Long id) {
         userRepository.deleteById(id);
     }

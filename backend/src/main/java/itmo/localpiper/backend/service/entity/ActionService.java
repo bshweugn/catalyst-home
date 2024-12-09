@@ -18,6 +18,14 @@ public class ActionService {
         actionRepository.save(action);
     }
 
+    public void create(String name, String deviceType, Boolean hasParameter) {
+        Action action = new Action();
+        action.setName(name);
+        action.setDeviceType(deviceType);
+        action.setHasParameter(hasParameter);
+        actionRepository.save(action);
+    }
+
     public void delete(Long id) {
         actionRepository.deleteById(id);
     }

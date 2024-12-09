@@ -17,8 +17,19 @@ public class LocationService {
         location.setName(newName);
         locationRepository.save(location);
     }
+
+    public void create(String name, Double xCoordinate, Double yCoordinate) {
+        Location location = new Location();
+        location.setName(name);
+        location.setXCoordinate(xCoordinate);
+        location.setYCoordinate(yCoordinate);
+
+        locationRepository.save(location);
+    }
     
     public void delete(Long id) {
         locationRepository.deleteById(id);
     }
+
+    
 }

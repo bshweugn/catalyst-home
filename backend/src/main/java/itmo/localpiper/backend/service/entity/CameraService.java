@@ -68,6 +68,24 @@ public class CameraService {
         cameraRepository.save(camera);
     }
 
+    public void create(String name, Long roomId, String cameraType, String status, Integer batteryLevel, Boolean charging, Boolean motionSensorEnabled, Integer xRotatePercent, Integer yRotatePercent, Boolean isRecording) {
+        Camera camera = new Camera();
+        Room room = roomRepository.findById(roomId).get();
+        camera.setName(name);
+        camera.setRoom(room);
+        camera.setCamera_type(cameraType);
+        camera.setStatus(status);
+        camera.setBatteryLevel(batteryLevel);
+        camera.setCharging(charging);
+        camera.setMotionSensorEnabled(motionSensorEnabled);
+        camera.setXRotatePercent(xRotatePercent);
+        camera.setYRotatePercent(yRotatePercent);
+        camera.setIsRecording(isRecording);
+        camera.setTriggerConditions(new ArrayList<>());
+
+        cameraRepository.save(camera);
+    }
+
     public void delete(Long id) {
         cameraRepository.deleteById(id);
     }

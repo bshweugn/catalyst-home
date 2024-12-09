@@ -76,6 +76,21 @@ public class DeviceService {
         deviceRepository.save(device);
     }
 
+    public void create(String name, Long roomId, String deviceType, String status, Integer batteryLevel, Boolean charging, Map<String, Object> features) {
+        Device device = new Device();
+        Room room = roomRepository.findById(roomId).get();
+        device.setName(name);
+        device.setRoom(room);
+        device.setDeviceType(deviceType);
+        device.setStatus(status);
+        device.setBatteryLevel(batteryLevel);
+        device.setCharging(charging);
+        device.setFeatures(features);
+        device.setTriggerConditions(new ArrayList<>());
+
+        deviceRepository.save(device);
+    }
+
     public void delete(Long id) {
         deviceRepository.deleteById(id);
     }
