@@ -6,6 +6,7 @@ public enum DeviceType {
     CURTAIN,
     VALVE,
     THERMOSTAT,
+    AC,
     HUMIDIFIER,
     AIR_PURIFIER,
     FAN,
