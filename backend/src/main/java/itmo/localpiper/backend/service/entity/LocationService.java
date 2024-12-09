@@ -18,4 +18,7 @@ public class LocationService {
         locationRepository.save(location);
     }
     
+    public void delete(Long id) {
+        locationRepository.deleteById(id);
+    }
 }

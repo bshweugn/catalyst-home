@@ -17,5 +17,9 @@ public class ActionService {
         action.setName(newName);
         actionRepository.save(action);
     }
+
+    public void delete(Long id) {
+        actionRepository.deleteById(id);
+    }
     
 }

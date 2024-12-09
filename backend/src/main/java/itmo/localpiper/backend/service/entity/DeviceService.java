@@ -75,4 +75,8 @@ public class DeviceService {
         device.setTriggerConditions(new ArrayList<>());
         deviceRepository.save(device);
     }
+
+    public void delete(Long id) {
+        deviceRepository.deleteById(id);
+    }
 }

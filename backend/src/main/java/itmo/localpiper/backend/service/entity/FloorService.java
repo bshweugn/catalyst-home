@@ -17,4 +17,8 @@ public class FloorService {
         floor.setName(newName);
         floorRepository.save(floor);
     }
+
+    public void delete(Long id) {
+        floorRepository.deleteById(id);
+    }
 }

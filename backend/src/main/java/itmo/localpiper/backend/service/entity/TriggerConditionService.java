@@ -18,4 +18,7 @@ public class TriggerConditionService {
         triggerConditionRepository.save(triggerCondition);
     }
     
+    public void delete(Long id) {
+        triggerConditionRepository.deleteById(id);
+    }
 }

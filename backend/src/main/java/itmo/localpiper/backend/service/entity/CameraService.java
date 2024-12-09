@@ -67,4 +67,8 @@ public class CameraService {
         camera.setTriggerConditions(new ArrayList<>());
         cameraRepository.save(camera);
     }
+
+    public void delete(Long id) {
+        cameraRepository.deleteById(id);
+    }
 }

@@ -17,4 +17,8 @@ public class RoomService {
         room.setName(newName);
         roomRepository.save(room);
     }
+
+    public void delete(Long id) {
+        roomRepository.deleteById(id);
+    }
 }

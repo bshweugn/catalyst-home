@@ -17,4 +17,8 @@ public class ScriptService {
         script.setName(newName);
         scriptRepository.save(script);
     }
+
+    public void delete(Long id) {
+        scriptRepository.deleteById(id);
+    }
 }

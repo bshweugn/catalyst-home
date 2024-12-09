@@ -18,4 +18,8 @@ public class HouseService {
         house.setName(newName);
         houseRepository.save(house);
     }
+
+    public void delete(Long id) {
+        houseRepository.deleteById(id);
+    }
 }
