@@ -61,19 +61,19 @@
         },
 
         "060001": {
-            "type": "THERMOSTAT",
+            "type": "AC",
             "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "WIND_MODE", "STATE"],
             "manufacturer": "Catalyst"
         },
 
         "060002": {
-            "type": "THERMOSTAT",
+            "type": "AC",
             "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "STATE"],
             "manufacturer": "Catalyst"
         },
 
         "060003": {
-            "type": "THERMOSTAT",
+            "type": "AC",
             "features": ["CURRENT_TEMP", "TARGET_TEMP", "WIND_MODE", "STATE"],
             "manufacturer": "Catalyst"
         },

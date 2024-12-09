@@ -1,0 +1,76 @@
+{
+        "STATE" : {
+            "type" : "ENUM",
+            "values" : ["ON", "OFF"]
+        },
+        "CLOSABLE_STATE" : {
+            "type" : "ENUM",
+            "values" : ["OPENED", "CLOSED"]
+        },
+        "VC_STATE" : {
+            "type" : "ENUM",
+            "values" : ["ON", "OFF", "PAUSED", "CHARING", "RETURNING"]
+        },
+        "BRIGHTNESS" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100
+        },
+        "COLOR" : {
+            "type" : "STRING",
+            "format" : "HEX"
+        },
+        "COLOR_TEMP" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 6
+        },
+        "PERCENTAGE" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100
+        },
+        "CURRENT_TEMP" : {
+            "type" : "NUMBER",
+            "min" : -100,
+            "max" : 100
+        },
+        "TARGET_TEMP" : {
+            "type" : "NUMBER",
+            "min" : -100,
+            "max" : 100
+        },
+        "CURRENT_HUM" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100
+        },
+        "TARGET_HUM" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100
+        },
+        "CURRENT_POLLUTION" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100
+        },
+        "MODE" : {
+            "type" : "ENUM",
+            "values" : ["SOFT", "NORMAL", "MAX"]
+        },
+        "WIND_MODE" : {
+            "type" : "ENUM",
+            "values" : ["UP", "MIDDLE", "DOWN", "SWING"]
+        },
+        "SPEED" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100
+        },
+        "SUCTION_POWER" : {
+            "type" : "ENUM",
+            "values" : ["LOW", "NORMAL", "MAX"]
+        }
+
+}

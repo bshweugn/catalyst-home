@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DeviceRegistryConfig {
 
     @Bean
+    @SuppressWarnings("unused")
     Map<String, JsonNode> deviceRegistry() throws IOException {
         Path path = ResourceUtils.getFile("classpath:devices.json").toPath();
         String jsonContent = Files.readString(path);

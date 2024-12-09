@@ -11,12 +11,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class DeviceTypeHandlerService {
     
     private final Map<String, JsonNode> deviceRegistry;
+
+    private final Map<String, Map<String, FeatureDefinition>> defsRegistry;
     
     public String parseSerialNumber(String number) {
         JsonNode node = deviceRegistry.get(number);
@@ -38,5 +42,10 @@ public class DeviceTypeHandlerService {
         .map(JsonNode::asText)
         .collect(Collectors.toList());
     }
+
+    public Map<String, FeatureDefinition> retrieveFeaturesWithDefinitions(String number) {
+        return defsRegistry.get(number);
+    }
+
 
 }
