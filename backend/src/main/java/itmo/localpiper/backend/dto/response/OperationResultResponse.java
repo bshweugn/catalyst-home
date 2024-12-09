@@ -1,6 +1,6 @@
 package itmo.localpiper.backend.dto.response;
 
-import itmo.localpiper.backend.util.ProcessingStatus;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

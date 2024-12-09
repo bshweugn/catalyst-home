@@ -1,6 +1,6 @@
 package itmo.localpiper.backend.dto.request;
 
-import itmo.localpiper.backend.util.Movable;
+import itmo.localpiper.backend.util.enums.Movable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;

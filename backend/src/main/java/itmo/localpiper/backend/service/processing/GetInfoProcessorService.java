@@ -17,7 +17,7 @@ import itmo.localpiper.backend.repository.TriggerConditionRepository;
 import itmo.localpiper.backend.repository.UserDeviceActionRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.repository.VideoRecordingRepository;
-import itmo.localpiper.backend.util.EntityType;
+import itmo.localpiper.backend.util.enums.EntityType;
 import itmo.localpiper.backend.util.JsonUtils;
 
 @Service

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import itmo.localpiper.backend.util.enums.DeviceType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

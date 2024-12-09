@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.util;
+package itmo.localpiper.backend.util.enums;
 
 public enum DeviceType {
     LAMP,

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import itmo.localpiper.backend.dto.request.ImportRequest;
 import itmo.localpiper.backend.dto.response.ImportResultResponse;
-import itmo.localpiper.backend.util.ProcessingStatus;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
 import lombok.AllArgsConstructor;
 
 @Service

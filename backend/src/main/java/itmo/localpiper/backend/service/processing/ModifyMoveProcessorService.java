@@ -7,8 +7,8 @@ import itmo.localpiper.backend.dto.request.EntityMoveRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.service.entity.CameraService;
 import itmo.localpiper.backend.service.entity.DeviceService;
-import itmo.localpiper.backend.util.Movable;
-import itmo.localpiper.backend.util.ProcessingStatus;
+import itmo.localpiper.backend.util.enums.Movable;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
 public class ModifyMoveProcessorService extends AbstractProcessor<EntityMoveRequest, OperationResultResponse>{

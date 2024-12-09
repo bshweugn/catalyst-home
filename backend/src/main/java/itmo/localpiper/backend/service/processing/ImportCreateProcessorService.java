@@ -10,8 +10,8 @@ import itmo.localpiper.backend.dto.request.ImportCreateRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.service.entity.CameraService;
 import itmo.localpiper.backend.service.entity.DeviceService;
-import itmo.localpiper.backend.util.DeviceType;
-import itmo.localpiper.backend.util.ProcessingStatus;
+import itmo.localpiper.backend.util.enums.DeviceType;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
 import lombok.AllArgsConstructor;
 
 @Service

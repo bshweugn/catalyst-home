@@ -15,8 +15,8 @@ import itmo.localpiper.backend.service.entity.RoomService;
 import itmo.localpiper.backend.service.entity.ScriptService;
 import itmo.localpiper.backend.service.entity.TriggerConditionService;
 import itmo.localpiper.backend.service.entity.UserService;
-import itmo.localpiper.backend.util.ProcessingStatus;
-import itmo.localpiper.backend.util.Renamable;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
+import itmo.localpiper.backend.util.enums.Renamable;
 
 @Service
 public class ModifyRenameProcessorService extends AbstractProcessor<EntityRenameRequest, OperationResultResponse>{

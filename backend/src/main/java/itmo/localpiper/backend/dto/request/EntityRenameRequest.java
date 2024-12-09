@@ -1,6 +1,6 @@
 package itmo.localpiper.backend.dto.request;
 
-import itmo.localpiper.backend.util.Renamable;
+import itmo.localpiper.backend.util.enums.Renamable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
