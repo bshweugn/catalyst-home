@@ -1,5 +1,6 @@
 package itmo.localpiper.backend.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -8,44 +9,49 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="users")
+@Table(name="user_houses")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserHouseRel {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name="email")
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "house_id")
+    private House house;
 
-    @Lob
-    @Column(columnDefinition = "BYTEA")
-    private byte[] profilePicture;
+    @Column(name="is_resident")
+    private Boolean isResident;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode node = objectMapper.createObjectNode();
 
         node.put("id", id);
-        node.put("name", name);
-        node.put("email", email);
-        node.put("profile_picture", profilePicture);
+        try {
+            node.set("user", objectMapper.readTree(user.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        try {
+            node.set("house", objectMapper.readTree(house.toJson()));
+        } catch (JsonProcessingException e) {
+        }
+        node.put("is_resident", isResident);
         
         return node.toString();
     }
-
 }

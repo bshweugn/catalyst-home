@@ -1,7 +1,5 @@
 package itmo.localpiper.backend.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -37,9 +34,6 @@ public class House {
 
     @Column(name="name", nullable=false)
     private String name;
-
-    @ManyToMany(mappedBy="houses")
-    private List<User> users;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();

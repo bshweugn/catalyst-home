@@ -29,7 +29,6 @@ public class UserService {
         user.setName(name);
         user.setEmail(email);
         user.setProfilePicture(profilePicture);
-        user.setIsResident(isResident);
 
         userRepository.save(user);
     }

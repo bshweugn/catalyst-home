@@ -2,7 +2,6 @@ package itmo.localpiper.backend.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.CommandLineRunner;
@@ -73,8 +72,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         User user = User.builder()
                 .name("John Doe")
                 .email("john.doe@example.com")
-                .isResident(true)
-                .houses(List.of(house))
                 .build();
         userRepository.save(user);
 
