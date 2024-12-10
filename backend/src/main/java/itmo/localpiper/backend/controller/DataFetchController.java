@@ -20,6 +20,7 @@ import itmo.localpiper.backend.model.Script;
 import itmo.localpiper.backend.model.TriggerCondition;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.model.UserDeviceActionRel;
+import itmo.localpiper.backend.model.UserHouseRel;
 import itmo.localpiper.backend.model.VideoRecording;
 import itmo.localpiper.backend.service.entity.ActionService;
 import itmo.localpiper.backend.service.entity.CameraService;
@@ -31,8 +32,10 @@ import itmo.localpiper.backend.service.entity.RoomService;
 import itmo.localpiper.backend.service.entity.ScriptService;
 import itmo.localpiper.backend.service.entity.TriggerConditionService;
 import itmo.localpiper.backend.service.entity.UserDeviceActionRelService;
+import itmo.localpiper.backend.service.entity.UserHouseRelService;
 import itmo.localpiper.backend.service.entity.UserService;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
+
 
 
 @RestController
@@ -71,6 +74,9 @@ public class DataFetchController {
 
     @Autowired
     private UserDeviceActionRelService udarService;
+
+    @Autowired
+    private UserHouseRelService uhrService;
 
     @Autowired
     private VideoRecordingService videoRecordingService;
@@ -130,6 +136,11 @@ public class DataFetchController {
         return ResponseEntity.ok(udarService.read());
     }
 
+    @GetMapping("/uhr")
+    public ResponseEntity<List<UserHouseRel>> getUhrs() {
+        return ResponseEntity.ok(uhrService.read());
+    }
+
     @GetMapping("/video")
     public ResponseEntity<List<VideoRecording>> getVideos() {
         return ResponseEntity.ok(videoRecordingService.read());
@@ -150,6 +161,7 @@ public class DataFetchController {
             .triggerConditions(triggerConditionService.read())
             .users(userService.read())
             .userDeviceActionRels(udarService.read())
+            .userHouseRels(uhrService.read())
             .videoRecordings(videoRecordingService.read())
             .build()
         );

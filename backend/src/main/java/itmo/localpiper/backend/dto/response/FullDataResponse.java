@@ -13,6 +13,7 @@ import itmo.localpiper.backend.model.Script;
 import itmo.localpiper.backend.model.TriggerCondition;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.model.UserDeviceActionRel;
+import itmo.localpiper.backend.model.UserHouseRel;
 import itmo.localpiper.backend.model.VideoRecording;
 import lombok.Builder;
 import lombok.Data;
@@ -42,6 +43,8 @@ public class FullDataResponse {
     private List<User> users;
 
     private List<UserDeviceActionRel> userDeviceActionRels;
+
+    private List<UserHouseRel> userHouseRels;
 
     private List<VideoRecording> videoRecordings;
 }
