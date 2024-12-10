@@ -71,6 +71,9 @@
         "SUCTION_POWER" : {
             "type" : "ENUM",
             "values" : ["LOW", "NORMAL", "MAX"]
+        },
+        "BATTERY" : {
+            "type" : "BOOLEAN"
         }
 
 }

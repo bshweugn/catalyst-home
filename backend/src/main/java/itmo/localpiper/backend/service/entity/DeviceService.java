@@ -73,7 +73,14 @@ public class DeviceService {
             String featureKey = entry.getKey();
             FeatureDefinition featureDefinition = entry.getValue();
             Object defaultValue = determineDefaultValue(featureDefinition);
-            features.put(featureKey, defaultValue);
+            switch (featureKey) {
+                case "BATTERY" -> {
+                    device.setBatteryLevel(100);
+                    device.setCharging(false);
+                }
+                case "STATE", "CLOSEABLE_STATE", "VC_STATE" -> device.setStatus((String)defaultValue);
+                default -> features.put(featureKey, defaultValue);
+            }   
         }
         device.setFeatures(features);
 
