@@ -111,14 +111,14 @@ public class GetInfoProcessorService extends AbstractProcessor<EntityInfoRequest
 
     @Override
     protected InfoResponse pack(Object result) {
-    try {
-        ObjectMapper mapper = new ObjectMapper();
-        Object json = mapper.readValue((String) result, Object.class);
-        String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-        return new InfoResponse(prettyJson);
-    } catch (JsonProcessingException e) {
-        throw new RuntimeException("Error prettifying JSON", e);
-    }
+        try {
+            // Assuming `result` is a JSON string
+            ObjectMapper objectMapper = new ObjectMapper();
+            Object parsedResult = objectMapper.readValue((String) result, Object.class);
+            return new InfoResponse(parsedResult);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to parse JSON string", e);
+        }
     }
     
 }

@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class InfoResponse {
-    String info;
+    private Object info;
 }
