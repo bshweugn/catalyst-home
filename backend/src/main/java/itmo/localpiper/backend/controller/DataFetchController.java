@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.response.FullDataResponse;
@@ -77,67 +76,67 @@ public class DataFetchController {
     private VideoRecordingService videoRecordingService;
 
     @GetMapping("/action")
-    public ResponseEntity<List<Action>> getActions(@RequestParam String param) {
+    public ResponseEntity<List<Action>> getActions() {
         return ResponseEntity.ok(actionService.read());
     }
 
     @GetMapping("/camera")
-    public ResponseEntity<List<Camera>> getCameras(@RequestParam String param) {
+    public ResponseEntity<List<Camera>> getCameras() {
         return ResponseEntity.ok(cameraService.read());
     }
 
     @GetMapping("/device")
-    public ResponseEntity<List<Device>> getDevices(@RequestParam String param) {
+    public ResponseEntity<List<Device>> getDevices() {
         return ResponseEntity.ok(deviceService.read());
     }
 
     @GetMapping("/floor")
-    public ResponseEntity<List<Floor>> getFloors(@RequestParam String param) {
+    public ResponseEntity<List<Floor>> getFloors() {
         return ResponseEntity.ok(floorService.read());
     }
 
     @GetMapping("/house")
-    public ResponseEntity<List<House>> getHouses(@RequestParam String param) {
+    public ResponseEntity<List<House>> getHouses() {
         return ResponseEntity.ok(houseService.read());
     }
 
     @GetMapping("/location")
-    public ResponseEntity<List<Location>> getLocations(@RequestParam String param) {
+    public ResponseEntity<List<Location>> getLocations() {
         return ResponseEntity.ok(locationService.read());
     }
 
     @GetMapping("/room")
-    public ResponseEntity<List<Room>> getRooms(@RequestParam String param) {
+    public ResponseEntity<List<Room>> getRooms() {
         return ResponseEntity.ok(roomService.read());
     }
 
     @GetMapping("/script")
-    public ResponseEntity<List<Script>> getScripts(@RequestParam String param) {
+    public ResponseEntity<List<Script>> getScripts() {
         return ResponseEntity.ok(scriptService.read());
     }
 
     @GetMapping("/trigger")
-    public ResponseEntity<List<TriggerCondition>> getTriggers(@RequestParam String param) {
+    public ResponseEntity<List<TriggerCondition>> getTriggers() {
         return ResponseEntity.ok(triggerConditionService.read());
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<User>> getUsers(@RequestParam String param) {
+    public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok(userService.read());
     }
 
     @GetMapping("/udar")
-    public ResponseEntity<List<UserDeviceActionRel>> getUdars(@RequestParam String param) {
+    public ResponseEntity<List<UserDeviceActionRel>> getUdars() {
         return ResponseEntity.ok(udarService.read());
     }
 
     @GetMapping("/video")
-    public ResponseEntity<List<VideoRecording>> getVideos(@RequestParam String param) {
+    public ResponseEntity<List<VideoRecording>> getVideos() {
         return ResponseEntity.ok(videoRecordingService.read());
     }
 
     @GetMapping("/all")
-    public ResponseEntity<FullDataResponse> getMethodName(@RequestParam String param) {
+    public ResponseEntity<FullDataResponse> getMethodName() {
         return ResponseEntity.ok(
             FullDataResponse.builder()
             .actions(actionService.read())
