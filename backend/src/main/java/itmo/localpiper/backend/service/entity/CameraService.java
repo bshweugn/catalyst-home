@@ -50,7 +50,7 @@ public class CameraService {
         camera.setName(name);
         camera.setRoom(room);
         String deviceType = deviceTypeHandlerService.parseSerialNumber(number);
-        camera.setCamera_type(deviceType);
+        camera.setCameraType(deviceType);
         List<String> params = deviceTypeHandlerService.retrieveFeatures(number);
         
         if (params.contains("STATE")) {
@@ -79,7 +79,7 @@ public class CameraService {
         Room room = roomRepository.findById(roomId).get();
         camera.setName(name);
         camera.setRoom(room);
-        camera.setCamera_type(cameraType);
+        camera.setCameraType(cameraType);
         camera.setStatus(status);
         camera.setBatteryLevel(batteryLevel);
         camera.setCharging(charging);

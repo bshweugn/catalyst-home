@@ -43,8 +43,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         
         Location location = Location.builder()
                 .name("City Center")
-                .xCoordinate(50.4501)
-                .yCoordinate(30.5234)
+                .x(50.4501)
+                .y(30.5234)
                 .build();
         locationRepository.save(location);
 

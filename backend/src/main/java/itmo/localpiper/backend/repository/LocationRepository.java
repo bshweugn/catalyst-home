@@ -1,6 +1,7 @@
 package itmo.localpiper.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,6 @@ import itmo.localpiper.backend.model.Location;
 public interface LocationRepository extends CrudRepository<Location, Long>{
     @Override
     List<Location> findAll();
+    
+    Optional<Location> findByXAndY(Double x, Double y);
 }

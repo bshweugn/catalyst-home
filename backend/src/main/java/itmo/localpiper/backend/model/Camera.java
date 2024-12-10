@@ -35,7 +35,7 @@ public class Camera {
     private String name;
 
     @Column(name="camera_type", nullable=false)
-    private String camera_type;
+    private String cameraType;
 
     @Column(name="status", nullable = false)
     private String status;
@@ -71,7 +71,7 @@ public class Camera {
 
         node.put("id", id);
         node.put("name", name);
-        node.put("camera_type", camera_type);
+        node.put("camera_type", cameraType);
         node.put("status", status);
         node.put("battery_level", batteryLevel);
         node.put("charging", charging);

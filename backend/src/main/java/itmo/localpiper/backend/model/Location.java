@@ -30,10 +30,10 @@ public class Location {
     private String name;
 
     @Column(name="x_coordinate", nullable=false)
-    private Double xCoordinate;
+    private Double x;
 
     @Column(name="y_coordinate", nullable=false)
-    private Double yCoordinate;
+    private Double y;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -41,8 +41,8 @@ public class Location {
 
         node.put("id", id);
         node.put("name", name);
-        node.put("x_coordinate", xCoordinate);
-        node.put("y_coordinate", yCoordinate);
+        node.put("x_coordinate", x);
+        node.put("y_coordinate", y);
         return node.toString();
     }
 }
