@@ -2,6 +2,7 @@ package itmo.localpiper.backend.service.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,10 @@ public class DeviceService {
         deviceRepository.save(device);
     }
 
+    public List<Device> read() {
+        return deviceRepository.findAll();
+    }
+
     public void create(String name, Long roomId, String deviceType, String status, Integer batteryLevel, Boolean charging, Map<String, Object> features) {
         Device device = new Device();
         Room room = roomRepository.findById(roomId).get();
@@ -106,4 +111,6 @@ public class DeviceService {
     public void delete(Long id) {
         deviceRepository.deleteById(id);
     }
+
+
 }

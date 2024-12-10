@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,10 @@ public class ScriptService {
         Script script = scriptRepository.findById(id).get();
         script.setName(newName);
         scriptRepository.save(script);
+    }
+
+    public List<Script> read() {
+        return scriptRepository.findAll();
     }
 
     public void create(String name, Long userId, String file, Boolean isActive) {

@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,10 @@ public class RoomService {
         Room room = roomRepository.findById(id).get();
         room.setName(newName);
         roomRepository.save(room);
+    }
+
+    public List<Room> read() {
+        return roomRepository.findAll();
     }
 
     public void create(String name, Long floorId) {

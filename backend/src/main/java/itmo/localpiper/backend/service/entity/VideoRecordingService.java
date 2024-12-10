@@ -1,6 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ public class VideoRecordingService {
 
     @Autowired
     private CameraRepository cameraRepository;
+
+    public List<VideoRecording> read() {
+        return videoRecordingRepository.findAll();
+    }
 
     public void create(Long cameraId, LocalDateTime time, String source) {
         VideoRecording videoRecording = new VideoRecording();

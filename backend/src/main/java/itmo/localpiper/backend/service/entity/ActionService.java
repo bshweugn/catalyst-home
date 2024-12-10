@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,10 @@ public class ActionService {
         Action action = actionRepository.findById(id).get();
         action.setName(newName);
         actionRepository.save(action);
+    }
+
+    public List<Action> read() {
+        return actionRepository.findAll();
     }
 
     public void create(String name, String deviceType, Boolean hasParameter) {

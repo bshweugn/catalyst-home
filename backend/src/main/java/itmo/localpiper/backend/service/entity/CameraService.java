@@ -74,6 +74,10 @@ public class CameraService {
         cameraRepository.save(camera);
     }
 
+    public List<Camera> read() {
+        return cameraRepository.findAll();
+    }
+
     public void create(String name, Long roomId, String cameraType, String status, Integer batteryLevel, Boolean charging, Boolean motionSensorEnabled, Integer xRotatePercent, Integer yRotatePercent, Boolean isRecording) {
         Camera camera = new Camera();
         Room room = roomRepository.findById(roomId).get();

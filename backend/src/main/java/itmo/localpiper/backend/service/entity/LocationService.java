@@ -1,5 +1,6 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,10 @@ public class LocationService {
         Location location = locationRepository.findById(id).get();
         location.setName(newName);
         locationRepository.save(location);
+    }
+
+    public List<Location> read() {
+        return locationRepository.findAll();
     }
 
     public Location create(String name, Double xCoordinate, Double yCoordinate) {

@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,10 @@ public class UserDeviceActionRelService {
 
     @Autowired
     private ActionRepository actionRepository;
+
+    public List<UserDeviceActionRel> read() {
+        return repository.findAll();
+    }
 
     public void create(Long userId, Long deviceId, Long actionId) {
         UserDeviceActionRel udar = new UserDeviceActionRel();

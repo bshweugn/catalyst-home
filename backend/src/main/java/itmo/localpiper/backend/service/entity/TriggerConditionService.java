@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,10 @@ public class TriggerConditionService {
         TriggerCondition triggerCondition = triggerConditionRepository.findById(id).get();
         triggerCondition.setName(newName);
         triggerConditionRepository.save(triggerCondition);
+    }
+
+    public List<TriggerCondition> read() {
+        return triggerConditionRepository.findAll();
     }
     
     public void create(String name, String condition) {

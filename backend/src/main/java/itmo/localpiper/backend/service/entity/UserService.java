@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.service.entity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,10 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    public List<User> read() {
+        return userRepository.findAll();
+    }
 
     public void rename(Long id, String newName) {
         User user = userRepository.findById(id).get();
