@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import itmo.localpiper.backend.exceptions.NonUniqueValueException;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.repository.UserRepository;
 
@@ -24,13 +25,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void create(String name, String email, byte[] profilePicture, Boolean isResident) {
+    public User create(String name, String email, byte[] profilePicture) {
+        if (userRepository.findByEmail(email).isPresent()) throw new NonUniqueValueException("User with given email already exists!");
         User user = new User();
         user.setName(name);
         user.setEmail(email);
         user.setProfilePicture(profilePicture);
 
         userRepository.save(user);
+        return user;
     }
     public void delete(Long id) {
         userRepository.deleteById(id);
