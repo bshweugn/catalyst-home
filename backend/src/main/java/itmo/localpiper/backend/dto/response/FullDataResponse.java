@@ -7,6 +7,7 @@ import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.Floor;
 import itmo.localpiper.backend.model.House;
+import itmo.localpiper.backend.model.Invitation;
 import itmo.localpiper.backend.model.Location;
 import itmo.localpiper.backend.model.Room;
 import itmo.localpiper.backend.model.Script;
@@ -47,4 +48,6 @@ public class FullDataResponse {
     private List<UserHouseRel> userHouseRels;
 
     private List<VideoRecording> videoRecordings;
+
+    private List<Invitation> invitations;
 }

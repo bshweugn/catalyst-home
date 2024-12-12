@@ -30,13 +30,14 @@ public class HouseService {
         return houseRepository.findAll();
     }
 
-    public void create(String name, Long locationId) {
+    public House create(String name, Long locationId) {
         House house = new House();
         Location location = locationRepository.findById(locationId).get();
         house.setName(name);
         house.setLocation(location);
 
         houseRepository.save(house);
+        return house;
     }
 
     public void delete(Long id) {

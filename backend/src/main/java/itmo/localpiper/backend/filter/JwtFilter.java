@@ -1,10 +1,6 @@
 package itmo.localpiper.backend.filter;
 
 import java.io.IOException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

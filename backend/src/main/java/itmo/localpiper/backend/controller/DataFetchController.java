@@ -14,6 +14,7 @@ import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.Floor;
 import itmo.localpiper.backend.model.House;
+import itmo.localpiper.backend.model.Invitation;
 import itmo.localpiper.backend.model.Location;
 import itmo.localpiper.backend.model.Room;
 import itmo.localpiper.backend.model.Script;
@@ -27,6 +28,7 @@ import itmo.localpiper.backend.service.entity.CameraService;
 import itmo.localpiper.backend.service.entity.DeviceService;
 import itmo.localpiper.backend.service.entity.FloorService;
 import itmo.localpiper.backend.service.entity.HouseService;
+import itmo.localpiper.backend.service.entity.InvitationService;
 import itmo.localpiper.backend.service.entity.LocationService;
 import itmo.localpiper.backend.service.entity.RoomService;
 import itmo.localpiper.backend.service.entity.ScriptService;
@@ -35,6 +37,7 @@ import itmo.localpiper.backend.service.entity.UserDeviceActionRelService;
 import itmo.localpiper.backend.service.entity.UserHouseRelService;
 import itmo.localpiper.backend.service.entity.UserService;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
+
 
 
 
@@ -80,6 +83,9 @@ public class DataFetchController {
 
     @Autowired
     private VideoRecordingService videoRecordingService;
+
+    @Autowired
+    private InvitationService invitationService;
 
     @GetMapping("/action")
     public ResponseEntity<List<Action>> getActions() {
@@ -146,6 +152,11 @@ public class DataFetchController {
         return ResponseEntity.ok(videoRecordingService.read());
     }
 
+    @GetMapping("/invites")
+    public ResponseEntity<List<Invitation>> getInvites() {
+        return ResponseEntity.ok(invitationService.read());
+    }
+    
     @GetMapping("/all")
     public ResponseEntity<FullDataResponse> getMethodName() {
         return ResponseEntity.ok(
@@ -163,6 +174,7 @@ public class DataFetchController {
             .userDeviceActionRels(udarService.read())
             .userHouseRels(uhrService.read())
             .videoRecordings(videoRecordingService.read())
+            .invitations(invitationService.read())
             .build()
         );
     }
