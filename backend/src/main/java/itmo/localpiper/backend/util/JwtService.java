@@ -27,9 +27,9 @@ public class JwtService {
     }
 
     /**
-     * Generates a JWT token for the given username and claims.
+     * Generates a JWT token for the given username.
      */
-    public String generateToken(String username, Map<String, Object> additionalClaims, long expirationMillis) {
+    public String generateToken(String username, long expirationMillis) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMillis);
 
@@ -38,7 +38,6 @@ public class JwtService {
             "iat", now,
             "exp", expiration
         );
-        claims.putAll(additionalClaims);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -48,12 +47,6 @@ public class JwtService {
                 .compact();
     }
 
-    /**
-     * Generates a simple token for a username with no additional claims.
-     */
-    public String generateSimpleToken(String username, long expirationMillis) {
-        return generateToken(username, Map.of(), expirationMillis);
-    }
 
     /**
      * Validates a JWT token.

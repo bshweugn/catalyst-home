@@ -42,7 +42,7 @@ public class RegisterProcessor extends AbstractProcessor<RegisterRequest, TokenR
         } catch (NonUniqueValueException e) {
             return null;
         }
-        return jwtService.generateSimpleToken(email, 1000 * 60 * 60);
+        return jwtService.generateToken(email, 1000 * 60 * 60);
         
     }
 

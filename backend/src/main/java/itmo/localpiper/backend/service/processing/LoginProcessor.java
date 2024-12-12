@@ -29,7 +29,7 @@ public class LoginProcessor extends AbstractProcessor<LoginRequest, TokenRespons
         Optional<UserData> maybeUser = userDataRepository.findByLogin(login);
         if (maybeUser.isEmpty()) return null;
         if (!PasswordUtils.verifyPassword(request.getPassword(), maybeUser.get().getPassword())) return null;
-        return jwtService.generateSimpleToken(login, 1000 * 60 * 60);
+        return jwtService.generateToken(login, 1000 * 60 * 60);
     }
 
     @Override
