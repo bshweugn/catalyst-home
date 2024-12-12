@@ -7,13 +7,17 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Lightbulb from '../icons/Lightbulb/Lightbulb';
 import Power from '../icons/Power/Power';
 import { renderItemIcon, renderItemStatus } from '../../itemInfo';
+import Checkmark from '../icons/Checkmark/Checkmark';
 
-const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
+const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList }) => {
     const [maximized, setMaximized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
     const [active, setActive] = useState(device.active);
     const [isHolding, setIsHolding] = useState(false);
     const [isHeld, setIsHeld] = useState(false);
+
+    const [selected, setSelected] = useState(false);
+
 
     const holdTimeout = useRef(null);
 
@@ -33,12 +37,13 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
-        canDrag: () => editMode, // Only allow dragging if editMode is true
+        canDrag: () => editMode,
     });
 
-    const opacity = isDragging ? 0.5 : 1; // Set opacity to 0.5 when dragging
+    const opacity = isDragging ? 0.5 : 1;
 
     useEffect(() => {
+
         let timeoutId;
         if (editMode) {
             const delay = Math.random() * 100;
@@ -52,10 +57,46 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
         return () => clearTimeout(timeoutId);
     }, [editMode]);
 
+    useEffect(() => {
+        if (selectedList && selectedList.includes(device.id)) {
+            setSelected(true);
+        } else {
+            setSelected(false);
+        }
+    }, [selectedList, device.id]);
+
     const handleCardClick = () => {
+        const addDevice = (deviceId) => {
+            setter((prevDevices) => {
+                if (!prevDevices.includes(deviceId)) {
+                    return [...prevDevices, deviceId];
+                }
+                return prevDevices;
+            });
+        };
+
+        const removeDevice = (deviceId) => {
+            setter((prevDevices) => {
+                return prevDevices.filter((id) => id !== deviceId);
+            });
+        };
+
         if (!editMode && !isHolding) {
             console.log(editMode, isHolding)
-            idFunc(device.id);
+            if (!selectable) {
+                idFunc(device.id);
+            } else {
+                if (!selected) {
+                    addDevice(device.id);
+                    setSelected(true);
+                    console.log("add");
+                } else {
+                    removeDevice(device.id);
+                    setSelected(false);
+                    console.log("remove");
+                }
+                console.log(selectedList);
+            }
             hapticsImpactLight();
         }
     };
@@ -96,10 +137,13 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
     return (
         <div
             ref={(node) => drag(drop(node))}
-            className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""}`}
+            className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected ? "item-card--selected" : ""}`}
             style={{ opacity }}
             onClick={handleCardClick}
         >
+            <div className={`item-card__select-indicator ${selected ? "item-card__select-indicator--visible" : ""}`}>
+                <Checkmark className='item-card__checkmark' fill="black" size="1rem" />
+            </div>
             <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setMaximized(!maximized); }}>
                 {maximized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
             </div>
@@ -113,7 +157,7 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc }) => {
                 </div>
             )}
             <div className='item-card__item-icon'>
-                {renderItemIcon(device)}
+                {renderItemIcon(device, true)}
             </div>
             <div className='item-card__item-info'>
                 <p className='item-card__item-name'>{device.name}</p>

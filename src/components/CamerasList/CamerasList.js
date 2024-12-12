@@ -21,6 +21,7 @@ const CamerasList = ({ cameras, rooms, editMode, setItemID, openedID }) => {
                     opened={camera.id === openedID}
                 />
             ))}
+            
             {/* <p>{JSON.stringify(cameras)}</p> */}
         </CamerasRow>
     );

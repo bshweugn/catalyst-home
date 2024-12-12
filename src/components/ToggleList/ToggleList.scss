@@ -1,5 +1,19 @@
 .toggle-list {
     width: 100%;
+    float: left;
+
+    &--light &__wrapper {
+        background-color: rgba(0, 0, 0, 0.06);
+        color: black;
+    }
+
+    &--bottom-separated &__wrapper {
+        margin-bottom: 2rem;
+    }
+
+    &--separated &__label {
+        margin-top: 1rem;
+    }
 
     &__wrapper {
         background-color: rgba(0, 0, 0, 0.3);
@@ -38,6 +52,15 @@
         &:not(:last-child) {
             border-bottom: 1px solid rgba(255, 255, 255, 0.05); // Легкая граница между элементами
         }
+    }
+
+    &__label{
+        margin: 0 0 0.5rem 0;
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+        text-align: left;
     }
 
     &__toggle {

@@ -1,0 +1,33 @@
+.wide-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    font-size: 1rem;
+    border-radius: 0.7rem;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    color: white;
+    transition: 0s;
+    text-align: left;
+
+    &:active{
+        background-color: rgba(20, 20, 20, 0.3);
+    }
+    
+    &--separated{
+        margin-top: 2rem;
+    }
+
+    &--red{
+        color: rgb(200, 0, 0);
+    }
+
+    &--light{
+        background-color: rgba(0, 0, 0, 0.06);
+        color: black;
+    }
+
+    &--light &:active{
+        background-color: rgba(20, 20, 20, 0.06);
+    }
+}

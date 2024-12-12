@@ -26,6 +26,8 @@ PODS:
     - DynamsoftLicense (= 3.0.20)
   - CapacitorStatusBar (6.0.1):
     - Capacitor
+  - CordovaPlugins (6.1.2):
+    - CapacitorCordova
   - DynamsoftBarcodeReader (10.0.20):
     - DynamsoftCore (= 3.0.20)
     - DynamsoftImageProcessing (= 2.0.20)
@@ -51,6 +53,7 @@ DEPENDENCIES:
   - CapacitorPluginCamera (from `../../node_modules/capacitor-plugin-camera`)
   - CapacitorPluginDynamsoftBarcodeReader (from `../../node_modules/capacitor-plugin-dynamsoft-barcode-reader`)
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
 
 SPEC REPOS:
   trunk:
@@ -84,6 +87,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-plugin-dynamsoft-barcode-reader"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  CordovaPlugins:
+    :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
@@ -97,6 +102,7 @@ SPEC CHECKSUMS:
   CapacitorPluginCamera: 7f7660fb269b02bf2300e3754dea21c929b7bf89
   CapacitorPluginDynamsoftBarcodeReader: bbf8afada71e74f142f99a5aab0bf19ec774c22c
   CapacitorStatusBar: b81d4fb5d4e0064c712018071b3ab4b810b39a63
+  CordovaPlugins: 6636f4c58f1aef4d803c6ff3e8344eb39c00ba68
   DynamsoftBarcodeReader: 57ceb9d7734801caa775e2e6b9ebfb9819b4e2d2
   DynamsoftCaptureVisionRouter: 13d460d5be0048bcf9ab39962148a63ffe549e43
   DynamsoftCore: 928916c8605eb622c13d560753d5de67e8694fb4
@@ -104,6 +110,6 @@ SPEC CHECKSUMS:
   DynamsoftLicense: 06fcc035c2ed9494bbbcb793e21f9ff864ab26e8
   OSBarcodeLib: f2e981270a64faf476cb790864262b29ab8cd68a
 
-PODFILE CHECKSUM: 00a74b9c559f330cbbab0f22409577d97be6cc38
+PODFILE CHECKSUM: a788ec15cc26e54fda45a7be6dcdc9dd120774b5
 
 COCOAPODS: 1.16.2

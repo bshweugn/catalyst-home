@@ -1,0 +1,15 @@
+.description {
+    margin: 0.5rem 0 0.5rem 0;
+    padding-left: 0.5rem;
+    padding-right: 2rem;
+    box-sizing: border-box;
+    font-size: 0.875rem;
+    width: calc(100vw - 2rem);
+    line-height: 1.2;
+    opacity: 0.5;
+    text-align: left;
+
+    &--bottom-separated{
+        margin-bottom: 2rem;
+    }
+}

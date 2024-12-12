@@ -14,7 +14,7 @@ const RoomWindow = (args) => {
             <div className='room-window__back' />
             <div className='room-window__header'>
                 <p className='room-window__header-title'>{args.room.name}</p>
-                <p className='room-window__close-btn' onClick={() => args.idFunc(0)}>Готово</p>
+                <p className='room-window__close-btn' onClick={() => args.idFunc(-1)}>Готово</p>
             </div>
             <div className='room-window__content'>
                 <div className='room-window__content-wrapper'>

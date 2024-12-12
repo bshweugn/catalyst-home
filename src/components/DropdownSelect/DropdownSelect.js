@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './DropdownSelect.scss';
 import Checkmark from '../icons/Checkmark/Checkmark';
 
-const DropdownSelect = ({ options, selectedOption, setSelectedOption, label }) => {
+const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, light }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOptionSelect = (option) => {
@@ -11,7 +11,7 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label }) =
     };
 
     return (
-        <div className="dropdown-select">
+        <div className={`dropdown-select ${light ? "dropdown-select--light" : ""}`}>
             {/* <p className="dropdown-select__label">{label}</p> */}
             <div
                 className={`dropdown-select__field ${isOpen ? 'dropdown-select__field--open' : ''}`}

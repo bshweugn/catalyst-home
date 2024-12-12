@@ -51,6 +51,9 @@ import CameraView from './components/CameraView/CameraView';
 import CamerasRow from './components/CamerasRow/CamerasRow';
 import CameraWindow from './components/CameraWindow/CameraWindow';
 import CamerasList from './components/CamerasList/CamerasList';
+import Scanner from './components/Scanner/Scanner';
+import ScriptDevicesList from './components/ScriptDevicesList/ScriptDevicesList';
+import CamerasVerticalList from './components/CamerasVerticalList/CamerasVerticalList';
 
 function Homepage(args) {
     const dispatch = useDispatch();
@@ -75,7 +78,7 @@ function Homepage(args) {
 
     const [itemID, setItemID] = useState(0);
     const [cameraID, setCameraID] = useState(0);
-    const [roomID, setRoomID] = useState(0);
+    const [selectedRoomID, setSelectedRoomID] = useState(-1);
 
 
     useEffect(() => {
@@ -145,6 +148,39 @@ function Homepage(args) {
         },
     ];
 
+
+    const scriptDevices = [
+        {
+            "id": 1,
+            "name": "Living Room Lamp",
+            "type": "LAMP",
+            "room": { "id": 101, "name": "Living Room" },
+            "actions": [
+                { "name": "BRIGHTNESS", "values": { "min": 0, "max": 100 } }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Bedroom Fan",
+            "type": "FAN",
+            "room": { "id": 102, "name": "Bedroom" },
+            "actions": [
+                { "name": "MODE", "values": ["SOFT", "MID", "MAX"] }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Kitchen AC",
+            "type": "AC",
+            "room": { "id": 103, "name": "Kitchen" },
+            "actions": [
+                { "name": "TEMPERATURE", "values": { "min": 16, "max": 30 } },
+                { "name": "MODE", "values": ["COOL", "HEAT", "FAN"] }
+            ]
+        }
+    ];
+
+
     const [values, setValues] = useState([]);
     const [labels, setLabels] = useState([]);
 
@@ -157,14 +193,9 @@ function Homepage(args) {
 
     }, [rooms]);
 
-    // const handleOrderChange = (newValues) => {
-    //     dispatch(changeRoomOrder({ newOrder: newValues }));
-    // };
 
     const handleOrderChange = (order) => {
-        // console.log("Новый порядок комнат:", order);
         dispatch(changeRoomOrder({ newOrder: order }));
-        console.log(rooms);
     };
 
     const cards = [
@@ -186,7 +217,7 @@ function Homepage(args) {
             icon: Reorder,
             content: (
                 <>
-                    <ToggleList toggles={toggleStates} label="Взаимодействие" />
+                    <ToggleList bottomSeparated toggles={toggleStates} label="Взаимодействие" />
                     <DraggableList
                         onChange={handleOrderChange}
                         label="Порядок секций"
@@ -246,7 +277,10 @@ function Homepage(args) {
                 />
             ))}
 
-            <RoomWindow room={mainRoom} visible={roomID === mainRoom.id} idFunc={setRoomID}></RoomWindow>
+            {Object.keys(rooms)
+                .map(roomId => (
+                    <RoomWindow room={rooms[roomId]} visible={selectedRoomID === rooms[roomId].idx} idFunc={setSelectedRoomID} />
+                ))}
 
             <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} />
 
@@ -266,7 +300,7 @@ function Homepage(args) {
 
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">{args.currentPage === 0 ? houseName : args.currentPage === 1 ? "Избранное" : "Автоматизация"}</IonTitle>
+                        <IonTitle size="large">{args.currentPage === 0 ? houseName : args.currentPage === 1 ? "Аксессуары" : args.currentPage === 2 ? "Камеры" : "Автоматизации"}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
 
@@ -292,7 +326,6 @@ function Homepage(args) {
                     </CamerasRow> */}
 
                     <CamerasList
-                        func={setRoomID}
                         rooms={rooms}
                         cameras={cameras}
                         editMode={editMode}
@@ -303,25 +336,99 @@ function Homepage(args) {
                     <div className='page'>
                         {Object.keys(rooms)
                             .sort((a, b) => rooms[a].order - rooms[b].order)
-                            .map(roomId => (
-                                <ItemsList
-                                    key={roomId}
-                                    roomName={rooms[roomId].name}
-                                    roomID={rooms[roomId].id}
-                                    func={setRoomID}
-                                    devices={Object.keys(devices)
-                                        .filter(deviceId => devices[deviceId].roomID === rooms[roomId].id)
-                                        .map(deviceId => devices[deviceId])
-                                    }
-                                    editMode={editMode}
-                                    setItemID={setItemID}
-                                    openedID={itemID}
-                                />
-                            ))}
+                            .map(roomId => {
+                                const roomDevices = Object.keys(devices)
+                                    .filter(deviceId =>
+                                        devices[deviceId].roomID === rooms[roomId].id &&
+                                        devices[deviceId].favourite === true
+                                    )
+                                    .map(deviceId => devices[deviceId]);
+
+                                if (roomDevices.length === 0) return null;
+
+                                return (
+                                    <ItemsList
+                                        key={roomId}
+                                        roomName={rooms[roomId].name}
+                                        roomID={rooms[roomId].id}
+                                        func={setSelectedRoomID}
+                                        devices={roomDevices}
+                                        editMode={editMode}
+                                        setItemID={setItemID}
+                                        openedID={itemID}
+                                    />
+                                );
+                            })}
                     </div>
 
 
                 </Section>
+
+                <Section visible={args.currentPage === 1}>
+                    <div className='page page--compensated'>
+                        {Object.keys(rooms)
+                            .sort((a, b) => rooms[a].order - rooms[b].order)
+                            .map(roomId => {
+                                const roomDevices = Object.keys(devices)
+                                    .filter(deviceId => devices[deviceId].roomID === rooms[roomId].id)
+                                    .map(deviceId => devices[deviceId]);
+
+                                if (roomDevices.length === 0) return null;
+
+                                return (
+                                    <ItemsList
+                                        key={roomId}
+                                        roomName={rooms[roomId].name}
+                                        roomID={rooms[roomId].id}
+                                        func={setSelectedRoomID}
+                                        devices={roomDevices}
+                                        editMode={editMode}
+                                        setItemID={setItemID}
+                                        openedID={itemID}
+                                    />
+                                );
+                            })}
+                    </div>
+
+                </Section>
+
+                <Section visible={args.currentPage === 2}>
+                    <div className='page'>
+                        {Object.keys(rooms)
+                            .sort((a, b) => rooms[a].order - rooms[b].order)
+                            .map(roomId => {
+                                const roomCameras = Object.keys(cameras)
+                                    .filter(deviceId =>
+                                        cameras[deviceId].roomID === rooms[roomId].id
+                                    )
+                                    .map(deviceId => cameras[deviceId]);
+
+                                if (roomCameras.length === 0) return null;
+
+                                return (
+                                    <CamerasVerticalList
+                                        key={roomId}
+                                        roomName={rooms[roomId].name}
+                                        roomID={rooms[roomId].id}
+                                        func={setSelectedRoomID}
+                                        cameras={roomCameras}
+                                        rooms={rooms}
+                                        editMode={editMode}
+                                        setItemID={setCameraID}
+                                        openedID={cameraID}
+                                    />
+                                );
+                            })}
+                    </div>
+
+                </Section>
+
+                <Section visible={args.currentPage === 3}>
+                    <div className='page'>
+                        <ScriptDevicesList devices={scriptDevices} />
+                    </div>
+                </Section>
+
 
             </IonContent>
         </>

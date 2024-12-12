@@ -10,6 +10,8 @@
     &--primary {
         background-color: rgba(0, 0, 0, 0.08);
         color: black;
+        // box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
+        // backdrop-filter: blur(2rem);
     }
 
     &__label{

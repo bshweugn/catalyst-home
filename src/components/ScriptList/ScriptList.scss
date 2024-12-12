@@ -1,0 +1,47 @@
+/* ScriptList.scss */
+.script-list {
+    &__title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  
+    &__create-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  
+    &__items {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+  
+      &__item {
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        
+        strong {
+          font-size: 18px;
+        }
+  
+        p {
+          font-size: 14px;
+          color: #666;
+        }
+      }
+    }
+  }
+  

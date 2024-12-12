@@ -1,68 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
-import "./Scanner.scss";
+import React, { useEffect, useState } from "react";
+import { Html5Qrcode } from "html5-qrcode";
 
-const Scanner = ({ scannedData, setScannedData, className, scanning }) => {
-    const [isScanning, setIsScanning] = useState(false);
-    const [error, setError] = useState("");
+const Scanner = () => {
+  const [scanResult, setScanResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const scannerId = "html5-qrcode-scanner";
+  let html5QrCode = null;
 
-    useEffect(() => {
-        let isMounted = true; // Чтобы избежать утечек памяти
+  useEffect(() => {
+    html5QrCode = new Html5Qrcode(scannerId);
 
-        const startScanning = async () => {
-            try {
-                setError("");
-
-                // Проверка и запрос разрешений
-                const status = await BarcodeScanner.checkPermission({ force: true });
-                if (!status.granted) {
-                    setError("Permission denied for accessing camera");
-                    return;
-                }
-
-                // Скрываем фон и запускаем сканирование
-                BarcodeScanner.hideBackground(); 
-                setIsScanning(true);
-
-                const result = await BarcodeScanner.startScan(); // Запускаем сканирование
-
-                if (isMounted) {
-                    if (result.hasContent) {
-                        setScannedData(result.content);
-                    } else {
-                        setError("No QR code content found");
-                    }
-                }
-            } catch (err) {
-                if (isMounted) setError("Error accessing the camera or scanning");
-            } finally {
-                if (isMounted) setIsScanning(false);
-            }
-        };
-
-        if (scanning) {
-            startScanning();
-        } else {
-            // Останавливаем сканирование
-            BarcodeScanner.showBackground();
-            BarcodeScanner.stopScan();
+    const startScanner = async () => {
+      try {
+        setIsScanning(true);
+        await html5QrCode.start(
+          { facingMode: "environment" }, // Камера по умолчанию
+          {
+            fps: 10, // Частота сканирования
+            qrbox: { width: 250, height: 250 }, // Размер области сканирования
+          },
+          (decodedText) => {
+            setScanResult(decodedText); // Успешный результат
+            html5QrCode.stop(); // Останавливаем сканер после успешного считывания
             setIsScanning(false);
-        }
+          },
+          (errorMessage) => {
+            console.warn("Ошибка сканирования: ", errorMessage); // Лог ошибок сканирования
+          }
+        );
+      } catch (err) {
+        console.error("Ошибка запуска сканера: ", err);
+        setError("Не удалось запустить сканер.");
+        setIsScanning(false);
+      }
+    };
 
-        return () => {
-            isMounted = false; // Прерываем асинхронные вызовы
-        };
-    }, [scanning, setScannedData]);
+    startScanner();
 
-    const finalClassName = "scanner " + (className || "");
+    return () => {
+      if (html5QrCode) {
+        html5QrCode
+          .stop()
+          .then(() => html5QrCode.clear())
+          .catch((err) => console.warn("Ошибка остановки сканера: ", err));
+      }
+    };
+  }, []);
 
-    return (
-        <div className={finalClassName}>
-            {scannedData && <p>Scanned Data: {scannedData}</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {isScanning && <p>Scanning...</p>}
-        </div>
-    );
+  return (
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <h1>QR Code Scanner</h1>
+      <div
+        id={scannerId}
+        style={{ width: "300px", height: "300px", margin: "auto", border: "1px solid black" }}
+      />
+      {scanResult && <p style={{ color: "green" }}>Результат: {scanResult}</p>}
+      {error && <p style={{ color: "red" }}>Ошибка: {error}</p>}
+      {isScanning && <p>Сканируем...</p>}
+    </div>
+  );
 };
 
 export default Scanner;

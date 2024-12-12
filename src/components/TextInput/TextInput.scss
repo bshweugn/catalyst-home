@@ -4,6 +4,19 @@
     flex-direction: column;
     width: 100%;
     margin: 0.5rem 0;
+
+    &--light &__field{
+      background-color: rgba(0, 0, 0, 0.08);
+      color: black;
+    }
+
+    &--bottom-separated &__field{
+      margin-bottom: 1rem;
+    }
+
+    &--separated &__label{
+      margin-top: 1rem;
+    }
   
     &__field {
       width: 100%;
@@ -32,6 +45,7 @@
         font-size: 0.75rem;
         opacity: 0.6;
         text-transform: uppercase;
+        text-align: left;
     }
   }
   

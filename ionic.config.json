@@ -3,5 +3,8 @@
   "integrations": {
     "capacitor": {}
   },
+  "plugins": {
+    "Cordova": {}
+  },
   "type": "react"
 }

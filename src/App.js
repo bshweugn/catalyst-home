@@ -16,6 +16,9 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { Provider } from 'react-redux';
 import store, { persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
+import Sheet from './components/Sheet/Sheet';
+import WideButton from './components/WideButton/WideButton';
+import { registerUser } from './logic/oauth';
 
 function App() {
   const [addAccessoryMode, setAccessoryMode] = useState(false);
@@ -23,16 +26,47 @@ function App() {
   const profileModal = useRef(null);
   const pageRef = useRef(null);
 
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+
+
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+
   const [currentPage, setCurrentPage] = useState(0);
+
+  const [popupView, setPopupView] = useState('default');
 
   useEffect(() => {
     StatusBar.setStyle({ style: Style.Dark });
   }, []);
 
-  const dismissProfileModal = () => {
-    profileModal.current?.dismiss();
-    setProfileModalOpen(false);
+
+  useEffect(() => {
+    setToken(localStorage.getItem('token'));
+    console.log("NEW " + token);
+  }, [localStorage.getItem('token')]);
+
+
+  const handleRegister = async () => {
+    const userData = { username, email, password };
+
+    try {
+      const result = await registerUser(userData);
+
+      if (result.token) {
+        localStorage.setItem('token', result.token);
+        setMessage('Registration successful!');
+      } else {
+        setMessage(result.response?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      setMessage('Registration failed. Please try again.');
+    }
   };
+
 
   setupIonicReact();
 
@@ -43,8 +77,7 @@ function App() {
           <Homepage currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} />
           <TabBar activeTab={currentPage} setActiveTab={setCurrentPage} />
 
-          {/* Profile Modal */}
-          <IonModal
+          {/* <IonModal
             isOpen={isProfileModalOpen}
             ref={profileModal}
             presentingElement={pageRef.current || undefined}
@@ -56,10 +89,37 @@ function App() {
             <IonContent className="ion-padding">
               <ProfileInfo avatar={avatar} name="Евгений Башаримов" mail="bshv.evgn@gmail.com" />
             </IonContent>
-          </IonModal>
+          </IonModal> */}
 
           {/* Add Accessory Popup */}
-          <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} />
+
+          <Sheet visible={isProfileModalOpen} func={setProfileModalOpen} title="Профиль">
+            <ProfileInfo avatar={avatar} name="Евгений Башаримов" mail="bshv.evgn@gmail.com" />
+            <WideButton light label="Выйти" />
+
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <p>{message}</p>
+            <button onClick={handleRegister}>Register</button>
+          </Sheet>
+
+          <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} view={popupView} />
         </IonApp>
       </PersistGate>
     </Provider>

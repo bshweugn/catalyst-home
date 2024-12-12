@@ -1,0 +1,50 @@
+.icon-selector {
+    width: 100%;
+    margin-top: 2rem;
+    height: fit-content;
+
+    &__wrapper {
+        border-radius: 0.8rem;
+        background-color: rgba(0, 0, 0, 0.3);
+        width: 100%;
+        overflow: hidden;
+    }
+
+
+    &__list {
+        width: 100%;
+        padding: calc(1rem - 4px);
+        display: flex;
+        flex-direction: row;
+        gap: calc(0.5rem - 6px);
+        overflow-x: scroll;
+        box-sizing: border-box;
+    }
+
+    &__icon-container {
+        border: 2px solid rgba(255, 255, 255, 0.0);
+        border-radius: 0.5rem;
+        padding: 0.15rem;
+        height: 2.6rem;
+        width: 2.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .2s;
+
+        &--active {
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    &__label {
+        margin: 0 0 0.5rem 0;
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+        min-width: max-content;
+        width: max-content;
+    }
+}

@@ -14,8 +14,19 @@ import StarOutline from '../icons/StarOutline/StarOutline';
 import Star from '../icons/Star/Star';
 import TempIndicator from '../TempIndicator/TempIndicator';
 import Gear from '../icons/Gear/Gear';
+import ItemSettings from '../ItemSettings/ItemSettings';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import Lightbulb from '../icons/Lightbulb/Lightbulb';
+import DeskLamp from '../icons/DeskLamp/DeskLamp';
+import CeilingLamp from '../icons/CeilingLamp/CeilingLamp';
+
+
 
 const ItemWindow = (args) => {
+    const [settingsVisible, setSettingsVisible] = useState(false);
+    const [icons, setIcons] = useState([]);
+    const [selectedIcon, setSelectedIcon] = useState(<Lightbulb />);
+
     const dispatch = useDispatch();
 
     const handleToggle = (dID) => {
@@ -25,6 +36,18 @@ const ItemWindow = (args) => {
     const handleTempChange = (dID, temp) => {
         dispatch(setThermostatTemp({ id: dID, temp: temp }));
     };
+
+    const handleContentClick = (event) => {
+        if (event.target === event.currentTarget) {
+            args.idFunc(0);
+        }
+    };
+
+    useEffect(() => {
+        if (args.device.type === 'LAMP') {
+            setIcons([<Lightbulb />, <DeskLamp />, <CeilingLamp />]);
+        }
+    }, [args.device.type]);
 
     const renderDeviceControls = () => {
         if (args.device.type === 'LAMP') {
@@ -50,6 +73,14 @@ const ItemWindow = (args) => {
                     <TempIndicator temp={args.device.currentTemp} />
                     <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={args.device.targetTemp} setValue={(newTemp) => handleTempChange(args.device.id, newTemp)} id={args.device.id} />
                     <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} />
+                </>
+            );
+        }
+
+        if (args.device.type === 'VALVE') {
+            return (
+                <>
+                    <ActionButton active={args.device.status === 'OPENED'} icon={Power} labels={["Открыто", "Закрыто"]} />
                 </>
             );
         }
@@ -104,32 +135,33 @@ const ItemWindow = (args) => {
 
     return (
         <div className={`item-window ${!args.visible ? "item-window--hidden" : ""} ${args.device.type === 'THERMOSTAT' ? "item-window--vertical" : ""}`}>
+            <ItemSettings rooms={Object.values(args.rooms).map(room => room.name)} room={args.rooms[("id" + args.device.roomID)].name} name={args.device.name} visible={settingsVisible} visibilityFunc={setSettingsVisible} icons={icons} selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon}/>
             <div className='item-window__back' />
-            <div className='item-window__header'>
+            <div className={`item-window__header ${settingsVisible ? "item-window__header--hidden" : ""}`}>
                 <div className='item-window__item-icon'>
                     {renderItemIcon(args.device)}
                 </div>
                 <p className='item-window__header-title'>{args.device.name}</p>
                 <p className='item-window__close-btn' onClick={() => args.idFunc(0)}>Готово</p>
             </div>
-            <div className='item-window__content'>
-                <div className='item-window__item-info'>
+            <div onClick={handleContentClick} className={`item-window__content ${settingsVisible ? "item-window__content--hidden" : ""}`}>
+                <div className='item-window__item-info' onClick={handleContentClick}>
                     <p className='item-window__item-name'>{args.device.name}</p>
                     <p className='item-window__room-name'>{args.rooms[("id" + args.device.roomID)].name}</p>
                     <div className='item-window__item-status' style={{ width: statusWidth }}>
                         <p ref={statusRef} className={isFading ? 'fading' : ''}>{deviceStatus}</p>
                     </div>
                 </div>
-                <div className='item-window__content-wrapper'>
+                <div className='item-window__content-wrapper' onClick={handleContentClick}>
                     {renderDeviceControls()}
                 </div>
             </div>
-            <div className='item-window__toolbar'>
-                <div className='item-window__tool-btn item-window__tool-btn--circle' onClick={() => setIsFav(!isFav)}>
+            <div className={`item-window__toolbar ${settingsVisible ? "item-window__toolbar--hidden" : ""}`}>
+                <div className='item-window__tool-btn item-window__tool-btn--circle' onClick={() => {setIsFav(!isFav); Haptics.impact({ style: ImpactStyle.Light });}}>
                     {isFav ? <Star size="1.2rem" color="white" /> : <StarOutline size="1.2rem" color="white" />}
                 </div>
                 <div className='item-window__tool-btn'>
-                    <p className='item-window__tool-btn-label'>Параметры</p>
+                    <p className='item-window__tool-btn-label' onClick={() => {setSettingsVisible(true); Haptics.impact({ style: ImpactStyle.Light });}}>Параметры</p>
                     {/* <Gear size="1.2rem" color="white" /> */}
                 </div>
             </div>

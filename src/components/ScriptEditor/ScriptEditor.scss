@@ -1,0 +1,33 @@
+/* ScriptEditor.scss */
+.script-editor {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+    .script-editor__add-btn, 
+    .script-editor__save-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+  
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  
+    .script-editor__save-btn {
+      background-color: #007bff;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+  

@@ -1,5 +1,6 @@
 html {
   user-select: none;
+  -webkit-touch-callout: none;
 }
 
 * {
@@ -22,6 +23,10 @@ body {
   background-size: contain;
   padding: 0rem 1rem 12rem 1rem;
   overflow-y: scroll;
+}
+
+.page--compensated{
+  margin-top: -2rem;
 }
 
 ion-content {

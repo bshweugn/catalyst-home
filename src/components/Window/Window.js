@@ -18,6 +18,12 @@ const Window = ({ visible, vertical, title, idFunc, cards }) => {
         handleCloseCard();
     };
 
+    const handleContentClick = (event) => {
+        if (event.target === event.currentTarget) {
+            idFunc(0);
+        }
+    };
+
     return (
         <div className={`window ${!visible ? "window--hidden" : ""} ${vertical ? "window--vertical" : ""}`}>
             <div className='window__header'>
@@ -33,8 +39,8 @@ const Window = ({ visible, vertical, title, idFunc, cards }) => {
                     Готово
                 </p>
             </div>
-            <div className={'window__content' + (openCardIndex !== null ? " window__content--minimized" : '')}>
-                <div className='window__content-wrapper'>
+            <div onClick={handleContentClick} className={'window__content' + (openCardIndex !== null ? " window__content--minimized" : '')}>
+                <div className='window__content-wrapper' onClick={handleContentClick}>
                     {cards.map((card, index) => (
                         <BtnCard
                             key={index}
