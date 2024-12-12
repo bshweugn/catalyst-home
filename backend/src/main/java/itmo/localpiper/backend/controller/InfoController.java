@@ -21,7 +21,8 @@ public class InfoController {
     private GetInfoProcessorService getInfoProcessorService;
     
     @GetMapping("/retrieve")
-    public ResponseEntity<InfoResponse> getMethodName(@Valid @RequestBody EntityInfoRequest request) {
+    public ResponseEntity<InfoResponse> getMethodName(
+        @Valid @RequestBody EntityInfoRequest request) {
         return ResponseEntity.ok(getInfoProcessorService.process(request));
     }
     

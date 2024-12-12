@@ -26,14 +26,14 @@ public class EntityModificationController {
     private ModifyMoveProcessorService modifyMoveProcessorService;
 
     @PostMapping("/rename")
-    public ResponseEntity<OperationResultResponse> renameEntity(@Valid @RequestBody EntityRenameRequest request) {
+    public ResponseEntity<OperationResultResponse> renameEntity(
+        @Valid @RequestBody EntityRenameRequest request) {
         return ResponseEntity.ok(modifyRenameProcessorService.process(request));
     }
 
     @PostMapping("/move")
-    public ResponseEntity<OperationResultResponse> moveEntity(@Valid @RequestBody EntityMoveRequest request) {
+    public ResponseEntity<OperationResultResponse> moveEntity(
+        @Valid @RequestBody EntityMoveRequest request) {
         return ResponseEntity.ok(modifyMoveProcessorService.process(request));
     }
-    
-    
 }

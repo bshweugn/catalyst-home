@@ -27,12 +27,14 @@ public class DeviceImportController {
     private ImportCreateProcessorService importCreateProcessorService;
 
     @PostMapping("/checkDevice")
-    public ResponseEntity<ImportResultResponse> checkDeviceNumber(@Valid @RequestBody ImportRequest request) {
+    public ResponseEntity<ImportResultResponse> checkDeviceNumber(
+        @Valid @RequestBody ImportRequest request) {
         return ResponseEntity.ok(importProcessorService.process(request));
     }
 
     @PostMapping("/importDevice")
-    public ResponseEntity<OperationResultResponse> importAndCreateDevice(@Valid @RequestBody ImportCreateRequest request) {
+    public ResponseEntity<OperationResultResponse> importAndCreateDevice(
+        @Valid @RequestBody ImportCreateRequest request) {
         return ResponseEntity.ok(importCreateProcessorService.process(request));
     }
     
