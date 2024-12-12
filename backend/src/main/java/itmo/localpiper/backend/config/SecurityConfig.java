@@ -18,9 +18,11 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()  // Public paths
-                        .anyRequest().permitAll());  // Allow all other requests (adjust for production)
+                        .requestMatchers("/**").permitAll()  // Allow all requests, including OPTIONS
+                        .anyRequest().authenticated());  // Customize as needed
         return http.build();
     }
+    
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
