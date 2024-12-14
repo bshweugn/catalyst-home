@@ -51,7 +51,11 @@ public class InvitationApplyProcessor extends AbstractProcessor<Pair<String, Pro
         } catch (JsonProcessingException e) {
             return ProcessingStatus.ERROR;
         }
-        tgas.grantAccess(user, invitation.getHouse(), privileges, inviteId);
+        if (invitation.getIsResident()) {
+            tgas.grantAccess(user, invitation.getHouse(), privileges, inviteId);
+        } else {
+            tgas.grantAccess(user, invitation.getHouse(), privileges, inviteId);
+        }
         return ProcessingStatus.SUCCESS;        
     }
 

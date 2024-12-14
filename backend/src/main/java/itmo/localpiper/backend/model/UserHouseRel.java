@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import itmo.localpiper.backend.util.enums.HouseOwnership;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,8 +35,8 @@ public class UserHouseRel {
     @JoinColumn(name = "house_id")
     private House house;
 
-    @Column(name="is_resident")
-    private Boolean isResident;
+    @Column(name="role")
+    private HouseOwnership role;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -50,7 +51,7 @@ public class UserHouseRel {
             node.set("house", objectMapper.readTree(house.toJson()));
         } catch (JsonProcessingException e) {
         }
-        node.put("is_resident", isResident);
+        node.put("role", role.toString());
         
         return node.toString();
     }

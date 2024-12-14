@@ -38,6 +38,11 @@ public class DeviceTypeHandlerService {
         return DeviceType.valueOf(typeString.split("_")[0]);
     }
 
+    public String extractSerialNumber(String deviceType) {
+        String[] parts = deviceType.split("_");
+        return parts[1] + parts[2];
+    }
+
     public List<String> retrieveFeatures(String number) {
         JsonNode node = deviceRegistry.get(number);
         ArrayNode featuresNode = (ArrayNode) node.get("features");

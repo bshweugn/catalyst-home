@@ -11,6 +11,7 @@ import itmo.localpiper.backend.model.UserHouseRel;
 import itmo.localpiper.backend.repository.HouseRepository;
 import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
+import itmo.localpiper.backend.util.enums.HouseOwnership;
 
 @Service
 public class UserHouseRelService {
@@ -28,13 +29,13 @@ public class UserHouseRelService {
         return repository.findAll();
     }
 
-    public void create(Long userId, Long houseId, Boolean isResident) {
+    public void create(Long userId, Long houseId, HouseOwnership role) {
         UserHouseRel userHouseRel = new UserHouseRel();
         User user = userRepository.findById(userId).get();
         House house = houseRepository.findById(houseId).get();
         userHouseRel.setUser(user);
         userHouseRel.setHouse(house);
-        userHouseRel.setIsResident(isResident);
+        userHouseRel.setRole(role);
 
         repository.save(userHouseRel);
     }

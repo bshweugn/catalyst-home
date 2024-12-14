@@ -18,6 +18,7 @@ import itmo.localpiper.backend.service.entity.HouseService;
 import itmo.localpiper.backend.service.entity.LocationService;
 import itmo.localpiper.backend.service.entity.RoomService;
 import itmo.localpiper.backend.service.entity.UserHouseRelService;
+import itmo.localpiper.backend.util.enums.HouseOwnership;
 
 @Service
 public class TransactionalCreateRecursiveEntityService {
@@ -44,7 +45,7 @@ public class TransactionalCreateRecursiveEntityService {
         if (houses.isEmpty()) {
             Long locationId = locationService.createOrReturn(0D, 0D);
             house = houseService.create("My House", locationId);
-            uhrService.create(user.getId(), house.getId(), true);
+            uhrService.create(user.getId(), house.getId(), HouseOwnership.OWNER);
         } else {
             house = houses.get(0);
         }
@@ -66,7 +67,7 @@ public class TransactionalCreateRecursiveEntityService {
         if (houses.isEmpty()) {
             Long locationId = locationService.createOrReturn(0D, 0D);
             house = houseService.create("My House", locationId);
-            uhrService.create(user.getId(), house.getId(), true);
+            uhrService.create(user.getId(), house.getId(), HouseOwnership.OWNER);
         } else {
             house = houses.get(0);
         }
@@ -78,14 +79,14 @@ public class TransactionalCreateRecursiveEntityService {
     public House createHouse(User user, String houseName, Double x, Double y) {
         Long locationId = locationService.createOrReturn(x, y);
         House house = houseService.create(houseName, locationId);
-        uhrService.create(user.getId(), house.getId(), true);
+        uhrService.create(user.getId(), house.getId(), HouseOwnership.OWNER);
         return house;
     }
 
     @Transactional(isolation= Isolation.REPEATABLE_READ, propagation=Propagation.REQUIRED)
     public House createMappedHouse(User user, String houseName, Location location) {
         House house = houseService.create(houseName, location.getId());
-        uhrService.create(user.getId(), house.getId(), true);
+        uhrService.create(user.getId(), house.getId(), HouseOwnership.OWNER);
         return house;
     }
 
