@@ -1,5 +1,6 @@
 package itmo.localpiper.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,10 +30,12 @@ public class UserHouseRel {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "house_id")
+    @JsonBackReference
     private House house;
 
     @Column(name="role")

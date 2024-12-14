@@ -1,5 +1,6 @@
 package itmo.localpiper.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -30,10 +31,12 @@ public class UserDeviceActionRel {
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name="device_id", nullable =false)
+    @JsonBackReference
     private Device device;
 
     @Column(name="action")

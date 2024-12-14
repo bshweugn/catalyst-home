@@ -2,6 +2,7 @@ package itmo.localpiper.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -60,6 +61,7 @@ public class Camera {
 
     @ManyToOne
     @JoinColumn(name="room_id", nullable=false)
+    @JsonBackReference
     private Room room;
 
     @ManyToMany(mappedBy="cameras")

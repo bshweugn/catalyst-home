@@ -2,6 +2,7 @@ package itmo.localpiper.backend.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,6 +39,7 @@ public class VideoRecording {
 
     @ManyToOne
     @JoinColumn(name="camera_id", nullable=false)
+    @JsonBackReference
     private Camera camera;
 
     public String toJson() {
