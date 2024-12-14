@@ -22,9 +22,10 @@ const devicesSlice = createSlice({
     initialState: {
         id123: { id: 123, roomID: 0, favourite: false, homeView: true, type: 'LAMP', name: 'Главный свет', dimmable: true, dim: 100, status: 'ON', color: 3 },
         id456: { id: 456, roomID: 0, favourite: false, homeView: true, type: 'THERMOSTAT', name: 'Термостат', currentTemp: 25, targetTemp: 27 },
-        id124: { id: 124, roomID: 0, favourite: false, homeView: true, type: 'LAMP', name: 'Второй свет', dimmable: false, status: 'OFF', color: 5 },
-        id122: { id: 122, roomID: 1, favourite: false, homeView: true, type: 'LAMP', name: 'Свет', dimmable: false, status: 'OFF', color: 5 },
-        id133: { id: 133, roomID: 1, favourite: false, homeView: true, type: 'LEAK_SENSOR', isSensor: true, name: 'Датчик протечки', status: 'ALERT', color: 5 },
+        id133: { id: 133, roomID: 1, favourite: false, homeView: true, type: 'TEMPERATURE_SENSOR', isSensor: true, name: 'Датчик температуры', status: 'ON', currentTemp: 25 },
+        id124: { id: 124, roomID: 0, favourite: false, homeView: true, type: 'LAMP', name: 'Второй свет', dimmable: false, status: 'OFF' },
+        id122: { id: 122, roomID: 1, favourite: false, homeView: true, type: 'LAMP', name: 'Свет', dimmable: false, status: 'OFF' },
+        id133: { id: 133, roomID: 1, favourite: false, homeView: true, type: 'LEAK_SENSOR', isSensor: true, name: 'Датчик протечки', status: 'ALERT' },
         id153: { id: 153, roomID: 1, favourite: false, homeView: true, false: 'VALVE', name: 'Клапан', status: 'OPENED', battery_percentage: 85 },
     },
     reducers: {
@@ -55,11 +56,9 @@ const devicesSlice = createSlice({
             const { id, favourite } = action.payload;
             let dID = "id" + id;
         
-            // Проверяем, существует ли объект с ключом dID
             if (state[dID]) {
                 state[dID].favourite = favourite;
             }
-            // Если объекта нет, просто ничего не делаем
         },
 
         setHomeView: (state, action) => {

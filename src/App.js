@@ -100,7 +100,7 @@ function App() {
                   <WideButton light label="Выйти" onClick={() => handleLogout()} />
                 </Sheet>
 
-                <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} view={popupView} />
+                <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} view={popupView} token={token}/>
               </IonApp>
             } />
             <Route path="/auth" element={

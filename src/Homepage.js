@@ -349,7 +349,7 @@ function Homepage(args) {
                                     )
                                     .map(deviceId => devices[deviceId]);
 
-                                console.log(`Room ${rooms[roomId].name}`, roomDevices);
+                                // console.log(`Room ${rooms[roomId].name}`, roomDevices);
 
                                 if (roomDevices.length === 0) return null;
 

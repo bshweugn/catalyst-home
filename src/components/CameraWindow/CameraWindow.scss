@@ -35,6 +35,10 @@
         justify-content: flex-end;
         transition: .3s cubic-bezier(0.28, 0.01, 0, 0.99);
         // background-color: blue;
+
+        &--hidden{
+            opacity: 0;
+        }
     }
 
     &__header {
@@ -49,6 +53,11 @@
         z-index: 20;
         opacity: 1;
         color: white;
+        transition: .3s;
+
+        &--hidden{
+            opacity: 0;
+        }
     }
 
     &__header-title {

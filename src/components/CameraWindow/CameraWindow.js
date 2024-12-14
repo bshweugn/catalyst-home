@@ -18,6 +18,7 @@ import { IonSpinner } from '@ionic/react';
 import Tap from '../icons/Tap/Tap';
 import Back from '../icons/Back/Back';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import CameraSettings from '../CameraSettings/CameraSettings';
 
 const SECONDS_PER_PIXEL = 1;
 
@@ -26,8 +27,8 @@ const CameraWindow = (args) => {
 
     const scrubberWrapperRef = useRef(null);
 
-    const [baseTime, setBaseTime] = useState(() => new Date().getTime()); // Базовое текущее время в миллисекундах
-    const [displayedTime, setDisplayedTime] = useState(baseTime); // Отображаемое время, учитывающее прокрутку
+    const [baseTime, setBaseTime] = useState(() => new Date().getTime());
+    const [displayedTime, setDisplayedTime] = useState(baseTime);
 
     const [moving, setMoving] = useState(false);
 
@@ -40,6 +41,8 @@ const CameraWindow = (args) => {
     const [isManualScroll, setIsManualScroll] = useState(false);
 
     const [currJoystickZone, setCurrJoystickZone] = useState(-1);
+
+    const [settingsVisible, setSettingsVisible] = useState(false);
 
 
     useEffect(() => {
@@ -255,8 +258,10 @@ const CameraWindow = (args) => {
 
     return (
         <div className={`camera-window ${!args.visible ? "camera-window--hidden" : ""}`}>
+            <CameraSettings rooms={Object.values(args.rooms).map(room => room.name)} room={args.rooms[("id" + args.camera.roomID)].name} name={args.camera.name} visible={settingsVisible} visibilityFunc={setSettingsVisible} />
+            
             <div className='camera-window__back' />
-            <div className='camera-window__header'>
+            <div className={`camera-window__header ${settingsVisible ? "camera-window__header--hidden" : ""}`}>
                 <div className='camera-window__item-info'>
                     <p className='camera-window__item-name'>{args.camera.name}</p>
                     <p className='camera-window__room-name'>{args.rooms["id" + args.camera.roomID]?.name} · {args.camera.isRecording ? 'Запись' : 'Запись приостановлена'}</p>
@@ -267,17 +272,17 @@ const CameraWindow = (args) => {
                 <p className='camera-window__header-title'>{args.camera.name}</p>
                 <p className='camera-window__close-btn' onClick={() => args.idFunc(0)}>Готово</p>
             </div>
-            <div className='camera-window__content'>
+            <div className={`camera-window__content ${settingsVisible ? "camera-window__content--hidden" : ""}`}>
                 <div className='camera-window__content-wrapper'>
                     {renderDeviceControls()}
                 </div>
             </div>
-            <div className='camera-window__toolbar'>
-                <div className='camera-window__tool-btn camera-window__tool-btn--circle' onClick={() => setIsFav(!isFav)}>
+            <div className={`item-window__toolbar ${settingsVisible ? "item-window__toolbar--hidden" : ""}`}>
+                <div className='item-window__tool-btn item-window__tool-btn--circle' onClick={() => { setIsFav(!isFav); Haptics.impact({ style: ImpactStyle.Light }); }}>
                     {isFav ? <Star size="1.2rem" color="white" /> : <StarOutline size="1.2rem" color="white" />}
                 </div>
-                <div className='camera-window__tool-btn'>
-                    <p className='camera-window__tool-btn-label'>Параметры</p>
+                <div className='item-window__tool-btn'>
+                    <p className='item-window__tool-btn-label' onClick={() => { setSettingsVisible(true); Haptics.impact({ style: ImpactStyle.Light }); }}>Параметры</p>
                     {/* <Gear size="1.2rem" color="white" /> */}
                 </div>
             </div>

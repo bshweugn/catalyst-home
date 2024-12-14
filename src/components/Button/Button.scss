@@ -6,6 +6,8 @@
     border-radius: 0.875rem;
     color: rgb(0, 102, 255);
     box-sizing: border-box;
+    transition: .2s;
+    clear: both;
 
     &--primary {
         background-color: rgba(0, 0, 0, 0.08);
@@ -16,5 +18,10 @@
 
     &__label{
         margin: 0;
+    }
+
+    &--inactive {
+        opacity: 0.5;
+        pointer-events: none;
     }
 }

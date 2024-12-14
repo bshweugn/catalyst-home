@@ -146,6 +146,7 @@
         bottom: 2.5rem;
         gap: 0.5rem;
         transition: .3s;
+        z-index: 100;
 
         &--hidden{
             opacity: 0;

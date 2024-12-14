@@ -4,12 +4,17 @@
     padding-right: 2rem;
     box-sizing: border-box;
     font-size: 0.875rem;
-    width: calc(100vw - 2rem);
+    width: calc(100vw - 4rem);
     line-height: 1.2;
     opacity: 0.5;
     text-align: left;
+    float: left;
 
     &--bottom-separated{
         margin-bottom: 2rem;
+    }
+
+    &--sticked{
+        margin-top: 0rem;
     }
 }

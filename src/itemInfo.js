@@ -46,21 +46,25 @@ export function renderItemName(device) {
 
 export function renderItemIcon(device, displayText, size, className) {
 
-    if (device.currentTemp !== undefined) {
-        if (displayText) {
-            return <p className={`item-card__temp`}>{device.currentTemp}°</p>;
+    if (device !== undefined) {
+        if (device.currentTemp !== undefined) {
+            if (displayText) {
+                return <p className={`item-card__temp`}>{device.currentTemp}°</p>;
+            } else {
+                return <p className={`item-card__temp--small`}>{device.currentTemp}°</p>;
+            }
         } else {
-            return <p className={`item-card__temp--small`}>{device.currentTemp}°</p>;
+            if (device.type === 'LAMP') {
+                return <Lightbulb size={(size ? size : "1.6rem")} fill="#ffbf0d" className={className} />
+            }
+
+            if (device.type === 'LEAK_SENSOR') {
+                return <Drop size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
+            }
+
+            return null;
         }
     } else {
-        if (device.type === 'LAMP') {
-            return <Lightbulb size={(size ? size : "1.6rem")} fill="#ffbf0d" className={className}/>
-        }
-
-        if (device.type === 'LEAK_SENSOR') {
-            return <Drop size={(size ? size : "1.6rem")} fill="#1290ff" className={className}/>
-        }
-
         return null;
     }
 }

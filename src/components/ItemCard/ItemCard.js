@@ -8,8 +8,9 @@ import Lightbulb from '../icons/Lightbulb/Lightbulb';
 import Power from '../icons/Power/Power';
 import { renderItemIcon, renderItemStatus } from '../../itemInfo';
 import Checkmark from '../icons/Checkmark/Checkmark';
+import ConditionWindow from '../ConditionWindow/ConditionWindow';
 
-const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, setAsTrigger }) => {
+const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected }) => {
     const [maximized, setMaximized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
     const [active, setActive] = useState(device.active);
@@ -85,9 +86,6 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
             console.log(editMode, isHolding)
             if (!selectable) {
                 idFunc(device.id);
-                if (setAsTrigger) {
-                    setAsTrigger(device.id);
-                }
             } else {
                 if (!selected) {
                     addDevice(device.id);
@@ -138,35 +136,45 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
     };
 
     return (
-        <div
-            ref={(node) => drag(drop(node))}
-            className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected ? "item-card--selected" : ""}`}
-            style={{ opacity }}
-            onClick={handleCardClick}
-        >
-            <div className={`item-card__select-indicator ${selected ? "item-card__select-indicator--visible" : ""}`}>
-                <Checkmark className='item-card__checkmark' fill="black" size="1rem" />
-            </div>
-            <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setMaximized(!maximized); }}>
-                {maximized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
-            </div>
-            {!device.isSensor && (
-                <div
-                    className='item-card__action-btn'
-                    onTouchStart={startHold}
-                    onTouchEnd={stopHold}
-                >
-                    <Power size="1rem" fill={!active ? "white" : "black"} />
+        <>
+            {conditionWindow ?
+                <>
+                    <ConditionWindow func={() => idFunc(-1)} visible={opened && conditionWindow} icon={renderItemIcon(device, true)} name={device.name} canSave={canSave}>
+                        {conditionWindow(device, setCondition)}
+                    </ConditionWindow>
+                </>
+                :
+                <></>}
+            <div
+                ref={(node) => drag(drop(node))}
+                className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected || atomicSelected ? "item-card--selected" : ""}`}
+                style={{ opacity }}
+                onClick={handleCardClick}
+            >
+                <div className={`item-card__select-indicator ${selected || atomicSelected ? "item-card__select-indicator--visible" : ""}`}>
+                    <Checkmark className='item-card__checkmark' fill="black" size="1rem" />
                 </div>
-            )}
-            <div className='item-card__item-icon'>
-                {renderItemIcon(device, true)}
+                <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setMaximized(!maximized); }}>
+                    {maximized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
+                </div>
+                {!device.isSensor && (
+                    <div
+                        className='item-card__action-btn'
+                        onTouchStart={startHold}
+                        onTouchEnd={stopHold}
+                    >
+                        <Power size="1rem" fill={!active ? "white" : "black"} />
+                    </div>
+                )}
+                <div className='item-card__item-icon'>
+                    {renderItemIcon(device, true)}
+                </div>
+                <div className='item-card__item-info'>
+                    <p className='item-card__item-name'>{device.name}</p>
+                    <p className='item-card__item-status'>{renderItemStatus(device, true)}</p>
+                </div>
             </div>
-            <div className='item-card__item-info'>
-                <p className='item-card__item-name'>{device.name}</p>
-                <p className='item-card__item-status'>{renderItemStatus(device, true)}</p>
-            </div>
-        </div>
+        </>
     );
 };
 

@@ -46,9 +46,9 @@ const CurrentTrigger = (args) => {
                         <div className='current-trigger__icon'>
                             {renderItemIcon(args.trigger.device)}
                         </div>
-                        <div className='current-trigger__info'>
+                        <div className='current-trigger__info' onClick={args.addFunc}>
                             <p className='current-trigger__name'>{args.trigger.device.name}</p>
-                            <p className='current-trigger__state'>{renderLabel(args.trigger.device.type, args.trigger.action, args.trigger.parameter)}</p>
+                            <p className='current-trigger__state'>{renderLabel(args.trigger.device.type, args.trigger.condition, args.trigger.parameter)}</p>
                         </div>
                     </>
                 )
