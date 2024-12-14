@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.dto.request;
+package itmo.localpiper.backend.dto.request.homeutils;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,12 +8,12 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AddRoomRequest {
+public class AddFloorRequest {
     
     @NotNull
     @NotBlank
     private String name;
 
     @Positive
-    private Long floorId;
+    private Long houseId;
 }

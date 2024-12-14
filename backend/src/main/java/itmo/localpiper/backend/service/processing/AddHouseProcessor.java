@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import itmo.localpiper.backend.dto.request.AddHouseRequest;
+import itmo.localpiper.backend.dto.request.homeutils.AddHouseRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.model.House;

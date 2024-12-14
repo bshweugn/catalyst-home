@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.dto.request;
+package itmo.localpiper.backend.dto.request.homeutils;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AddHouseRequest {
+public class AddLocationRequest {
     
     @NotNull
     @NotBlank
@@ -18,6 +18,4 @@ public class AddHouseRequest {
 
     @NotNull
     private Double y;
-
-    private Long locationId; // can be null
 }

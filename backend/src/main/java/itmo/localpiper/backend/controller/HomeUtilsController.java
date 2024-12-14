@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import itmo.localpiper.backend.dto.request.AddFloorRequest;
-import itmo.localpiper.backend.dto.request.AddHouseRequest;
-import itmo.localpiper.backend.dto.request.AddRoomRequest;
+import itmo.localpiper.backend.dto.request.homeutils.AddFloorRequest;
+import itmo.localpiper.backend.dto.request.homeutils.AddHouseRequest;
+import itmo.localpiper.backend.dto.request.homeutils.AddLocationRequest;
+import itmo.localpiper.backend.dto.request.homeutils.AddRoomRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.model.Floor;
 import itmo.localpiper.backend.model.House;
+import itmo.localpiper.backend.model.Location;
 import itmo.localpiper.backend.model.Room;
+import itmo.localpiper.backend.service.entity.LocationService;
 import itmo.localpiper.backend.service.processing.AddFloorProcessor;
 import itmo.localpiper.backend.service.processing.AddHouseProcessor;
 import itmo.localpiper.backend.service.processing.AddRoomProcessor;
@@ -38,7 +41,16 @@ public class HomeUtilsController {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private LocationService locationService;
     
+    @PostMapping("/addLocation")
+    public ResponseEntity<Location> addLocation(@RequestBody AddLocationRequest request) {
+        return ResponseEntity.ok(locationService.create(request.getName(), request.getX(), request.getY()));
+    }
+    
+
     @PostMapping("/addHouse")
     public ResponseEntity<HoldableResultResponse<House>> addHouse(
         @Valid @RequestBody AddHouseRequest request,

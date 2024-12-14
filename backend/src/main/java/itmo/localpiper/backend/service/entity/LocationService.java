@@ -34,13 +34,18 @@ public class LocationService {
     }
 
     public Location create(String name, Double xCoordinate, Double yCoordinate) {
-        Location location = new Location();
-        location.setName(name);
-        location.setX(xCoordinate);
-        location.setY(yCoordinate);
-
-        locationRepository.save(location);
-        return location;
+        Location l = locationRepository.findByXAndY(xCoordinate, yCoordinate).get();
+        if (l == null) {
+            Location location = new Location();
+            location.setName(name);
+            location.setX(xCoordinate);
+            location.setY(yCoordinate);
+            locationRepository.save(location);
+            return location;
+        }
+        l.setName(name);
+        locationRepository.save(l);
+        return l;
     }
     
     public void delete(Long id) {
