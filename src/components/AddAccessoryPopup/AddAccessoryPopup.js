@@ -36,6 +36,8 @@ import EnvelopePerson from '../icons/EnvelopePerson/EnvelopePerson';
 
 import avatar from '../../assets/images/user.jpeg';
 import ProfileInfo from '../ProfileInfo/ProfileInfo';
+import Play from '../icons/Play/Play';
+import CurrentTrigger from '../CurrentTrigger/CurrentTrigger';
 
 const AddAccessoryPopup = (args) => {
     const [view, setView] = useState("default");
@@ -95,6 +97,27 @@ const AddAccessoryPopup = (args) => {
     }
 
 
+    const [deviceID, setDeviceID] = useState(-1);
+    const [action, setAction] = useState("");
+    const [parameter, setParameter] = useState("");
+    const [trigger, setTrigger] = useState({
+        id: -1,
+        action: "",
+        parameter: ""
+    });
+
+
+    const createTrigger = (ID, action, parameter) => {
+        setTrigger(
+            {
+                id: ID,
+                action: action,
+                parameter: parameter
+            }
+        )
+    }
+
+
     const renderAccessoryContent = () => {
         return manualInput ? (
             <div>
@@ -129,7 +152,7 @@ const AddAccessoryPopup = (args) => {
     useEffect(() => {
         if (view === "default" || view === "accessory" || view === "invite-sent") {
             setFullscreenRequired(false);
-        } else if (view === "home" || view === "level" || view === "room" || view === "user" || view === "device" || view === "profile") {
+        } else if (view === "home" || view === "level" || view === "room" || view === "user" || view === "device" || view === "automation") {
             setFullscreenRequired(true);
         }
     }, [view]);
@@ -153,12 +176,17 @@ const AddAccessoryPopup = (args) => {
                                     <Stairs className="add-accessory-popup__card-icon" size="2.05rem" fill="black" />
                                     <p className='add-accessory-popup__card-name'>Этаж</p>
                                 </div>
-                                <div className='add-accessory-popup__card' onClick={() => { setView("user"); animate() }}>
-                                    <User className="add-accessory-popup__card-icon" size="2rem" fill="black" />
-                                    <p className='add-accessory-popup__card-name'>Пользователь</p>
+                                <div className='add-accessory-popup__card' onClick={() => { setView("automation"); animate() }}>
+                                    <Play className="add-accessory-popup__card-icon" size="2rem" fill="black" />
+                                    <p className='add-accessory-popup__card-name'>Автомати-<br />зация</p>
                                 </div>
-                                <Button onClick={() => { setView("home"); animate() }} label="Создать новый Дом" />
                             </div>
+                            <div className='add-accessory-popup__card add-accessory-popup__card--wide' onClick={() => { setView("user"); animate() }}>
+                                <div className='add-accessory-popup__avatar' style={{ backgroundImage: `url(${avatar})` }} />
+                                <User className="add-accessory-popup__card-icon" size="2rem" fill="black" />
+                                <p className='add-accessory-popup__card-name'>Житель или гость</p>
+                            </div>
+                            <Button onClick={() => { setView("home"); animate() }} label="Создать новый Дом" />
                         </div>
                     </>
                 );
@@ -297,6 +325,57 @@ const AddAccessoryPopup = (args) => {
                     );
                 }
             }
+            case "automation": {
+                if (!deviceSelectMode) {
+                    return (
+                        <>
+                            <CurrentTrigger trigger={trigger} addFunc={() => {setDeviceSelectMode(true); animate()}}/>
+                            <Description text="Сценарий будет запущени при соблюдении выбранного условия активации." />
+                            <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
+                            <VisibilityWrapper defaultState={true} visible={!toggleStates[0].value}>
+                                <ItemsShortPreview label={"Выбор аксессуаров"} devices={devices} action={() => { setDeviceSelectMode(true); animate() }} />
+                            </VisibilityWrapper>
+                            <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
+                                <Button primary label="Поделиться" onClick={() => { setView('invite-sent'); animate() }} />
+                                {/* <Button onClick={() => setView("default")} label="Назад" /> */}
+                                <Button label="" />
+                            </div>
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            {Object.keys(rooms)
+                                .sort((a, b) => rooms[a].order - rooms[b].order)
+                                .map(roomId => {
+                                    const roomDevices = Object.keys(devices)
+                                        .filter(deviceId => devices[deviceId].roomID === rooms[roomId].id)
+                                        .map(deviceId => devices[deviceId]);
+
+                                    if (roomDevices.length === 0) return null;
+
+                                    return (
+                                        <ItemsList
+                                            light
+                                            preview
+                                            setter={setSelectedDevices}
+                                            selected={selectedDevices}
+                                            key={roomId}
+                                            roomName={rooms[roomId].name}
+                                            roomID={rooms[roomId].id}
+                                            devices={roomDevices}
+                                        />
+                                    );
+                                })}
+                            <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
+                                <Button primary label="Сохранить" onClick={() => { setDeviceSelectMode(false); animate() }} />
+                                {/* <Button onClick={() => setView("default")} label="Назад" /> */}
+                                <Button label="" />
+                            </div>
+                        </>
+                    );
+                }
+            }
             default:
                 return null;
         }
@@ -316,8 +395,9 @@ const AddAccessoryPopup = (args) => {
                             view === "level" ? "Добавить этаж" :
                                 view === "user" ? "Поделиться доступом" :
                                     view === "device" ? "" :
-                                        view === "invite-sent" ? "" :
-                                            "Создать новый Дом"
+                                        view === "automation" ? "Создать автоматизацию" :
+                                            view === "invite-sent" ? "" :
+                                                "Создать новый Дом"
             }
             label={
                 view === "default" ? "" :
@@ -326,8 +406,9 @@ const AddAccessoryPopup = (args) => {
                             view === "level" ? "Задайте имя для нового этажа." :
                                 view === "user" ? deviceSelectMode ? "Выберите аксессуары, доступ к которым Вы хотите предоставить." : "Поделитесь доступом к управлению Домом c другим пользователем." :
                                     view === "device" ? "" :
-                                        view === "invite-sent" ? "" :
-                                            "Задайте имя и фон для нового Дома."
+                                        view === "automation" ? deviceSelectMode ? "Выберите устройство для добавления условия активации сценария." : "Настройте автоматизацию для взаимодействия между устройствами." :
+                                            view === "invite-sent" ? "" :
+                                                "Задайте имя и фон для нового Дома."
             }
         >
             {renderContent()}

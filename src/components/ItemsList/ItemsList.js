@@ -7,7 +7,7 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import CustomDragLayer from '../CustomDragLayer/CustomDragLayer';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
-const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, setSelected }) => {
+const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, setSelected, setAsTrigger }) => {
     const [cards, setCards] = useState(devices);
 
     const moveCard = (fromIndex, toIndex) => {
@@ -23,17 +23,19 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
         if (!preview) {
             func(roomID);
         } else {
-            const deviceIds = devices.map((device) => device.id);
+            if (setter) {
+                const deviceIds = devices.map((device) => device.id);
 
-            setter((prevSelected) => {
-                const allSelected = deviceIds.every((id) => prevSelected.includes(id));
-                
-                if (allSelected) {
-                    return prevSelected.filter((id) => !deviceIds.includes(id));
-                } else {
-                    return [...new Set([...prevSelected, ...deviceIds])];
-                }
-            });
+                setter((prevSelected) => {
+                    const allSelected = deviceIds.every((id) => prevSelected.includes(id));
+
+                    if (allSelected) {
+                        return prevSelected.filter((id) => !deviceIds.includes(id));
+                    } else {
+                        return [...new Set([...prevSelected, ...deviceIds])];
+                    }
+                });
+            }
         }
     };
 
@@ -46,6 +48,7 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
                         <ItemCard
                             selectable={setter !== undefined}
                             setter={setter}
+                            setAsTrigger={setAsTrigger}
                             selectedList={selected}
                             preview={preview}
                             key={device.id}

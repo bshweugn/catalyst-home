@@ -54,7 +54,12 @@ const devicesSlice = createSlice({
         setFav: (state, action) => {
             const { id, favourite } = action.payload;
             let dID = "id" + id;
-            state[dID].favourite = favourite;
+        
+            // Проверяем, существует ли объект с ключом dID
+            if (state[dID]) {
+                state[dID].favourite = favourite;
+            }
+            // Если объекта нет, просто ничего не делаем
         },
 
         setHomeView: (state, action) => {

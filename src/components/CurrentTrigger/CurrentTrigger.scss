@@ -1,0 +1,69 @@
+.current-trigger {
+    width: 100%;
+    height: fit-content;
+    margin-top: 2rem;
+    
+    &__add-button{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    &__wrapper {
+        width: 100%;
+        padding: 0.75rem;
+        box-sizing: border-box;
+        border-radius: 1.4rem;
+        height: fit-content;
+        background-color: rgba(0, 0, 0, 0.06);
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    &__icon {
+        height: 3.5rem;
+        width: 3.5rem;
+        min-height: 3.5rem;
+        min-width: 3.5rem;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        background-color: rgba(0, 0, 0, 0.08);
+        border-radius: 0.75rem;
+        width: 100%;
+    }
+
+    &__name {
+        margin: 0;
+    }
+
+    &__state {
+        margin: 0;
+        opacity: 0.6;
+    }
+
+    &__label {
+        margin: 0 0 0.5rem 0;
+        padding-left: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+        text-align: left;
+    }
+}

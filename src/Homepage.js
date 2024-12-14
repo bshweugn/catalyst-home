@@ -11,7 +11,7 @@ import Background from './components/Background/Background';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { toggleDeviceStatus, setDeviceDim, setThermostatTemp, changeRoomOrder, changeParameter } from './store';
+import { changeRoomOrder, changeParameter } from './store';
 
 import background from './assets/images/background.jpg';
 import background1 from './assets/images/background1.jpg';
@@ -24,8 +24,6 @@ import background7 from './assets/images/background7.JPG';
 import background8 from './assets/images/background8.JPG';
 import background9 from './assets/images/background9.JPG';
 
-import Drop from './components/icons/Drop/Drop';
-import { Link } from 'react-router-dom/cjs/react-router-dom';
 import { IonContent, IonHeader, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
 import ItemWindow from './components/ItemWindow/ItemWindow';
 import MainWidgetsRow from './components/MainWidgetsRow/MainWidgetsRow';
@@ -47,13 +45,11 @@ import Bell from './components/icons/Bell/Bell';
 import Glance from './components/icons/Glance/Glance';
 import ToggleList from './components/ToggleList/ToggleList';
 import DraggableList from './components/DraggableList/DraggableList';
-import CameraView from './components/CameraView/CameraView';
-import CamerasRow from './components/CamerasRow/CamerasRow';
 import CameraWindow from './components/CameraWindow/CameraWindow';
 import CamerasList from './components/CamerasList/CamerasList';
-import Scanner from './components/Scanner/Scanner';
 import ScriptDevicesList from './components/ScriptDevicesList/ScriptDevicesList';
 import CamerasVerticalList from './components/CamerasVerticalList/CamerasVerticalList';
+import { useNavigate } from 'react-router-dom';
 
 function Homepage(args) {
     const dispatch = useDispatch();
@@ -79,6 +75,8 @@ function Homepage(args) {
     const [itemID, setItemID] = useState(0);
     const [cameraID, setCameraID] = useState(0);
     const [selectedRoomID, setSelectedRoomID] = useState(-1);
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -252,6 +250,13 @@ function Homepage(args) {
     ]
 
 
+    useEffect(() => {
+        if (args.token === undefined || args.token === null) {
+            navigate('/auth');
+            // console.log("to /auth " + args.token);
+        }
+    }, [args.token]);
+
 
     return (
         <>
@@ -333,7 +338,7 @@ function Homepage(args) {
                         openedID={cameraID}
                     />
 
-                    <div className='page'>
+                    <div className="page">
                         {Object.keys(rooms)
                             .sort((a, b) => rooms[a].order - rooms[b].order)
                             .map(roomId => {
@@ -343,6 +348,8 @@ function Homepage(args) {
                                         devices[deviceId].favourite === true
                                     )
                                     .map(deviceId => devices[deviceId]);
+
+                                console.log(`Room ${rooms[roomId].name}`, roomDevices);
 
                                 if (roomDevices.length === 0) return null;
 
@@ -360,6 +367,7 @@ function Homepage(args) {
                                 );
                             })}
                     </div>
+
 
 
                 </Section>

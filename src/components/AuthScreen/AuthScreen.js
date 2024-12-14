@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './AuthScreen.scss';
 
 import appIcon from '../../assets/images/app-icon.webp'
@@ -10,6 +10,7 @@ import Button from '../Button/Button';
 import Description from '../Description/Description';
 import { login, registerUser } from '../../logic/oauth';
 import { IonSpinner } from '@ionic/react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthScreen = (args) => {
     const finalClassName = 'auth-screen ' + (args.className || '')
@@ -20,11 +21,16 @@ const AuthScreen = (args) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const navigate = useNavigate();
+
     const handleRegister = async () => {
         setSection(20);
         try {
             const token = await registerUser(username, email, password);
             args.setToken(token);
+            if (token !== undefined && token !== null) {
+                navigate('/');
+            }
         } catch (error) {
             console.error("Ошибка при регистрации:", error);
 
@@ -36,7 +42,15 @@ const AuthScreen = (args) => {
     const handleLogin = async () => {
         const token = await login(email, password);
         args.setToken(token);
+        if (token !== undefined && token !== null) {
+            navigate('/');
+        }
     };
+
+
+    // useEffect(() => {
+
+    // }, [args.token]);
 
     return (
         <div className={finalClassName}>
@@ -110,7 +124,7 @@ const AuthScreen = (args) => {
                         <TextInput label={"Пароль"} placeholder={" "} light separated value={password} setValue={setPassword} />
                     </div>
                     <div className='auth-screen__buttons'>
-                        <Button primary label="Войти" onClick={() => setSection(2)} />
+                        <Button primary label="Войти" onClick={() => handleLogin()} />
                         <Button label="Назад" onClick={() => setSection(0)} />
                     </div>
                 </div>

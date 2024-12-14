@@ -9,7 +9,7 @@ import Power from '../icons/Power/Power';
 import { renderItemIcon, renderItemStatus } from '../../itemInfo';
 import Checkmark from '../icons/Checkmark/Checkmark';
 
-const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList }) => {
+const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, setAsTrigger }) => {
     const [maximized, setMaximized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
     const [active, setActive] = useState(device.active);
@@ -85,6 +85,9 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
             console.log(editMode, isHolding)
             if (!selectable) {
                 idFunc(device.id);
+                if (setAsTrigger) {
+                    setAsTrigger(device.id);
+                }
             } else {
                 if (!selected) {
                     addDevice(device.id);

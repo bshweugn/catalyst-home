@@ -3,7 +3,6 @@ import './TabBar.scss';
 import Star from '../icons/Star/Star';
 import House from '../icons/House/House';
 import Play from '../icons/Play/Play';
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import Room from '../icons/Room/Room';
 import VideoIcon from '../icons/VideoIcon/VideoIcon';
 
