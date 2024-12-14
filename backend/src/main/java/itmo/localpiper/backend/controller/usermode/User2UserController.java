@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/inviteManagement")
-public class InvitationController {
+public class User2UserController {
 
     @Autowired
     private JwtService jwtService;

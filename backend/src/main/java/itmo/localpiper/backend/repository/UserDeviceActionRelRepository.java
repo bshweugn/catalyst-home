@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import itmo.localpiper.backend.model.Device;
+import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.model.UserDeviceActionRel;
 
 @Repository
 public interface UserDeviceActionRelRepository extends CrudRepository<UserDeviceActionRel, Long>{
     @Override
     List<UserDeviceActionRel> findAll();
+
+    List<UserDeviceActionRel> findAllByUserAndDevice(User user, Device device);
 }
