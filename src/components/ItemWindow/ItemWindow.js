@@ -29,14 +29,6 @@ const ItemWindow = (args) => {
 
     const dispatch = useDispatch();
 
-    const handleToggle = (dID) => {
-        dispatch(toggleDeviceStatus({ id: dID }));
-    };
-
-    const handleTempChange = (dID, temp) => {
-        dispatch(setThermostatTemp({ id: dID, temp: temp }));
-    };
-
     const handleContentClick = (event) => {
         if (event.target === event.currentTarget) {
             args.idFunc(0);
@@ -55,7 +47,7 @@ const ItemWindow = (args) => {
                 return (
                     <>
                         <VerticalSlider sliderIcon={Sun} color={args.device.color} />
-                        <HueSelector setColorFunc={args.setColor} colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} color={args.device.color} setColor={(newColor) => handleTempChange(args.device.id, newColor)} />
+                        <HueSelector setColorFunc={args.setColor} colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} color={"#74B9FF"} setColor={() => {}} /> // TODO: fix
                     </>
                 );
             } else {
@@ -71,7 +63,7 @@ const ItemWindow = (args) => {
             return (
                 <>
                     <TempIndicator temp={args.device.currentTemp} />
-                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={args.device.targetTemp} setValue={(newTemp) => handleTempChange(args.device.id, newTemp)} id={args.device.id} />
+                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={20} setValue={() => {}} id={0} /> // TODO: fix
                     <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} />
                 </>
             );

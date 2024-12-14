@@ -51,12 +51,32 @@ import ScriptDevicesList from './components/ScriptDevicesList/ScriptDevicesList'
 import CamerasVerticalList from './components/CamerasVerticalList/CamerasVerticalList';
 import { useNavigate } from 'react-router-dom';
 
+
+import store, {
+    setDevice,
+    setFav,
+    removeDevice,
+    setRoom,
+    addDeviceToRoom,
+    removeDeviceFromRoom,
+    setFloor,
+    addRoomToFloor,
+    removeRoomFromFloor,
+    setHouse,
+    addFloorToHouse,
+    removeFloorFromHouse,
+    getDevicesWithoutCameras,
+    getCamerasInHouse,
+} from './store';
+
+
+
 function Homepage(args) {
     const dispatch = useDispatch();
-    const devices = useSelector(state => state.devices);
-    const cameras = useSelector(state => state.cameras);
-    const rooms = useSelector(state => state.rooms);
-    const settings = useSelector((state) => state.settings);
+    // const devices = useSelector(state => state.devices);
+    // const rooms = useSelector(state => state.rooms);
+    // const settings = useSelector((state) => state.settings);
+    const devices = store.getState().houses.houses['house1']?.devicesWithoutCameras;
 
     const [pageBackground, setPageBackground] = useState(settings.background.image);
 
@@ -64,7 +84,6 @@ function Homepage(args) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [moreMode, setMoreMode] = useState(false);
     const pageRef = useRef(null);
-    const [presentingElement, setPresentingElement] = useState(null);
 
 
     const [houseName, setHouseName] = useState('Мой дом');
@@ -79,14 +98,9 @@ function Homepage(args) {
     const navigate = useNavigate();
 
 
-    useEffect(() => {
-        setPresentingElement(pageRef.current);
-    }, []);
-
-
-    useEffect(() => {
-        dispatch(changeParameter({ name: 'background', parameter: 'image', value: pageBackground }));
-    }, [pageBackground]);
+    // useEffect(() => {
+    //     dispatch(changeParameter({ name: 'background', parameter: 'image', value: pageBackground }));
+    // }, [pageBackground]);
 
 
 
@@ -122,11 +136,6 @@ function Homepage(args) {
         setToggleStates(newToggles);
     };
 
-    const mainRoom = {
-        id: 1,
-        name: 'Гостиная'
-    }
-
 
     const peopleData = [
         {
@@ -147,37 +156,6 @@ function Homepage(args) {
     ];
 
 
-    const scriptDevices = [
-        {
-            "id": 1,
-            "name": "Living Room Lamp",
-            "type": "LAMP",
-            "room": { "id": 101, "name": "Living Room" },
-            "actions": [
-                { "name": "BRIGHTNESS", "values": { "min": 0, "max": 100 } }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "Bedroom Fan",
-            "type": "FAN",
-            "room": { "id": 102, "name": "Bedroom" },
-            "actions": [
-                { "name": "MODE", "values": ["SOFT", "MID", "MAX"] }
-            ]
-        },
-        {
-            "id": 3,
-            "name": "Kitchen AC",
-            "type": "AC",
-            "room": { "id": 103, "name": "Kitchen" },
-            "actions": [
-                { "name": "TEMPERATURE", "values": { "min": 16, "max": 30 } },
-                { "name": "MODE", "values": ["COOL", "HEAT", "FAN"] }
-            ]
-        }
-    ];
-
 
     const [values, setValues] = useState([]);
     const [labels, setLabels] = useState([]);
@@ -192,9 +170,9 @@ function Homepage(args) {
     }, [rooms]);
 
 
-    const handleOrderChange = (order) => {
-        dispatch(changeRoomOrder({ newOrder: order }));
-    };
+    // const handleOrderChange = (order) => {
+    //     dispatch(changeRoomOrder({ newOrder: order }));
+    // };
 
     const cards = [
         {
@@ -272,7 +250,7 @@ function Homepage(args) {
                 />
             ))}
 
-            {Object.keys(cameras).map(cameraId => (
+            {/* {Object.keys(cameras).map(cameraId => (
                 <CameraWindow
                     key={`window-${cameraId}`}
                     camera={cameras[cameraId]}
@@ -280,14 +258,14 @@ function Homepage(args) {
                     visible={cameras[cameraId].id === cameraID}
                     idFunc={setCameraID}
                 />
-            ))}
+            ))} */}
 
-            {Object.keys(rooms)
+            {/* {Object.keys(rooms)
                 .map(roomId => (
                     <RoomWindow room={rooms[roomId]} visible={selectedRoomID === rooms[roomId].idx} idFunc={setSelectedRoomID} />
-                ))}
+                ))} */}
 
-            <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} />
+            {/* <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} /> */}
 
             <IonHeader>
                 <Header
@@ -310,7 +288,7 @@ function Homepage(args) {
                 </IonHeader>
 
 
-                <Section visible={args.currentPage === 0}>
+                {/* <Section visible={args.currentPage === 0}>
 
                     <MainWidgetsRow>
                         <MainWidget title="Климат" badge="Сейчас">
@@ -328,7 +306,7 @@ function Homepage(args) {
                         <CameraView name="Кухня" isRecording={true} image={background1} delay={2} />
                         <CameraView name="Гостиная" isRecording={false} image={background2} delay={4} />
                         <CameraView name="Улица" isRecording={true} image={background3} delay={2} />
-                    </CamerasRow> */}
+                    </CamerasRow>
 
                     <CamerasList
                         rooms={rooms}
@@ -370,7 +348,7 @@ function Homepage(args) {
 
 
 
-                </Section>
+                </Section> */}
 
                 <Section visible={args.currentPage === 1}>
                     <div className='page page--compensated'>
@@ -400,7 +378,7 @@ function Homepage(args) {
 
                 </Section>
 
-                <Section visible={args.currentPage === 2}>
+                {/* <Section visible={args.currentPage === 2}>
                     <div className='page'>
                         {Object.keys(rooms)
                             .sort((a, b) => rooms[a].order - rooms[b].order)
@@ -429,13 +407,13 @@ function Homepage(args) {
                             })}
                     </div>
 
-                </Section>
+                </Section> */}
 
-                <Section visible={args.currentPage === 3}>
+                {/* <Section visible={args.currentPage === 3}>
                     <div className='page'>
                         <ScriptDevicesList devices={scriptDevices} />
                     </div>
-                </Section>
+                </Section> */}
 
 
             </IonContent>

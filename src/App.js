@@ -9,7 +9,7 @@ import ProfileInfo from './components/ProfileInfo/ProfileInfo';
 import avatar from './assets/images/user.jpeg';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import store, { persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
 import Sheet from './components/Sheet/Sheet';
@@ -22,24 +22,12 @@ import { Route, BrowserRouter as Router, Routes, useNavigate } from 'react-route
 function App() {
   const [addAccessoryMode, setAccessoryMode] = useState(false);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
-  const profileModal = useRef(null);
-  const pageRef = useRef(null);
-
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-
 
   const [usernameI, setUsernameI] = useState('');
   const [emailI, setEmailI] = useState('');
-
-
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-
   const [currentPage, setCurrentPage] = useState(0);
-
   const [popupView, setPopupView] = useState('default');
 
   useEffect(() => {
