@@ -8,8 +8,9 @@ public enum DeviceType {
     THERMOSTAT,
     AC,
     HUMIDIFIER,
-    AIR_PURIFIER,
+    LEAK_DETECTOR,
     FAN,
+    TEMPERATURE_SENSOR,
     ROBOT_VACUUM,
     CAMERA
 }

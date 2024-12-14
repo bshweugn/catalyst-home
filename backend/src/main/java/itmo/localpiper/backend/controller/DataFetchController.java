@@ -1,6 +1,7 @@
 package itmo.localpiper.backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.response.FullDataResponse;
-import itmo.localpiper.backend.model.Action;
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.Floor;
@@ -88,7 +88,7 @@ public class DataFetchController {
     private InvitationService invitationService;
 
     @GetMapping("/action")
-    public ResponseEntity<List<Action>> getActions() {
+    public ResponseEntity<Map<String, List<String>>> getActions() {
         return ResponseEntity.ok(actionService.read());
     }
 

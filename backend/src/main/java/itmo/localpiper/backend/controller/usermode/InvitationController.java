@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.request.user.InvitationRequest;
+import itmo.localpiper.backend.dto.request.user.ProcessInvitationRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
+import itmo.localpiper.backend.service.processing.InvitationApplyProcessor;
 import itmo.localpiper.backend.service.processing.InvitationPersistProcessor;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +27,9 @@ public class InvitationController {
 
     @Autowired
     private InvitationPersistProcessor ipp;
+
+    @Autowired
+    private InvitationApplyProcessor iap;
     
     @PostMapping("/inviteUser")
     public ResponseEntity<OperationResultResponse> inviteUser(@Valid @RequestBody InvitationRequest request, HttpServletRequest servletRequest) {
@@ -33,5 +38,14 @@ public class InvitationController {
         Pair<String, InvitationRequest> crutch = Pair.of(username, request);
         return ResponseEntity.ok(ipp.process(crutch));
     }
+
+    @PostMapping("/processInvitation")
+    public ResponseEntity<OperationResultResponse> processInvite(@RequestBody ProcessInvitationRequest request, HttpServletRequest servletRequest) {
+        String token = servletRequest.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
+        Pair<String, ProcessInvitationRequest> crutch = Pair.of(username, request);
+        return ResponseEntity.ok(iap.process(crutch));
+    }
+    
     
 }

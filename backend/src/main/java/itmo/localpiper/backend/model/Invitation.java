@@ -1,13 +1,13 @@
 package itmo.localpiper.backend.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import itmo.localpiper.backend.util.InvitationAction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Invitation {
-    
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
@@ -39,24 +39,24 @@ public class Invitation {
     @Column(name="host_name", nullable=false)
     private String hostName;
 
-    @Column(name="guest_email", nullable =false)
+    @Column(name="guest_email", nullable=false)
     private String guestEmail;
 
     @Column(name="is_resident", nullable=false)
     private Boolean isResident;
 
     @Lob
-    @Column(name = "actions", columnDefinition = "TEXT")
-    private String actions;
+    @Column(name = "privileges", columnDefinition = "TEXT")
+    private String privileges;
 
-    public List<InvitationAction> getActionsAsList() throws JsonProcessingException {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(actions, new TypeReference<List<InvitationAction>>() {});
-        }
-
-    public void setActionsFromList(List<InvitationAction> actionList) throws JsonProcessingException {
+    public Map<Long, List<String>> getPrivilegesAsMap() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        this.actions = mapper.writeValueAsString(actionList);
+        return mapper.readValue(privileges, new TypeReference<Map<Long, List<String>>>() {});
+    }
+
+    public void setPrivilegesFromMap(Map<Long, List<String>> privilegesMap) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        this.privileges = mapper.writeValueAsString(privilegesMap);
     }
 
     public String toJson() {
@@ -68,8 +68,9 @@ public class Invitation {
         node.put("host_name", hostName);
         node.put("guest_email", guestEmail);
         node.put("is_resident", isResident);
-        
+        node.put("privileges", privileges);
+
         return node.toString();
     }
-
 }
+

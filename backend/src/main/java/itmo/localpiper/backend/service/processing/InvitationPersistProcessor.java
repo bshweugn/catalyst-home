@@ -1,6 +1,5 @@
 package itmo.localpiper.backend.service.processing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import itmo.localpiper.backend.dto.request.user.InvitationRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
-import itmo.localpiper.backend.model.Action;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.InvitationService;
-import itmo.localpiper.backend.util.InvitationAction;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
@@ -35,19 +32,9 @@ public class InvitationPersistProcessor extends AbstractProcessor<Pair<String, I
         String questEmail = data.getSecond().getEmail();
         Long houseId = data.getSecond().getHouseId();
         Boolean isResident = data.getSecond().getIsResident();
-        Map<Long, Action> actionList = data.getSecond().getActionList();
-        
-        List<InvitationAction> l = new ArrayList<>(); 
-        for (Map.Entry<Long, Action> entry : actionList.entrySet()) {
-            InvitationAction ia = new InvitationAction(
-                entry.getKey(), 
-                entry.getValue().getDeviceType(), 
-                entry.getValue().getName());
-            l.add(ia);
-        }
-
+        Map<Long, List<String>> actionMap = data.getSecond().getActionList();
         try {
-            invitationService.create(hostName, questEmail, houseId, isResident, l);
+            invitationService.create(hostName, questEmail, houseId, isResident, actionMap);
         } catch (JsonProcessingException e) {
             return ProcessingStatus.ERROR;
         }

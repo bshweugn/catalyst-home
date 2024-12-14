@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,9 +36,8 @@ public class UserDeviceActionRel {
     @JoinColumn(name="device_id", nullable =false)
     private Device device;
 
-    @ManyToOne
-    @JoinColumn(name="action_id", nullable = false)
-    private Action action;
+    @Column(name="action")
+    private String action;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -52,10 +52,7 @@ public class UserDeviceActionRel {
             node.set("device", objectMapper.readTree(device.toJson()));
         } catch (JsonProcessingException e) {
         }
-        try {
-            node.set("action", objectMapper.readTree(action.toJson()));
-        } catch (JsonProcessingException e) {
-        }
+        node.put("action", action);
         return node.toString();
     }
 }

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import itmo.localpiper.backend.dto.request.EntityInfoRequest;
 import itmo.localpiper.backend.dto.response.InfoResponse;
-import itmo.localpiper.backend.repository.ActionRepository;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.repository.FloorRepository;
@@ -24,9 +23,6 @@ import itmo.localpiper.backend.util.enums.EntityType;
 
 @Service
 public class GetInfoProcessorService extends AbstractProcessor<EntityInfoRequest, InfoResponse>{
-
-    @Autowired
-    private ActionRepository actionRepository;
 
     @Autowired
     private CameraRepository cameraRepository;
@@ -66,9 +62,6 @@ public class GetInfoProcessorService extends AbstractProcessor<EntityInfoRequest
         EntityType type = request.getType();
         Long id = request.getId();
         if (null != type) switch (type) {
-            case ACTION -> {
-                return actionRepository.findById(id).get().toJson();
-            }
             case CAMERA -> {
                 return cameraRepository.findById(id).get().toJson();
             }

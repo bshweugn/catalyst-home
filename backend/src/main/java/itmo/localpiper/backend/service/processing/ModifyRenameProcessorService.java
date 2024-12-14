@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.EntityRenameRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
-import itmo.localpiper.backend.service.entity.ActionService;
 import itmo.localpiper.backend.service.entity.CameraService;
 import itmo.localpiper.backend.service.entity.DeviceService;
 import itmo.localpiper.backend.service.entity.FloorService;
@@ -37,9 +36,6 @@ public class ModifyRenameProcessorService extends AbstractProcessor<EntityRename
     private RoomService roomService;
 
     @Autowired
-    private ActionService actionService;
-
-    @Autowired
     private ScriptService scriptService;
 
     @Autowired
@@ -64,7 +60,6 @@ public class ModifyRenameProcessorService extends AbstractProcessor<EntityRename
                 case HOUSE -> houseService.rename(id, newName);
                 case FLOOR -> floorService.rename(id, newName);
                 case ROOM -> roomService.rename(id, newName);
-                case ACTION -> actionService.rename(id, newName);
                 case SCRIPT -> scriptService.rename(id, newName);
                 case TRIGGER -> triggerConditionService.rename(id, newName);
                 case CAMERA -> cameraService.rename(id, newName);

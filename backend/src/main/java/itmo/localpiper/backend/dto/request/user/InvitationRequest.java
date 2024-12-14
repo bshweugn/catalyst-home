@@ -1,8 +1,8 @@
 package itmo.localpiper.backend.dto.request.user;
 
+import java.util.List;
 import java.util.Map;
 
-import itmo.localpiper.backend.model.Action;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -25,5 +25,5 @@ public class InvitationRequest {
     private Boolean isResident;
 
     @NotNull
-    private Map<Long, Action> actionList;
+    private Map<Long, List<String>> actionList; // key is device id, list of strings is list of actions allowed for this device
 }

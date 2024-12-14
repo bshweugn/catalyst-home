@@ -1,39 +1,20 @@
 package itmo.localpiper.backend.service.entity;
 
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import itmo.localpiper.backend.model.Action;
-import itmo.localpiper.backend.repository.ActionRepository;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class ActionService {
     
-    @Autowired
-    private ActionRepository actionRepository;
+    private final Map<String, List<String>> actionRegistry;
 
-    public void rename(Long id, String newName) {
-        Action action = actionRepository.findById(id).get();
-        action.setName(newName);
-        actionRepository.save(action);
-    }
-
-    public List<Action> read() {
-        return actionRepository.findAll();
-    }
-
-    public void create(String name, String deviceType, Boolean hasParameter) {
-        Action action = new Action();
-        action.setName(name);
-        action.setDeviceType(deviceType);
-        action.setHasParameter(hasParameter);
-        actionRepository.save(action);
-    }
-
-    public void delete(Long id) {
-        actionRepository.deleteById(id);
+    public Map<String, List<String>> read() {
+        return actionRegistry;
     }
     
 }

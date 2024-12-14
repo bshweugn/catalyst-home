@@ -1,8 +1,8 @@
 package itmo.localpiper.backend.dto.response;
 
 import java.util.List;
+import java.util.Map;
 
-import itmo.localpiper.backend.model.Action;
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.Floor;
@@ -23,7 +23,7 @@ import lombok.Data;
 @Builder
 public class FullDataResponse {
     
-    private List<Action> actions;
+    private Map<String, List<String>> actions;
 
     private List<Camera> cameras;
 
