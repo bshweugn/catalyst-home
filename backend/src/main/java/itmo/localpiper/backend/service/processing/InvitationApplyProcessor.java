@@ -51,13 +51,13 @@ public class InvitationApplyProcessor extends AbstractProcessor<Pair<String, Pro
         } catch (JsonProcessingException e) {
             return ProcessingStatus.ERROR;
         }
-        tgas.grantAccess(user, invitation.getHouse(), privileges);
+        tgas.grantAccess(user, invitation.getHouse(), privileges, inviteId);
         return ProcessingStatus.SUCCESS;        
     }
 
     @Override
     protected OperationResultResponse pack(Object result) {
-        return new OperationResultResponse((ProcessingStatus)result, "idk what to write here");
+        return new OperationResultResponse((ProcessingStatus)result, "Invitation processed");
     }
     
 }
