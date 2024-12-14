@@ -75,7 +75,7 @@ public class JwtService {
      * @param token the JWT token
      * @return the username (subject) stored in the token
      */
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         try {
             Claims claims = extractAllClaims(token);
             return claims.getSubject(); // 'sub' is used for the username

@@ -55,7 +55,7 @@ public class HomeUtilsController {
         @Valid @RequestBody AddHouseRequest request,
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, AddHouseRequest> crutch = Pair.of(jwtService.extractUsername(token), request);
+            Pair<String, AddHouseRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return ResponseEntity.ok(addHouseProcessor.process(crutch));
     }
 
@@ -64,7 +64,7 @@ public class HomeUtilsController {
         @Valid @RequestBody AddFloorRequest request,
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, AddFloorRequest> crutch = Pair.of(jwtService.extractUsername(token), request);
+            Pair<String, AddFloorRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return ResponseEntity.ok(addFloorProcessor.process(crutch));
     }
     
@@ -73,7 +73,7 @@ public class HomeUtilsController {
         @Valid @RequestBody AddRoomRequest request,
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, AddRoomRequest> crutch = Pair.of(jwtService.extractUsername(token), request);
+            Pair<String, AddRoomRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return ResponseEntity.ok(addRoomProcessor.process(crutch));
     }
 }

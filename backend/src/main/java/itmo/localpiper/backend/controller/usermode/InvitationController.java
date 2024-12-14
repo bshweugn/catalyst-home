@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.request.user.InvitationRequest;
+import itmo.localpiper.backend.dto.request.user.KickRequest;
 import itmo.localpiper.backend.dto.request.user.ProcessInvitationRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
-import itmo.localpiper.backend.service.processing.InvitationApplyProcessor;
-import itmo.localpiper.backend.service.processing.InvitationPersistProcessor;
+import itmo.localpiper.backend.service.processing.invitations.EvictionProcessor;
+import itmo.localpiper.backend.service.processing.invitations.InvitationApplyProcessor;
+import itmo.localpiper.backend.service.processing.invitations.InvitationPersistProcessor;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,22 +32,32 @@ public class InvitationController {
 
     @Autowired
     private InvitationApplyProcessor iap;
+
+    @Autowired
+    private EvictionProcessor ep;
     
     @PostMapping("/inviteUser")
     public ResponseEntity<OperationResultResponse> inviteUser(@Valid @RequestBody InvitationRequest request, HttpServletRequest servletRequest) {
         String token = servletRequest.getHeader("Authorization").substring(7);
-        String username = jwtService.extractUsername(token);
+        String username = jwtService.extractEmail(token);
         Pair<String, InvitationRequest> crutch = Pair.of(username, request);
         return ResponseEntity.ok(ipp.process(crutch));
     }
 
     @PostMapping("/processInvitation")
-    public ResponseEntity<OperationResultResponse> processInvite(@RequestBody ProcessInvitationRequest request, HttpServletRequest servletRequest) {
+    public ResponseEntity<OperationResultResponse> processInvite(@Valid @RequestBody ProcessInvitationRequest request, HttpServletRequest servletRequest) {
         String token = servletRequest.getHeader("Authorization").substring(7);
-        String username = jwtService.extractUsername(token);
+        String username = jwtService.extractEmail(token);
         Pair<String, ProcessInvitationRequest> crutch = Pair.of(username, request);
         return ResponseEntity.ok(iap.process(crutch));
     }
     
+    @PostMapping("/kickUser")
+    public ResponseEntity<OperationResultResponse> kickUserFromHouse(@Valid @RequestBody KickRequest request, HttpServletRequest servletRequest) {
+        String token = servletRequest.getHeader("Authorization").substring(7);
+        String username = jwtService.extractEmail(token);
+        Pair<String, KickRequest> crutch = Pair.of(username, request);
+        return ResponseEntity.ok(ep.process(crutch));
+    }
     
 }

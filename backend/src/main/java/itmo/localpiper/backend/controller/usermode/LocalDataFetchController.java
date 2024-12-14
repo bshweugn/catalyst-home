@@ -47,7 +47,7 @@ public class LocalDataFetchController {
     public ResponseEntity<User> getUserData(HttpServletRequest servletRequest) {
         return ResponseEntity.ok(
             userRepository.findByEmail(
-            jwtService.extractUsername(
+            jwtService.extractEmail(
             servletRequest.getHeader("Authorization").substring(7))).get());
     }
 
@@ -63,7 +63,7 @@ public class LocalDataFetchController {
         return ResponseEntity.ok(
             userHouseRelRepository.findAllHousesByUser(
                 userRepository.findByEmail(
-                    jwtService.extractUsername(
+                    jwtService.extractEmail(
                         servletRequest.getHeader("Authorization").substring(7)
                     )
                 ).get().getId()

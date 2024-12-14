@@ -43,7 +43,7 @@ public class DeviceImportController {
         @Valid @RequestBody ImportCreateRequest request,
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, ImportCreateRequest> crutch = Pair.of(jwtService.extractUsername(token), request);
+            Pair<String, ImportCreateRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return ResponseEntity.ok(importCreateProcessorService.process(crutch));
     }
     

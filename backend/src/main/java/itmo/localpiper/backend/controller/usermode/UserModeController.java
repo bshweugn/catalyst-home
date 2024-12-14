@@ -32,7 +32,7 @@ public class UserModeController {
         HttpServletRequest servletRequest
     ) {
         String token = servletRequest.getHeader("Authorization").substring(7);
-        Pair<String, PfpRequest> crutch = Pair.of(jwtService.extractUsername(token), request);
+        Pair<String, PfpRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return ResponseEntity.ok(userPfpProcessor.process(crutch));
     }
     

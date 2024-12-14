@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.processing;
+package itmo.localpiper.backend.service.processing.invitations;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,7 @@ import itmo.localpiper.backend.model.Invitation;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.InvitationService;
+import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalGrantAccessService;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
