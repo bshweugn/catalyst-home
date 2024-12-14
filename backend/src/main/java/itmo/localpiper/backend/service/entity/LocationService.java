@@ -34,8 +34,8 @@ public class LocationService {
     }
 
     public Location create(String name, Double xCoordinate, Double yCoordinate) {
-        Location l = locationRepository.findByXAndY(xCoordinate, yCoordinate).get();
-        if (l == null) {
+        Optional<Location> l = locationRepository.findByXAndY(xCoordinate, yCoordinate);
+        if (l.isEmpty()) {
             Location location = new Location();
             location.setName(name);
             location.setX(xCoordinate);
@@ -43,9 +43,10 @@ public class LocationService {
             locationRepository.save(location);
             return location;
         }
-        l.setName(name);
-        locationRepository.save(l);
-        return l;
+        Location location = l.get();
+        location.setName(name);
+        locationRepository.save(location);
+        return location;
     }
     
     public void delete(Long id) {
