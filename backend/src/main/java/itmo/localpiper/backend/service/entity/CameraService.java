@@ -44,25 +44,18 @@ public class CameraService {
         cameraRepository.save(camera);
     }
 
-    public void addNew(String number, String name, Long roomId) {
+    public Camera addNew(String number, String name, Long roomId) {
         Camera camera = new Camera();
         Room room = roomRepository.findById(roomId).get();
         camera.setName(name);
         camera.setRoom(room);
         String deviceType = deviceTypeHandlerService.parseSerialNumber(number);
         camera.setCameraType(deviceType);
+        camera.setMotionSensorEnabled(false);
+        camera.setIsRecording(false);
+        camera.setStatus("OFF");
         List<String> params = deviceTypeHandlerService.retrieveFeatures(number);
-        
-        if (params.contains("STATE")) {
-            camera.setStatus("OFF");
-        }
-        if (params.contains("RECORDING")) {
-            camera.setIsRecording(false);
-        }
-        if (params.contains("MOTION_SENSOR")) {
-            camera.setMotionSensorEnabled(false);
-        }
-        if (params.contains("RECHARGING")) {
+        if (params.contains("BATTERY")) {
             camera.setBatteryLevel(100);
             camera.setCharging(false);
         }
@@ -72,6 +65,7 @@ public class CameraService {
         }
         camera.setTriggerConditions(new ArrayList<>());
         cameraRepository.save(camera);
+        return camera;
     }
 
     public List<Camera> read() {

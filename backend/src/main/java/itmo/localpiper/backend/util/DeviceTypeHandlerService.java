@@ -22,6 +22,8 @@ public class DeviceTypeHandlerService {
     private final Map<String, JsonNode> deviceRegistry;
 
     private final Map<String, Map<String, FeatureDefinition>> defsRegistry;
+
+    private final Map<String, List<String>> actionRegistry;
     
     public String parseSerialNumber(String number) {
         JsonNode node = deviceRegistry.get(number);
@@ -48,5 +50,7 @@ public class DeviceTypeHandlerService {
         return defsRegistry.get(number);
     }
 
-
+    public List<String> retrieveActionList(String number) {
+        return actionRegistry.get(number);
+    }
 }

@@ -49,7 +49,6 @@ public class HomeUtilsController {
     public ResponseEntity<Location> addLocation(@RequestBody AddLocationRequest request) {
         return ResponseEntity.ok(locationService.create(request.getName(), request.getX(), request.getY()));
     }
-    
 
     @PostMapping("/addHouse")
     public ResponseEntity<HoldableResultResponse<House>> addHouse(
