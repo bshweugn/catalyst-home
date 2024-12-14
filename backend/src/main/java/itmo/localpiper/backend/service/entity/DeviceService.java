@@ -79,7 +79,7 @@ public class DeviceService {
                     device.setBatteryLevel(100);
                     device.setCharging(false);
                 }
-                case "STATE", "CLOSEABLE_STATE", "VC_STATE" -> device.setStatus((String)defaultValue);
+                case "ON_OFF_STATE", "CLOSEABLE_STATE", "RC_STATE" -> device.setStatus((String)defaultValue);
                 default -> features.put(featureKey, defaultValue);
             }   
         }

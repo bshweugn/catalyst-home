@@ -14,7 +14,6 @@ public class AddFloorRequest {
     @NotBlank
     private String name;
 
-    @NotNull
     @Positive
     private Long houseId;
 }

@@ -42,4 +42,16 @@ public class UserHouseRelService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public List<House> findHousesOwnedByUser(User user) {
+        return repository.findAllHousesWhereUserIsResident(user.getId());
+    }
+
+    public List<House> findHousesMappedToUser(User user) {
+        return repository.findAllHousesByUser(user.getId());
+    }
+
+    public List<User> findUsersMappedToHouse(House house) {
+        return repository.findAllUsersByHouse(house.getId());
+    }
 }

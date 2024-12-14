@@ -29,13 +29,14 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    public void create(String name, Long floorId) {
+    public Room create(String name, Long floorId) {
         Room room = new Room();
         Floor floor = floorRepository.findById(floorId).get();
         room.setName(name);
         room.setFloor(floor);
 
         roomRepository.save(room);
+        return room;
     }
 
     public void delete(Long id) {

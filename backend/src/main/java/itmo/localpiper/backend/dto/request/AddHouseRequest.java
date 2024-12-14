@@ -18,4 +18,6 @@ public class AddHouseRequest {
 
     @NotNull
     private Double y;
+
+    private Long locationId; // can be null
 }

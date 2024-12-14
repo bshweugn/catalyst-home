@@ -29,16 +29,21 @@ public class FloorService {
         return floorRepository.findAll();
     }
 
-    public void create(String name, Long houseId) {
+    public Floor create(String name, Long houseId) {
         Floor floor = new Floor();
         House house = houseRepository.findById(houseId).get();
         floor.setName(name);
         floor.setHouse(house);
 
         floorRepository.save(floor);
+        return floor;
     }
 
     public void delete(Long id) {
         floorRepository.deleteById(id);
+    }
+
+    public List<Floor> findFloorsByHouse(House house) {
+        return floorRepository.findAllFloorsByHouseId(house.getId());
     }
 }
