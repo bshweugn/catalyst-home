@@ -1,5 +1,5 @@
 {
-        "STATE" : {
+        "ON_OFF_STATE" : {
             "type" : "ENUM",
             "values" : ["ON", "OFF"]
         },
@@ -7,9 +7,17 @@
             "type" : "ENUM",
             "values" : ["OPENED", "CLOSED"]
         },
-        "VC_STATE" : {
+        "RC_STATE" : {
             "type" : "ENUM",
-            "values" : ["ON", "OFF", "PAUSED", "CHARING", "RETURNING"]
+            "values" : ["ON", "OFF", "WORKING", "PAUSED", "ERROR", "RETURNING"]
+        },
+        "LEAK_STATE" : {
+            "type" : "ENUM",
+            "values" : ["ON", "OFF", "LEAK_DETECTED"]
+        },
+        "CAMERA_STATE" : {
+            "type" : "ENUM",
+            "values" : ["ON", "OFF", "MOTION_DETECTED"]
         },
         "BRIGHTNESS" : {
             "type" : "NUMBER",
@@ -50,11 +58,6 @@
             "min" : 0,
             "max" : 100
         },
-        "CURRENT_POLLUTION" : {
-            "type" : "NUMBER",
-            "min" : 0,
-            "max" : 100
-        },
         "MODE" : {
             "type" : "ENUM",
             "values" : ["SOFT", "NORMAL", "MAX"]
@@ -74,6 +77,13 @@
         },
         "BATTERY" : {
             "type" : "BOOLEAN"
+        },
+        "BATTERY_LEVEL" : {
+            "type" : "NUMBER",
+            "min" : 0,
+            "max" : 100   
+        },
+        "ROTATION" : {
+            "type" : "BOOLEAN"
         }
-
 }

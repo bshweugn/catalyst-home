@@ -1,0 +1,168 @@
+{
+    "010001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHANGE_BRIGHTNESS",
+        "CHANGE_COLOR_TEMPERATURE"
+    ],
+    "010002" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHANGE_BRIGHTNESS",
+        "CHANGE_COLOR"
+    ],
+    "010003" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHANGE_BRIGHTNESS"
+    ],
+    "010004" : [
+        "TURN_ON",
+        "TURN_OFF"
+    ],
+    "020001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHARGE",
+        "UNPLUG"
+    ],
+    "030001" : [
+        "OPEN",
+        "CLOSE",
+        "CHANGE_PERCENTAGE"
+    ],
+    "030002" : [
+        "OPEN",
+        "CLOSE"
+    ],
+    "040001" : [
+        "OPEN",
+        "CLOSE",
+        "CHARGE",
+        "UNPLUG"
+    ],
+    "050001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "HEAT",
+        "COOL",
+        "CHANGE_MODE"
+    ],
+    "050002" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "HEAT",
+        "COOL"
+    ],
+    "060001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "HEAT",
+        "COOL",
+        "CHANGE_MODE",
+        "CHANGE_WIND_MODE"
+    ],
+    "060002" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "COOL",
+        "CHANGE_MODE",
+        "CHANGE_WIND_MODE"
+    ],
+    "060003" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "COOL",
+        "CHANGE_MODE"
+    ],
+    "060004" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "COOL",
+        "CHANGE_WIND_MODE"
+    ],
+    "070001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "HUMIDIFY",
+        "CHANGE_MODE"
+    ],
+    "070002" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "HUMIDIFY"
+    ],
+    "080001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHARGE",
+        "UNPLUG"
+    ],
+    "090001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHANGE_SPEED"
+    ],
+    "090002" : [
+        "TURN_ON",
+        "TURN_OFF"
+    ],
+    "100001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "CHARGE",
+        "UNPLUG",
+        "READ_HEAT"
+    ],
+    "110001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "RUN",
+        "STOP",
+        "CONTINUE",
+        "FINISH",
+        "CHARGE",        
+        "UNPLUG",
+        "CHANGE_SUCTION_POWER"
+    ],
+    "120001" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "START_RECORDING",
+        "STOP_RECORDING",
+        "ENABLE_MS",
+        "DISABLE_MS",
+        "ROTATE_X",
+        "ROTATE_Y",
+        "CHARGE",
+        "UNPLUG"
+    ],
+    "120002" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "START_RECORDING",
+        "STOP_RECORDING",
+        "ENABLE_MS",
+        "DISABLE_MS",
+        "ROTATE_X",
+        "ROTATE_Y"
+    ],
+    "120003" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "START_RECORDING",
+        "STOP_RECORDING",
+        "ENABLE_MS",
+        "DISABLE_MS"
+    ],
+    "120004" : [
+        "TURN_ON",
+        "TURN_OFF",
+        "START_RECORDING",
+        "STOP_RECORDING",
+        "ENABLE_MS",
+        "DISABLE_MS",
+        "CHARGE",
+        "UNPLUG"
+    ]
+}

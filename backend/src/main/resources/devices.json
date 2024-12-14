@@ -26,7 +26,7 @@
 
         "020001": {
             "type": "RELAY",
-            "features": ["STATE"],
+            "features": ["CHARGE", "STATE"],
             "manufacturer": "Catalyst"
         },
 
@@ -44,7 +44,7 @@
 
         "040001": {
             "type": "VALVE",
-            "features": ["STATE"],
+            "features": ["CHARGE", "STATE"],
             "manufacturer": "Catalyst"
         },
 
@@ -65,14 +65,20 @@
             "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "WIND_MODE", "STATE"],
             "manufacturer": "Catalyst"
         },
-
+        
         "060002": {
+            "type": "AC",
+            "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "WIND_MODE", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "060003": {
             "type": "AC",
             "features": ["CURRENT_TEMP", "TARGET_TEMP", "MODE", "STATE"],
             "manufacturer": "Catalyst"
         },
 
-        "060003": {
+        "060004": {
             "type": "AC",
             "features": ["CURRENT_TEMP", "TARGET_TEMP", "WIND_MODE", "STATE"],
             "manufacturer": "Catalyst"
@@ -90,21 +96,9 @@
             "manufacturer": "Catalyst"
         },
 
-        "070003": {
-            "type": "HUMIDIFIER",
-            "features": ["STATE"],
-            "manufacturer": "Catalyst"
-        },
-
         "080001": {
-            "type": "AIR_PURIFIER",
-            "features": ["CURRENT_POLLUTION", "MODE", "STATE"],
-            "manufacturer": "Catalyst"
-        },
-
-        "080002": {
-            "type": "AIR_PURIFIER",
-            "features": ["CURRENT_POLLUTION", "STATE"],
+            "type": "LEAK_DETECTOR",
+            "features": ["CHARGE", "STATE"],
             "manufacturer": "Catalyst"
         },
 
@@ -121,32 +115,38 @@
         },
 
         "100001": {
-            "type": "ROBOT_VACUUM",
-            "features": ["STATE", "SUCTION_POWER"],
+            "type": "TEMPERATURE_SENSOR",
+            "features": ["STATE", "CHARGE", "CURR_TEMP"],
             "manufacturer": "Catalyst"
         },
 
         "110001": {
-            "type": "CAMERA",
-            "features": ["RECHARGING", "ROTATION", "MOTION_SENSOR", "RECORDING", "STATE"],
+            "type": "ROBOT_VACUUM",
+            "features": ["STATE", "SUCTION_POWER", "CHARGE"],
             "manufacturer": "Catalyst"
         },
 
-        "110002": {
+        "120001": {
+            "type": "CAMERA",
+            "features": ["CHARGE", "ROTATION", "MOTION_SENSOR", "RECORDING", "STATE"],
+            "manufacturer": "Catalyst"
+        },
+
+        "120002": {
             "type": "CAMERA",
             "features": ["ROTATION", "MOTION_SENSOR", "RECORDING", "STATE"],
             "manufacturer": "Catalyst"
         },
 
-        "110003": {
+        "120003": {
             "type": "CAMERA",
             "features": ["MOTION_SENSOR", "RECORDING", "STATE"],
             "manufacturer": "Catalyst"
         },
 
-        "110004": {
+        "120004": {
             "type": "CAMERA",
-            "features": ["RECHARGING", "MOTION_SENSOR", "RECORDING", "STATE"],
+            "features": ["CHARGE", "MOTION_SENSOR", "RECORDING", "STATE"],
             "manufacturer": "Catalyst"
         }
 
