@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.request.user.InvitationRequest;
 import itmo.localpiper.backend.dto.request.user.KickRequest;
+import itmo.localpiper.backend.dto.request.user.LeaveRequest;
 import itmo.localpiper.backend.dto.request.user.ProcessInvitationRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.service.processing.invitations.EvictionProcessor;
 import itmo.localpiper.backend.service.processing.invitations.InvitationApplyProcessor;
 import itmo.localpiper.backend.service.processing.invitations.InvitationPersistProcessor;
+import itmo.localpiper.backend.service.processing.invitations.LeaveProcessor;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,6 +37,9 @@ public class User2UserController {
 
     @Autowired
     private EvictionProcessor ep;
+
+    @Autowired
+    private LeaveProcessor lp;
     
     @PostMapping("/inviteUser")
     public ResponseEntity<OperationResultResponse> inviteUser(@Valid @RequestBody InvitationRequest request, HttpServletRequest servletRequest) {
@@ -59,5 +64,14 @@ public class User2UserController {
         Pair<String, KickRequest> crutch = Pair.of(username, request);
         return ResponseEntity.ok(ep.process(crutch));
     }
+
+    @PostMapping("/leaveHouse")
+    public ResponseEntity<OperationResultResponse> leaveHouse(@Valid @RequestBody LeaveRequest request, HttpServletRequest servletRequest) {
+        String token = servletRequest.getHeader("Authorization").substring(7);
+        String username = jwtService.extractEmail(token);
+        Pair<String, LeaveRequest> crutch = Pair.of(username, request);
+        return ResponseEntity.ok(lp.process(crutch));
+    }
+    
     
 }

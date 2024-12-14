@@ -49,7 +49,7 @@ public class EvictionProcessor extends AbstractProcessor<Pair<String, KickReques
         HouseOwnership hostRole = maybeUhr.get().getRole();
         HouseOwnership role = maybeUhr2.get().getRole();
         if (hostRole == HouseOwnership.GUEST || role == HouseOwnership.OWNER || (hostRole == role)) throw new RoleViolationException("Can't evict user - permission denied!");
-        teus.evictUser(maybeUhr2.get());
+        teus.leaveHouse(maybeUhr2.get());
         return null;
     }
 
