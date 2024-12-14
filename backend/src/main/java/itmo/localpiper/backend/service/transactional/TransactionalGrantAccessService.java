@@ -51,13 +51,12 @@ public class TransactionalGrantAccessService {
     }
 
     @Transactional(isolation= Isolation.REPEATABLE_READ, propagation=Propagation.REQUIRED)
-    public void grantFullAccess(User user, House house, Map<Long, List<String>> privileges, Long inviteId) {
-        
-        for (Map.Entry<Long, List<String>> entry : privileges.entrySet()) {
-            Device device = deviceRepository.findById(entry.getKey()).get();
+    public void grantFullAccess(User user, House house, Long inviteId) {
+        List<Device> devices = deviceRepository.findAllByHouseId(house.getId()); // very slow
+        for (Device device : devices) {
             List<String> actions = deviceTypeHandlerService.retrieveActionList(deviceTypeHandlerService.extractSerialNumber(device.getDeviceType()));
             for (String action : actions) {
-                udarService.create(user.getId(), entry.getKey(), action);
+                udarService.create(user.getId(), device.getId(), action);
             }
         }
         uhrService.create(user.getId(), house.getId(), HouseOwnership.RESIDENT);

@@ -52,7 +52,7 @@ public class InvitationApplyProcessor extends AbstractProcessor<Pair<String, Pro
             return ProcessingStatus.ERROR;
         }
         if (invitation.getIsResident()) {
-            tgas.grantAccess(user, invitation.getHouse(), privileges, inviteId);
+            tgas.grantFullAccess(user, invitation.getHouse(), inviteId);
         } else {
             tgas.grantAccess(user, invitation.getHouse(), privileges, inviteId);
         }
