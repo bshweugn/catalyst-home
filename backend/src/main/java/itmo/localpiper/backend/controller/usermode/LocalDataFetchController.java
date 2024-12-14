@@ -15,7 +15,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
+import itmo.localpiper.backend.model.Camera;
+import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.House;
+import itmo.localpiper.backend.repository.CameraRepository;
+import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.repository.UserHouseRelRepository;
 
 
@@ -32,6 +36,12 @@ public class LocalDataFetchController {
 
     @Autowired
     private UserHouseRelRepository userHouseRelRepository;
+
+    @Autowired
+    private DeviceRepository deviceRepository;
+
+    @Autowired
+    private CameraRepository cameraRepository;
     
     @GetMapping("/getUserData")
     public ResponseEntity<User> getUserData(HttpServletRequest servletRequest) {
@@ -49,7 +59,7 @@ public class LocalDataFetchController {
     }
 
     @GetMapping("/getHousesByUser")
-    public ResponseEntity<List<House>> getMethodName(HttpServletRequest servletRequest) {
+    public ResponseEntity<List<House>> getHousesByUser(HttpServletRequest servletRequest) {
         return ResponseEntity.ok(
             userHouseRelRepository.findAllHousesByUser(
                 userRepository.findByEmail(
@@ -58,6 +68,20 @@ public class LocalDataFetchController {
                     )
                 ).get().getId()
             )
+        );
+    }
+
+    @GetMapping("/getDevicesByHouse")
+    public ResponseEntity<List<Device>> getDevicesByHouse(@RequestParam Long houseId) {
+        return ResponseEntity.ok(
+            deviceRepository.findAllByHouseId(houseId)
+        );
+    }
+    
+    @GetMapping("/getCamerasByHouse")
+    public ResponseEntity<List<Camera>> getMethodName(@RequestParam Long houseId) {
+        return ResponseEntity.ok(
+            cameraRepository.findAllByHouseId(houseId)
         );
     }
     
