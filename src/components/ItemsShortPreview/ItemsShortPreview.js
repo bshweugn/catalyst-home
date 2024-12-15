@@ -22,21 +22,23 @@ const ItemsShortPreview = ({ devices, action, label }) => {
                         </div>
                     )}
                 </div>
-                <div className="items-short-preview__names">
-                    {firstThreeDevices.map((device, index) => (
-                        <span key={index} className="items-short-preview__name">
-                            {devices[device].name}
-                            {index < firstThreeDevices.length - 1 && ", "}
-                            {index === firstThreeDevices.length - 2 && firstThreeDevices.length > 1 ? "" : ""}
-                        </span>
-                    ))}
-                    {remainingCount > 0 && (
-                        <span className="items-short-preview__name items-short-preview__name--more">
-                            {" и ещё " + remainingCount} аксессуар{remainingCount > 1 ? "а" : ""}
-                        </span>
-                    )}
-                </div>
-                <div className="items-short-preview__change-btn" onClick={() => action()}>
+                {Object.keys(devices).length == 0 ? null :
+                    <div className="items-short-preview__names">
+                        {firstThreeDevices.map((device, index) => (
+                            <span key={index} className="items-short-preview__name">
+                                {devices[device].name}
+                                {index < firstThreeDevices.length - 1 && ", "}
+                                {index === firstThreeDevices.length - 2 && firstThreeDevices.length > 1 ? "" : ""}
+                            </span>
+                        ))}
+                        {remainingCount > 0 && (
+                            <span className="items-short-preview__name items-short-preview__name--more">
+                                {" и ещё " + remainingCount} аксессуар{remainingCount > 1 ? "а" : ""}
+                            </span>
+                        )}
+                    </div>
+                }
+                <div className={`items-short-preview__change-btn ${Object.keys(devices).length == 0 ? "items-short-preview__change-btn--full" : ""}`} onClick={() => action()}>
                     {Object.keys(devices).length == 0 ? "Выбрать аксессуары" : "Изменить выбор"}
                 </div>
             </div>

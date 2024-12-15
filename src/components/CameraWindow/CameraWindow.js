@@ -258,18 +258,17 @@ const CameraWindow = (args) => {
 
     return (
         <div className={`camera-window ${!args.visible ? "camera-window--hidden" : ""}`}>
-            <CameraSettings rooms={Object.values(args.rooms).map(room => room.name)} room={args.rooms[("id" + args.camera.roomID)].name} name={args.camera.name} visible={settingsVisible} visibilityFunc={setSettingsVisible} />
+            <CameraSettings rooms={Object.values(args.rooms).map(room => room.roomName)} room={args.room.roomName || "Неизвестная комната"} name={args.camera.name} visible={settingsVisible} visibilityFunc={setSettingsVisible} />
             
             <div className='camera-window__back' />
             <div className={`camera-window__header ${settingsVisible ? "camera-window__header--hidden" : ""}`}>
                 <div className='camera-window__item-info'>
                     <p className='camera-window__item-name'>{args.camera.name}</p>
-                    <p className='camera-window__room-name'>{args.rooms["id" + args.camera.roomID]?.name} · {args.camera.isRecording ? 'Запись' : 'Запись приостановлена'}</p>
+                    <p className='camera-window__room-name'>{args.room.roomName} · {args.camera.isRecording ? 'Запись' : 'Запись приостановлена'}</p>
                 </div>
                 <div className='camera-window__item-icon'>
                     {renderItemIcon(args.camera)}
                 </div>
-                <p className='camera-window__header-title'>{args.camera.name}</p>
                 <p className='camera-window__close-btn' onClick={() => args.idFunc(0)}>Готово</p>
             </div>
             <div className={`camera-window__content ${settingsVisible ? "camera-window__content--hidden" : ""}`}>

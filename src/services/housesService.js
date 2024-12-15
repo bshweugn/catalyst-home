@@ -1,10 +1,9 @@
 // housesService.js
-import { getHousesData } from '../api/housesAPI';
-import { addHouseRequest, addFloorRequest, addRoomRequest } from './housesAPI';
-import { setHouse, addFloor, addRoom } from './housesSlice';
+import { addFloorRequest, addHouseRequest, addRoomRequest, getHousesData } from '../api/housesAPI';
+import { setFloor, setHouse, setRoom } from '../store';
 
 // Добавление дома
-export const addHouse = async (dispatch, token, name, coordinates) => {
+export const createHouse = async (dispatch, token, name, coordinates) => {
     try {
         const result = await addHouseRequest(token, name, coordinates);
         dispatch(setHouse({ id: result.data.id, data: result.data, status: result.status }));
@@ -16,10 +15,10 @@ export const addHouse = async (dispatch, token, name, coordinates) => {
 };
 
 // Добавление этажа
-export const addFloor = async (dispatch, token, name, houseId) => {
+export const createFloor = async (dispatch, token, name, houseId) => {
     try {
         const result = await addFloorRequest(token, name, houseId);
-        dispatch(addFloor({ houseId, floor: result.data }));
+        dispatch(setFloor({ houseId, floor: result.data }));
         return result.data;
     } catch (error) {
         console.error('Ошибка при добавлении этажа:', error);
@@ -28,10 +27,10 @@ export const addFloor = async (dispatch, token, name, houseId) => {
 };
 
 // Добавление комнаты
-export const addRoom = async (dispatch, token, name, floorId) => {
+export const createRoom = async (dispatch, token, name, floorId) => {
     try {
         const result = await addRoomRequest(token, name, floorId);
-        dispatch(addRoom({ houseId: null, floorId, room: result.data })); // Добавьте корректный houseId
+        dispatch(setRoom({ houseId: null, floorId, room: result.data })); // Добавьте корректный houseId
         return result.data;
     } catch (error) {
         console.error('Ошибка при добавлении комнаты:', error);
@@ -44,21 +43,163 @@ export const fetchHousesData = async (dispatch, token) => {
         const houses = await getHousesData(token);
 
         houses.forEach(house => {
-            // Добавить дом
             dispatch(setHouse({ id: house.id, data: house }));
 
-            // Добавить этажи
             house.floors.forEach(floor => {
-                dispatch(addFloor({ houseId: house.id, floor }));
+                dispatch(setFloor({ houseId: house.id, floor }));
 
-                // Добавить комнаты
                 floor.rooms.forEach(room => {
-                    dispatch(addRoom({ houseId: house.id, floorId: floor.id, room }));
+                    dispatch(setRoom({ houseId: house.id, floorId: floor.id, room }));
                 });
             });
         });
+
+        return houses;
     } catch (error) {
         console.error('Ошибка при получении данных о домах:', error);
         throw error;
     }
 };
+
+const getDevicesByHouseAndRoomId = (houseId, roomId, houses) => {
+    const house = houses.find(h => h.id === houseId);
+    if (!house) {
+        console.error(`Дом с id ${houseId} не найден.`);
+        return [];
+    }
+
+    for (const floor of house.floors) {
+        const room = floor.rooms.find(r => r.id === roomId);
+        if (room) {
+            return room.devices || [];
+        }
+    }
+
+    console.error(`Комната с id ${roomId} не найдена в доме с id ${houseId}.`);
+    return [];
+};
+
+export const getRoomsAndDevicesByHouseId = (houseId, houses) => {
+    console.log(`Ищем дом с ID: ${houseId}`);
+
+    const house = houses.find(h => h.id === houseId);
+    if (!house) {
+        console.error(`Дом с ID ${houseId} не найден.`);
+        return [];
+    }
+    console.log(`Найден дом: ${house.name}`);
+
+    if (!house.floors || house.floors.length === 0) {
+        console.warn(`В доме с ID ${houseId} нет этажей.`);
+        return [];
+    }
+
+    const roomsWithDevices = [];
+    const seenRoomNames = new Set();
+
+    house.floors.forEach(floor => {
+        console.log(`Обрабатываем этаж: ${floor.name} (ID: ${floor.id})`);
+        if (!floor.rooms || floor.rooms.length === 0) {
+            console.warn(`На этаже ${floor.name} (ID: ${floor.id}) нет комнат.`);
+            return;
+        }
+
+        floor.rooms.forEach(room => {
+            const hasDevices = (room.devices && room.devices.length > 0);
+            const hasCameras = (room.cameras && room.cameras.length > 0);
+
+            if (!hasDevices && !hasCameras) {
+                console.warn(`Комната "${room.name}" (ID: ${room.id}) пуста и будет исключена.`);
+                return;
+            }
+
+            // Убираем дубликаты комнат по названию
+            if (seenRoomNames.has(room.name)) {
+                console.warn(`Комната с именем "${room.name}" уже обработана, пропускаем.`);
+                return;
+            }
+            seenRoomNames.add(room.name);
+
+            console.log(`Добавляем комнату: ${room.name} (ID: ${room.id})`);
+            roomsWithDevices.push({
+                roomId: room.id,
+                roomName: room.name,
+                devices: room.devices || [],
+                cameras: room.cameras || []
+            });
+        });
+    });
+
+    if (roomsWithDevices.length === 0) {
+        console.warn(`В доме с ID ${houseId} не найдено подходящих комнат.`);
+    }
+
+    return roomsWithDevices;
+};
+
+export const getAllDevicesByHouseId = (houseId, houses) => {
+    console.log(`Ищем дом с ID: ${houseId}`);
+
+    const house = houses.find(h => h.id === houseId);
+    if (!house) {
+        console.error(`Дом с ID ${houseId} не найден.`);
+        return [];
+    }
+    console.log(`Найден дом: ${house.name}`);
+
+    if (!house.floors || house.floors.length === 0) {
+        console.warn(`В доме с ID ${houseId} нет этажей.`);
+        return [];
+    }
+
+    const allDevicesAndCameras = [];
+
+    house.floors.forEach(floor => {
+        console.log(`Обрабатываем этаж: ${floor.name} (ID: ${floor.id})`);
+        if (!floor.rooms || floor.rooms.length === 0) {
+            console.warn(`На этаже ${floor.name} (ID: ${floor.id}) нет комнат.`);
+            return;
+        }
+
+        floor.rooms.forEach(room => {
+            const devices = room.devices || [];
+            const cameras = room.cameras || [];
+
+            if (devices.length > 0) {
+                console.log(`Добавляем устройства из комнаты "${room.name}" (ID: ${room.id}):`, devices);
+                allDevicesAndCameras.push(...devices);
+            }
+
+            if (cameras.length > 0) {
+                console.log(`Добавляем камеры из комнаты "${room.name}" (ID: ${room.id}):`, cameras);
+                allDevicesAndCameras.push(...cameras);
+            }
+        });
+    });
+
+    if (allDevicesAndCameras.length === 0) {
+        console.warn(`В доме с ID ${houseId} не найдено ни устройств, ни камер.`);
+    }
+
+    return allDevicesAndCameras;
+};
+
+
+export const getRoomsByHouseId = (houseId, houses) => {
+    const house = houses.find(h => h.id === houseId);
+    if (!house) {
+        console.error(`Дом с id ${houseId} не найден.`);
+        return [];
+    }
+
+    const allRooms = house.floors.reduce((rooms, floor) => {
+        return rooms.concat(floor.rooms || []);
+    }, []);
+
+    return allRooms;
+};
+
+
+
+
+

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import '@ionic/react/css/core.css';
-import { IonApp, IonModal, IonHeader, IonContent, setupIonicReact } from '@ionic/react';
+import { IonApp, setupIonicReact } from '@ionic/react';
 import Homepage from './Homepage';
 import TabBar from './components/TabBar/TabBar';
 import AddAccessoryPopup from './components/AddAccessoryPopup/AddAccessoryPopup';
@@ -9,17 +9,20 @@ import ProfileInfo from './components/ProfileInfo/ProfileInfo';
 import avatar from './assets/images/user.jpeg';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
-import { Provider, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
 import store, { persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
 import Sheet from './components/Sheet/Sheet';
 import WideButton from './components/WideButton/WideButton';
-import { getUserInfo, login, logout, registerUser } from './logic/oauth';
+import { logout } from './logic/oauth';
 import AuthScreen from './components/AuthScreen/AuthScreen';
-import { Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 
 function App() {
+  const [currentHouseID, setCurrentHouseID] = useState(1);
+
+
   const [addAccessoryMode, setAccessoryMode] = useState(false);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
 
@@ -80,7 +83,7 @@ function App() {
           <Routes>
             <Route path="/" element={
               <IonApp>
-                <Homepage token={token} currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} />
+                <Homepage currentHouseID={currentHouseID} token={token} currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} />
                 <TabBar activeTab={currentPage} setActiveTab={setCurrentPage} />
 
                 <Sheet visible={isProfileModalOpen} func={setProfileModalOpen} title="Профиль">
@@ -88,7 +91,7 @@ function App() {
                   <WideButton light label="Выйти" onClick={() => handleLogout()} />
                 </Sheet>
 
-                <AddAccessoryPopup visible={addAccessoryMode} func={setAccessoryMode} view={popupView} token={token}/>
+                <AddAccessoryPopup currentHouseID={currentHouseID} visible={addAccessoryMode} func={setAccessoryMode} view={popupView} token={token}/>
               </IonApp>
             } />
             <Route path="/auth" element={

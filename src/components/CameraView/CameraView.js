@@ -1,8 +1,8 @@
 import React from 'react';
 import './CameraView.scss';
 
-const CameraView = ({ camera, rooms, className, idFunc, id }) => {
-    const finalClassName = 'camera-view ' + (className || '');
+const CameraView = ({ camera, room, className, idFunc, id, opened }) => {
+    const finalClassName = 'camera-view ' + (opened ? "camera-view--opened" : "") + (className || '');
 
     return (
         <div className={finalClassName} onClick={() => idFunc(id)}>
@@ -14,7 +14,7 @@ const CameraView = ({ camera, rooms, className, idFunc, id }) => {
                 <p className='camera-view__camera-name'>{camera.name}</p>
                 <div className='camera-view__camera-status'>
                     <p className='camera-view__rec-status'>
-                        {rooms["id" + camera.roomID]?.name} · {camera.isRecording ? 'Запись' : 'Запись приостановлена'}
+                        {room.roomName} · {camera.isRecording ? 'Запись' : 'Запись приостановлена'}
                     </p>
                 </div>
             </div>

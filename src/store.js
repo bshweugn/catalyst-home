@@ -1,6 +1,6 @@
-import { configureStore, createSlice, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
-import background from './assets/images/background.jpg';
 import {
     persistStore,
     persistReducer,
@@ -10,226 +10,145 @@ import {
     PERSIST,
     PURGE,
     REGISTER,
-} from 'redux-persist'
+} from 'redux-persist';
 
-const persistConfig = {
-    key: 'root',
-    storage,
-};
-
+// Создание слайсов
 const devicesSlice = createSlice({
     name: 'devices',
     initialState: {},
     reducers: {
-        // Установить или изменить устройство
         setDevice: (state, action) => {
-            const { id, data, status } = action.payload;
+            const { id, data } = action.payload;
             state[id] = {
                 ...data,
-                favourite: state[id]?.favourite ?? false, // Добавляем favourite (по умолчанию false)
-                status: status || state[id]?.status || {},
+                favourite: state[id]?.favourite ?? false,
             };
         },
-
-        // Установить значение favourite для устройства
         setFav: (state, action) => {
             const { id, favourite } = action.payload;
-            if (state[id]) {
-                state[id].favourite = favourite;
-            }
+            if (state[id]) state[id].favourite = favourite;
         },
-
-        // Удалить устройство
         removeDevice: (state, action) => {
             const { id } = action.payload;
             delete state[id];
         },
-
-        // Обновить конкретное свойство устройства
-        updateDeviceProperty: (state, action) => {
-            const { id, property, value } = action.payload;
-            if (state[id]) {
-                state[id][property] = value;
-            }
-        }
-    }
+    },
 });
 
 const roomsSlice = createSlice({
     name: 'rooms',
     initialState: {},
     reducers: {
-        // Добавить или обновить комнату
         setRoom: (state, action) => {
-            const { id, data, status } = action.payload;
+            const { id, data } = action.payload;
             state[id] = {
                 ...data,
-                order: state[id]?.order ?? (data.order || 0), // Используем скобки для предотвращения конфликта
-                status: status || state[id]?.status || {},
+                devices: state[id]?.devices || [],
             };
         },
-
-        // Удалить комнату
-        removeRoom: (state, action) => {
-            const { id } = action.payload;
-            delete state[id];
+        addDeviceToRoom: (state, action) => {
+            const { roomId, device } = action.payload;
+            if (state[roomId]) state[roomId].devices.push(device);
         },
-
-        // Обновить порядок комнаты
-        updateRoomOrder: (state, action) => {
-            const { id, order } = action.payload;
-            if (state[id]) {
-                state[id].order = order;
+        removeDeviceFromRoom: (state, action) => {
+            const { roomId, deviceId } = action.payload;
+            if (state[roomId]) {
+                state[roomId].devices = state[roomId].devices.filter(d => d.id !== deviceId);
             }
-        }
-    }
+        },
+    },
 });
 
 const floorsSlice = createSlice({
     name: 'floors',
     initialState: {},
     reducers: {
-        // Добавить или обновить этаж
         setFloor: (state, action) => {
-            const { id, data, status } = action.payload;
+            const { id, data } = action.payload;
             state[id] = {
                 ...data,
-                rooms: state[id]?.rooms || [], // Сохраняем существующие комнаты
-                status: status || state[id]?.status || {},
+                rooms: state[id]?.rooms || [],
             };
         },
-
-        // Удалить этаж
-        removeFloor: (state, action) => {
-            const { id } = action.payload;
-            delete state[id];
-        },
-
-        // Добавить комнату в этаж
-        addRoom: (state, action) => {
+        addRoomToFloor: (state, action) => {
             const { floorId, room } = action.payload;
-            if (state[floorId]) {
-                state[floorId].rooms.push(room);
-            }
+            if (state[floorId]) state[floorId].rooms.push(room);
         },
-
-        // Удалить комнату из этажа
-        removeRoom: (state, action) => {
+        removeRoomFromFloor: (state, action) => {
             const { floorId, roomId } = action.payload;
             if (state[floorId]) {
                 state[floorId].rooms = state[floorId].rooms.filter(r => r.id !== roomId);
             }
-        }
-    }
+        },
+    },
 });
 
 const housesSlice = createSlice({
     name: 'houses',
     initialState: {},
     reducers: {
-        // Добавить или обновить дом
         setHouse: (state, action) => {
-            const { id, data, status } = action.payload;
+            const { id, data } = action.payload;
             state[id] = {
                 ...data,
-                floors: state[id]?.floors ?? [], // Сохраняем существующие этажи, если есть
-                status: status || state[id]?.status || {},
+                floors: state[id]?.floors || [],
             };
         },
-
-        // Удалить дом
-        removeHouse: (state, action) => {
-            const { id } = action.payload;
-            delete state[id];
-        },
-
-        // Добавить этаж в дом
-        addFloor: (state, action) => {
+        addFloorToHouse: (state, action) => {
             const { houseId, floor } = action.payload;
-            if (state[houseId]) {
-                state[houseId].floors.push(floor);
-            }
+            if (state[houseId]) state[houseId].floors.push(floor);
         },
-
-        // Удалить этаж из дома
-        removeFloor: (state, action) => {
+        removeFloorFromHouse: (state, action) => {
             const { houseId, floorId } = action.payload;
             if (state[houseId]) {
                 state[houseId].floors = state[houseId].floors.filter(f => f.id !== floorId);
             }
         },
-
-        // Добавить комнату в этаж
-        addRoom: (state, action) => {
-            const { houseId, floorId, room } = action.payload;
-            const floor = state[houseId]?.floors.find(f => f.id === floorId);
-            if (floor) {
-                floor.rooms = floor.rooms ?? [];
-                floor.rooms.push(room);
-            }
-        },
-
-        // Удалить комнату из этажа
-        removeRoom: (state, action) => {
-            const { houseId, floorId, roomId } = action.payload;
-            const floor = state[houseId]?.floors.find(f => f.id === floorId);
-            if (floor && floor.rooms) {
-                floor.rooms = floor.rooms.filter(r => r.id !== roomId);
-            }
-        }
-    }
-});
-
-const glanceSlice = createSlice({
-    name: 'glance',
-    initialState: {
-        temp: { visible: true, data: [456] },
-        air: { visible: true, data: [] },
     },
-    reducers: {
-        changeGlanceVisibility: (state, action) => {
-            const { name, visible } = action.payload;
-            state[name].visible = visible;
-        },
-
-        changeGlanceData: (state, action) => {
-            const { name, visible } = action.payload;
-            state[name].visible = visible;
-        },
-    }
 });
 
-const settingsSlice = createSlice({
-    name: 'settings',
-    initialState: {
-        haptics: { enabled: true },
-        holdMode: { enabled: true },
-        background: { image: background },
-        maximizedCards: { id: [] }
-    },
-    reducers: {
-        changeParameter: (state, action) => {
-            const { name, parameter, value } = action.payload;
-            state[name][parameter] = value;
-        }
-    }
-});
+// Экспортируем экшены
+export const {
+    setDevice,
+    setFav,
+    removeDevice,
+} = devicesSlice.actions;
 
-export const { addRoom, removeRoom, changeRoomOrder } = roomsSlice.actions;
-export const { addHouse, removeHouse, setUsers } = roomsSlice.actions;
-export const { changeParameter } = settingsSlice.actions;
-export const { setDevice, setFav, removeDevice, updateDeviceProperty } = devicesSlice.actions;
+export const {
+    setRoom,
+    addDeviceToRoom,
+    removeDeviceFromRoom,
+} = roomsSlice.actions;
 
+export const {
+    setFloor,
+    addRoomToFloor,
+    removeRoomFromFloor,
+} = floorsSlice.actions;
+
+export const {
+    setHouse,
+    addFloorToHouse,
+    removeFloorFromHouse,
+} = housesSlice.actions;
+
+// Комбинируем редьюсеры
 const rootReducer = combineReducers({
     devices: devicesSlice.reducer,
     rooms: roomsSlice.reducer,
-    settings: settingsSlice.reducer,
+    floors: floorsSlice.reducer,
     houses: housesSlice.reducer,
-    glance: glanceSlice.reducer,
 });
+
+// Конфигурация persist
+const persistConfig = {
+    key: 'root',
+    storage,
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Создание хранилища
 const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
@@ -241,5 +160,37 @@ const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+
+
+
+export const selectRoomsWithDevicesByHouseId = (state, houseId) => {
+    const house = state.houses[houseId];
+
+
+    if (!house) {
+        return []
+    } else {
+        console.log(house);
+    };
+
+    const roomsWithDevices = [];
+
+
+    house.floors.forEach((floor) => {
+        floor.rooms.forEach((room) => {
+            roomsWithDevices.push({
+                roomId: room.id,
+                roomName: room.name,
+                devices: room.devices ?? [],
+            });
+        });
+    });
+
+    return roomsWithDevices;
+};
+
+
+
 
 export default store;

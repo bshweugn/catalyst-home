@@ -11,7 +11,7 @@ import Background from './components/Background/Background';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { changeRoomOrder, changeParameter } from './store';
+import { changeRoomOrder, changeParameter, selectRoomsWithDevicesByHouseId } from './store';
 
 import background from './assets/images/background.jpg';
 import background1 from './assets/images/background1.jpg';
@@ -68,6 +68,11 @@ import store, {
     getDevicesWithoutCameras,
     getCamerasInHouse,
 } from './store';
+import { fetchHousesData, getRoomsAndDevicesByHouseId } from './services/housesService';
+import { getDevicesAndCamerasByRoomAndHouseId, getDevicesByHouseId } from './services/devicesService';
+import CameraView from './components/CameraView/CameraView';
+import CamerasRow from './components/CamerasRow/CamerasRow';
+import RoomSelector from './components/RoomSelector/RoomSelector';
 
 
 
@@ -76,9 +81,40 @@ function Homepage(args) {
     // const devices = useSelector(state => state.devices);
     // const rooms = useSelector(state => state.rooms);
     // const settings = useSelector((state) => state.settings);
-    const devices = store.getState().houses.houses['house1']?.devicesWithoutCameras;
 
-    const [pageBackground, setPageBackground] = useState(settings.background.image);
+    // const roomsWithDevices = useSelector((state) =>
+    //     selectRoomsWithDevicesByHouseId(state, 1)
+    // );
+
+    const [houses, setHouses] = useState([]);
+    const [devices, setDevices] = useState([]);
+    const [rooms, setRooms] = useState([]);
+    // const [allDevices, setAllDevices] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await fetchHousesData(dispatch, args.token);
+                if (data) {
+                    setHouses(data);
+                    console.log(data);
+                    const devices = getDevicesByHouseId(data, args.currentHouseID);
+                    setDevices(devices);
+                    const roomsData = getRoomsAndDevicesByHouseId(args.currentHouseID, data);
+                    setRooms(roomsData);
+                    console.log(roomsData);
+                } else {
+                    console.warn("Данные не были получены");
+                }
+            } catch (error) {
+                console.error("Ошибка загрузки домов:", error);
+            }
+        };
+
+        fetchData();
+    }, [dispatch, args.token, args.currentHouseID]);
+
+    const [pageBackground, setPageBackground] = useState(background6); // TODO: settings.background.image
 
     const [editMode, setEditMode] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -94,13 +130,28 @@ function Homepage(args) {
     const [itemID, setItemID] = useState(0);
     const [cameraID, setCameraID] = useState(0);
     const [selectedRoomID, setSelectedRoomID] = useState(-1);
+    const [currentRoomId, setCurrentRoomId] = useState(0);
+
 
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        // console.log(currentRoomId);
+    }, [currentRoomId]);
 
 
     // useEffect(() => {
     //     dispatch(changeParameter({ name: 'background', parameter: 'image', value: pageBackground }));
     // }, [pageBackground]);
+
+    // useEffect(() => {
+    //     console.log(devices)
+    // }, [devices]);
+
+    // useEffect(() => {
+    //     console.log(roomsWithDevices)
+    // }, [roomsWithDevices]);
 
 
 
@@ -161,13 +212,13 @@ function Homepage(args) {
     const [labels, setLabels] = useState([]);
 
 
-    useEffect(() => {
-        const roomLabels = Object.keys(rooms).map(roomId => rooms[roomId].name);
-        const roomIDs = Object.keys(rooms).map(roomId => rooms[roomId].id);
-        setLabels(roomLabels);
-        setValues(roomIDs);
+    // useEffect(() => {
+    //     const roomLabels = Object.keys(rooms).map(roomId => rooms[roomId].name);
+    //     const roomIDs = Object.keys(rooms).map(roomId => rooms[roomId].id);
+    //     setLabels(roomLabels);
+    //     setValues(roomIDs);
 
-    }, [rooms]);
+    // }, [rooms]);
 
 
     // const handleOrderChange = (order) => {
@@ -194,14 +245,14 @@ function Homepage(args) {
             content: (
                 <>
                     <ToggleList bottomSeparated toggles={toggleStates} label="Взаимодействие" />
-                    <DraggableList
+                    {/* <DraggableList
                         onChange={handleOrderChange}
                         label="Порядок секций"
-                        items={Object.values(rooms).sort((a, b) => a.order - b.order)}
+                        items={Object.values(rooms).sort((a, b) => a.order - b.order)} // TODO: fix
                         labelField="name"
                         valueField="id"
                         onDropComplete={handleOrderChange}
-                    />
+                    /> */}
                 </>
             ),
         },
@@ -240,15 +291,19 @@ function Homepage(args) {
         <>
             <Background image={pageBackground} />
 
-            {Object.keys(devices).map(deviceId => (
-                <ItemWindow
-                    key={`window-${deviceId}`}
-                    device={devices[deviceId]}
-                    rooms={rooms}
-                    visible={devices[deviceId].id === itemID}
-                    idFunc={setItemID}
-                />
+            {rooms.map(room => (
+                room.devices && room.devices.length > 0 && room.devices.map(device => (
+                    <ItemWindow
+                        key={`window-${device.id}`}
+                        device={device}
+                        rooms={rooms}
+                        room={room}
+                        visible={device.id === itemID}
+                        idFunc={setItemID}
+                    />
+                ))
             ))}
+
 
             {/* {Object.keys(cameras).map(cameraId => (
                 <CameraWindow
@@ -259,6 +314,20 @@ function Homepage(args) {
                     idFunc={setCameraID}
                 />
             ))} */}
+
+
+            {rooms.map(room => (
+                room.cameras && room.cameras.length > 0 && room.cameras.map(camera => (
+                    <CameraWindow
+                        key={`window-${camera.id}`}
+                        camera={camera}
+                        rooms={rooms}
+                        room={room}
+                        visible={camera.id === cameraID}
+                        idFunc={setCameraID}
+                    />
+                ))
+            ))}
 
             {/* {Object.keys(rooms)
                 .map(roomId => (
@@ -288,9 +357,10 @@ function Homepage(args) {
                 </IonHeader>
 
 
-                {/* <Section visible={args.currentPage === 0}>
+                <Section visible={args.currentPage === 0}>
+                    <RoomSelector rooms={Object.values(rooms)} setRoomId={setCurrentRoomId} roomId={currentRoomId} />
 
-                    <MainWidgetsRow>
+                    {/* <MainWidgetsRow>
                         <MainWidget title="Климат" badge="Сейчас">
                             <Row>
                                 <TempStatus temp="25" name="Термостат" status="Подогрев до 27°" />
@@ -300,24 +370,24 @@ function Homepage(args) {
                         <MainWidget title="Качество воздуха" badge="Сейчас">
                             <ProgressStatus name="Качество воздуха" status="Хорошее" divisions={14} percentage={20} />
                         </MainWidget>
-                    </MainWidgetsRow>
+                    </MainWidgetsRow> */}
 
                     {/* <CamerasRow>
                         <CameraView name="Кухня" isRecording={true} image={background1} delay={2} />
                         <CameraView name="Гостиная" isRecording={false} image={background2} delay={4} />
                         <CameraView name="Улица" isRecording={true} image={background3} delay={2} />
-                    </CamerasRow>
+                    </CamerasRow> */}
 
                     <CamerasList
                         rooms={rooms}
-                        cameras={cameras}
                         editMode={editMode}
                         setItemID={setCameraID}
                         openedID={cameraID}
+                        roomId={currentRoomId}
                     />
 
                     <div className="page">
-                        {Object.keys(rooms)
+                        {/* {Object.keys(rooms)
                             .sort((a, b) => rooms[a].order - rooms[b].order)
                             .map(roomId => {
                                 const roomDevices = Object.keys(devices)
@@ -343,14 +413,31 @@ function Homepage(args) {
                                         openedID={itemID}
                                     />
                                 );
-                            })}
+                            })} */}
+
+                        {Object.values(rooms)
+                            .filter((room) => currentRoomId === 0 || room.roomId === currentRoomId)
+                            .map((room) => (
+                                <ItemsList
+                                    key={room.roomId}
+                                    roomName={room.roomName}
+                                    roomID={room.roomId}
+                                    func={setSelectedRoomID}
+                                    devices={room.devices}
+                                    editMode={editMode}
+                                    setItemID={setItemID}
+                                    openedID={itemID}
+                                    hiddenTitle={currentRoomId !== 0}
+                                />
+                            ))}
+
                     </div>
 
 
 
-                </Section> */}
+                </Section>
 
-                <Section visible={args.currentPage === 1}>
+                {/* <Section visible={args.currentPage === 1}>
                     <div className='page page--compensated'>
                         {Object.keys(rooms)
                             .sort((a, b) => rooms[a].order - rooms[b].order)
@@ -376,7 +463,7 @@ function Homepage(args) {
                             })}
                     </div>
 
-                </Section>
+                </Section> */}
 
                 {/* <Section visible={args.currentPage === 2}>
                     <div className='page'>

@@ -16,6 +16,13 @@
     overflow: hidden;
     outline: 1px solid rgba(255, 255, 255, 0.1);
     outline-offset: -1px;
+    transition: .3s;
+
+    &--opened{
+        transform: scale(1.15);
+        filter: blur(0.5rem);
+        opacity: 0!important;
+    }
 
     &__container {
         height: 100%;

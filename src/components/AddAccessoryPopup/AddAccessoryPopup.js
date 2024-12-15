@@ -27,7 +27,7 @@ import User from '../icons/User/User';
 import NewUser from '../icons/NewUser/NewUser';
 import ToggleList from '../ToggleList/ToggleList';
 import ItemsList from '../ItemsList/ItemsList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ItemsShortPreview from '../ItemsShortPreview/ItemsShortPreview';
 import VisibilityWrapper from '../VisiilityWrapper/VisiilityWrapper';
 import { renderItemIcon, renderItemName } from '../../itemInfo';
@@ -40,22 +40,25 @@ import Play from '../icons/Play/Play';
 import CurrentTrigger from '../CurrentTrigger/CurrentTrigger';
 import Select from '../Select/Select';
 import ConditionWindow from '../ConditionWindow/ConditionWindow';
-import { checkDevice } from '../../logic/devices';
+import { addDevice, checkDevice, getDevicesByIdsInRooms } from '../../services/devicesService';
+import { createFloor, createRoom, fetchHousesData, getRoomsAndDevicesByHouseId, getRoomsByHouseId } from '../../services/housesService';
+import Warn from '../icons/Warn/Warn';
+import { error } from '@splidejs/splide/src/js/utils';
 
 const AddAccessoryPopup = (args) => {
+    const dispatch = useDispatch();
+
     const [view, setView] = useState("default");
 
     const devices = useSelector(state => state.devices);
-    const cameras = useSelector(state => state.cameras);
-    const rooms = useSelector(state => state.rooms);
+    // const cameras = useSelector(state => state.cameras);
+    // const rooms = useSelector(state => state.rooms);
 
-    const [room, setRoom] = useState(rooms["id0"]);
+    const [currentRoom, setCurrentRoom] = useState();
 
     const [fullscreenRequired, setFullscreenRequired] = useState(false);
 
     const [manualInput, setManualInput] = useState(false);
-    const [code, setCode] = useState("");
-    const [deviceName, setDeviceName] = useState("");
     const [roomId, setRoomId] = useState(-1);
     const [device, setDevice] = useState(null);
 
@@ -63,6 +66,7 @@ const AddAccessoryPopup = (args) => {
     const [pageBackground, setPageBackground] = useState(background);
 
     const [deviceSelectMode, setDeviceSelectMode] = useState(false);
+    const [selectedDevicesIds, setSelectedDevicesIds] = useState([]);
     const [selectedDevices, setSelectedDevices] = useState([]);
     const [selectedDevice, setSelectedDevice] = useState(-1);
 
@@ -71,6 +75,11 @@ const AddAccessoryPopup = (args) => {
     const [toggleStates, setToggleStates] = useState([
         { label: 'Гостевой доступ', value: false, setter: (value) => handleToggleChange(0, value) },
     ]);
+
+
+    useEffect(() => {
+        setSelectedDevices(getDevicesByIdsInRooms(selectedDevicesIds, rooms));
+    }, [selectedDevicesIds]);
 
     const handleToggleChange = (index, value) => {
         const newToggles = [...toggleStates];
@@ -100,29 +109,104 @@ const AddAccessoryPopup = (args) => {
         setTimeout(() => setSholudAnimate(false), 400);
     };
 
+
+    /* --- ВЗАИМОДЕЙСТВИЕ С ДОМОМ --- */
+
+    const [code, setCode] = useState("");
+
+    const [rooms, setRooms] = useState([]);
+    const [houses, setHouses] = useState([]);
+
+    const [newRoomName, setNewRoomName] = useState("");
+    const [newFloorName, setNewFloorName] = useState("");
+    const [newDeviceName, setNewDeviceName] = useState("");
+
+
+
+    const fetchData = async () => {
+        try {
+            const data = await fetchHousesData(dispatch, args.token);
+            if (data) {
+                setHouses(data);
+                const roomsData = getRoomsByHouseId(args.currentHouseID, data);
+                setRooms(roomsData);
+            } else {
+                console.warn("Данные не были получены");
+            }
+        } catch (error) {
+            console.error("Ошибка загрузки домов:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [dispatch, args.token, args.currentHouseID]);
+
     const getDevice = async () => {
         try {
-            const device = await checkDevice(args.token, code);
-            setDevice(device);
-            console.log(device);
-            setView('device');
+            const device = await checkDevice(dispatch, args.token, code);
+    
+            if (device !== null) {
+                setDevice(device); // Устанавливаем весь объект device
+                console.log(device); // Логируем объект device
+                setView('device');
+            } else {
+                console.warn('Устройство не найдено или структура ответа некорректна:', device);
+                setView('unknown-device');
+            }
+        } catch (error) {
+            console.error('Ошибка при получении устройства:', error);
+            setView('unknown-device');
+        }
+    };
+
+
+
+    const importDevice = async () => {
+        try {
+            const result = await addDevice(dispatch, args.token, { serialNumber: code, name: newDeviceName, roomId: currentRoom.id });
+            console.log(result);
+            fetchData();
+            handleClose();
+        } catch (error) {
+            console.error('Ошибка при получении устройства:', error);
+        }
+    }
+
+    const handleRoomCreate = async () => {
+        try {
+            const room = await createRoom(dispatch, args.token, newRoomName, 1);
+            console.log(room);
+            const house = await fetchHousesData(dispatch, args.token);
+            console.log(house);
+            handleClose();
         } catch (error) {
             console.error('Ошибка при получении устройства:', error);
             setDevice('Ошибка.');
         }
     }
 
-    const importDevice = async () => {
+
+    const handleFloorCreate = async () => {
         try {
-            const device = await importDevice(args.token, code, deviceName, roomId);
-            setDevice(device);
-            console.log(device);
-            setView('device');
+            const room = await createFloor(dispatch, args.token, newFloorName, args.currentHouseID);
+            console.log(room);
+            const house = await fetchHousesData(dispatch, args.token);
+            console.log(house);
+            handleClose();
         } catch (error) {
             console.error('Ошибка при получении устройства:', error);
             setDevice('Ошибка.');
         }
     }
+
+
+    const handleInviteSent = (id, device, condition, parameter) => {
+        setView('invite-sent');
+        setSelectedDevicesIds([]);
+    }
+
+    /* ------------- */
 
 
     const [deviceID, setDeviceID] = useState(-1);
@@ -183,8 +267,14 @@ const AddAccessoryPopup = (args) => {
                     type="text"
                     placeholder=""
                     value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (/^\d{0,6}$/.test(inputValue)) {
+                            setCode(inputValue);
+                        }
+                    }}
                 />
+
                 <div className="button-group">
                     <Button primary onClick={() => { getDevice(); animate() }} label="Далее" />
                     <Button onClick={() => { setManualInput(false); animate() }} label="Использовать камеру" />
@@ -207,7 +297,7 @@ const AddAccessoryPopup = (args) => {
     };
 
     useEffect(() => {
-        if (view === "default" || view === "accessory" || view === "invite-sent") {
+        if (view === "default" || view === "accessory" || view === "invite-sent" || view === "unknown-accessory") {
             setFullscreenRequired(false);
         } else if (view === "home" || view === "level" || view === "room" || view === "user" || view === "device" || view === "automation") {
             setFullscreenRequired(true);
@@ -252,11 +342,11 @@ const AddAccessoryPopup = (args) => {
             case "room":
                 return (
                     <>
-                        <TextInput light separated value={inputValue} setValue={setInputValue} placeholder={'Например, «Гостиная»'} label={"Имя комнаты"} />
+                        <TextInput light separated value={newRoomName} setValue={setNewRoomName} placeholder={'Например, «Гостиная»'} label={"Имя комнаты"} />
                         <Description text="Вы сможете изменить имя позднее в параметрах комнаты." />
                         <BackgroundSelector light background={pageBackground} setBackground={setPageBackground} label="Фоновое&nbsp;изображение" images={[background, background1, background2, background3, background4, background5, background6, background7, background8, background9]} />
                         <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                            <Button primary className={"add-accessory-popup__primary-button"} label="Добавить" onClick={() => console.log("Комната сохранена:", inputValue)} />
+                            <Button primary className={"add-accessory-popup__primary-button"} label="Добавить" onClick={() => handleRoomCreate()} />
                             {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                             <Button label="" />
                         </div>
@@ -278,10 +368,10 @@ const AddAccessoryPopup = (args) => {
             case "level":
                 return (
                     <>
-                        <TextInput light separated value={inputValue} setValue={setInputValue} placeholder={'Например, «Главный»'} label={"Имя этажа"} />
+                        <TextInput light separated value={newFloorName} setValue={setNewFloorName} placeholder={'Например, «Главный»'} label={"Имя этажа"} />
                         <Description text="Вы сможете изменить имя позднее в параметрах Дома." />
                         <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                            <Button primary label="Сохранить" onClick={() => console.log("Этаж сохранён:", inputValue)} />
+                            <Button primary label="Сохранить" onClick={() => handleFloorCreate()} />
                             {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                             <Button label="" />
                         </div>
@@ -293,18 +383,21 @@ const AddAccessoryPopup = (args) => {
                         {renderItemIcon(device, true, "3.5rem")}
                         <p className='add-accessory-popup__item-name'>{renderItemName(device)}</p>
                         <p className='add-accessory-popup__item-manufacturer'>{device.manufacturer}</p>
-                        <TextInput light value={inputValue} setValue={setInputValue} placeholder={' '} label={"Имя аксессуара"} />
+                        <TextInput light value={newDeviceName} setValue={setNewDeviceName} placeholder={' '} label={"Имя аксессуара"} />
                         <Description bottomSeparated text="Вы сможете изменить имя и расположение позднее в параметрах аксессуара." />
                         <DropdownSelect
                             light
-                            options={Object.keys(rooms)}
-                            selectedOption={Object.room}
-                            setSelectedOption={setRoom}
+                            options={rooms.map(room => ({ id: room.id, name: room.name }))} // Передаём объекты с id и name
+                            selectedOption={currentRoom?.id || null} // Используем id для выбранной комнаты
+                            setSelectedOption={(roomId) => {
+                                const selectedRoom = rooms.find(room => room.id === roomId); // Находим комнату по id
+                                setCurrentRoom(selectedRoom); // Устанавливаем выбранную комнату
+                            }}
                             label="Комната"
                         />
                         {/* <Description text="Вы сможете переместить аксессуар в другую комнату позднее в его параметрах." /> */}
                         <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                            <Button primary label="Сохранить" onClick={() => console.log("Этаж сохранён:", inputValue)} />
+                            <Button primary label="Сохранить" onClick={() => importDevice()} />
                             {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                             <Button label="" />
                         </div>
@@ -320,6 +413,19 @@ const AddAccessoryPopup = (args) => {
                         <div className="add-accessory-popup__buttons-group">
                             <Button primary label="Готово" onClick={() => handleClose()} />
                             {/* <Button onClick={() => setView("default")} label="Назад" /> */}
+                        </div>
+                    </>
+                );
+            case "unknown-device":
+                return (
+                    <>
+                        <Warn fill="rgb(170, 170, 170)" size="3.6rem" className='add-accessory-popup__main-icon' />
+                        <p className='add-accessory-popup__title'>Неизвестное устройство</p>
+                        <p className='add-accessory-popup__text add-accessory-popup__text--bottom-separated'>Кажется, Вы ввели некорректный код или аксессуар больше недоступен для добавления.</p>
+                        {/* <Description text="Вы сможете переместить аксессуар в другую комнату позднее в его параметрах." /> */}
+                        <div className="add-accessory-popup__buttons-group">
+                            <Button primary label="Готово" onClick={() => handleClose()} />
+                            <Button onClick={() => { setView("accessory"); animate() }} label="Добавить заново" />
                         </div>
                     </>
                 );
@@ -339,10 +445,10 @@ const AddAccessoryPopup = (args) => {
                             <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
                             <Description text="В гостевом режиме пользователю будет предоставлен доступ только к&nbsp;выбранным Вами устройствам." />
                             <VisibilityWrapper defaultState={true} visible={toggleStates[0].value}>
-                                <ItemsShortPreview label={"Выбор аксессуаров"} devices={devices} action={() => { setDeviceSelectMode(true); animate() }} />
+                                <ItemsShortPreview label={"Выбор аксессуаров"} devices={selectedDevices} action={() => { setDeviceSelectMode(true); animate() }} />
                             </VisibilityWrapper>
                             <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                                <Button primary label="Поделиться" onClick={() => { setView('invite-sent'); animate() }} />
+                                <Button primary label="Поделиться" onClick={() => { handleInviteSent(); animate() }} />
                                 {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                                 <Button label="" />
                             </div>
@@ -351,29 +457,22 @@ const AddAccessoryPopup = (args) => {
                 } else {
                     return (
                         <>
-                            {Object.keys(rooms)
-                                .sort((a, b) => rooms[a].order - rooms[b].order)
-                                .map(roomId => {
-                                    const roomDevices = Object.keys(devices)
-                                        .filter(deviceId => devices[deviceId].roomID === rooms[roomId].id)
-                                        .map(deviceId => devices[deviceId]);
+                            {
+                                Object.values(rooms).map((room) => (
+                                    <ItemsList
+                                        light
+                                        preview
+                                        multipleSelection={true}
+                                        setter={setSelectedDevicesIds}
+                                        selected={selectedDevicesIds}
 
-                                    if (roomDevices.length === 0) return null;
-
-                                    return (
-                                        <ItemsList
-                                            light
-                                            preview
-                                            multipleSelection={true}
-                                            setter={setSelectedDevices}
-                                            selected={selectedDevices}
-                                            key={roomId}
-                                            roomName={rooms[roomId].name}
-                                            roomID={rooms[roomId].id}
-                                            devices={roomDevices}
-                                        />
-                                    );
-                                })}
+                                        key={room.id}
+                                        roomName={room.name}
+                                        roomID={room.id}
+                                        devices={room.devices}
+                                    />
+                                ))
+                            }
                             <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
                                 <Button primary label="Сохранить" onClick={() => { setDeviceSelectMode(false); animate() }} />
                                 {/* <Button onClick={() => setView("default")} label="Назад" /> */}
@@ -462,7 +561,7 @@ const AddAccessoryPopup = (args) => {
                                 view === "user" ? "Поделиться доступом" :
                                     view === "device" ? "" :
                                         view === "automation" ? "Создать автоматизацию" :
-                                            view === "invite-sent" ? "" :
+                                            view === "invite-sent" || view === "unknown-device" ? "" :
                                                 "Создать новый Дом"
             }
             label={
@@ -473,7 +572,7 @@ const AddAccessoryPopup = (args) => {
                                 view === "user" ? deviceSelectMode ? "Выберите аксессуары, доступ к которым Вы хотите предоставить." : "Поделитесь доступом к управлению Домом c другим пользователем." :
                                     view === "device" ? "" :
                                         view === "automation" ? deviceSelectMode ? "Выберите устройство для добавления условия активации сценария." : "Настройте автоматизацию для взаимодействия между устройствами." :
-                                            view === "invite-sent" ? "" :
+                                            view === "invite-sent" || view === "unknown-device" ? "" :
                                                 "Задайте имя и фон для нового Дома."
             }
         >

@@ -6,30 +6,43 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, lig
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOptionSelect = (option) => {
-        setSelectedOption(option);
+        setSelectedOption(option.id); // Передаём id вместо name
         setIsOpen(false);
     };
 
     return (
         <div className={`dropdown-select ${light ? "dropdown-select--light" : ""}`}>
-            {/* <p className="dropdown-select__label">{label}</p> */}
             <div
                 className={`dropdown-select__field ${isOpen ? 'dropdown-select__field--open' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <p className="dropdown-select__label">{label}</p>
-                <p className="dropdown-select__selected-option">{selectedOption ? selectedOption : 'Не выбрано'}</p>
+                <p className="dropdown-select__selected-option">
+                    {selectedOption
+                        ? options.find(option => option.id === selectedOption)?.name || "Не выбрано"
+                        : "Не выбрано"}
+                </p>
             </div>
 
-            <div className={"dropdown-select__options " + (isOpen ? "dropdown-select__options--open" : "")} style={{maxHeight: (isOpen ? (48 * (options.length + 1)) + "px" : "46px")}}>
-                {options.map((option, index) => (
+            <div
+                className={
+                    "dropdown-select__options " + (isOpen ? "dropdown-select__options--open" : "")
+                }
+                style={{ maxHeight: isOpen ? `${48 * (options.length + 1)}px` : "46px" }}
+            >
+                {options.map((option) => (
                     <div
-                        key={index}
-                        className={`dropdown-select__option ${selectedOption === option ? 'dropdown-select__option--selected' : ''}`}
+                        key={option.id}
+                        className={`dropdown-select__option ${selectedOption === option.id ? 'dropdown-select__option--selected' : ''
+                            }`}
                         onClick={() => handleOptionSelect(option)}
                     >
-                        {option}
-                        {selectedOption === option && <div className="dropdown-select__checkmark"><Checkmark size="0.875rem" fill='white' /></div>}
+                        {option.name}
+                        {selectedOption === option.id && (
+                            <div className="dropdown-select__checkmark">
+                                <Checkmark size="0.875rem" fill="white" />
+                            </div>
+                        )}
                     </div>
                 ))}
                 <div className="dropdown-select__option dropdown-select__option--add">
@@ -39,5 +52,6 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, lig
         </div>
     );
 };
+
 
 export default DropdownSelect;

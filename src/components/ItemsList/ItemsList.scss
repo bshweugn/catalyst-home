@@ -7,6 +7,10 @@
     margin-top: 1rem;
     padding-bottom: 0.2rem;
 
+    &--separated{
+        margin-top: 2rem;
+    }
+
     &--light &__room-name {
         color: black;
         padding: 0.5rem 0.875rem;

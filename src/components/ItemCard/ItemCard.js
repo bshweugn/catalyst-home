@@ -6,9 +6,10 @@ import Maximize from '../icons/Maximize/Maximize';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Lightbulb from '../icons/Lightbulb/Lightbulb';
 import Power from '../icons/Power/Power';
-import { renderItemIcon, renderItemStatus } from '../../itemInfo';
+import { isSensor, renderItemIcon, renderItemStatus } from '../../itemInfo';
 import Checkmark from '../icons/Checkmark/Checkmark';
 import ConditionWindow from '../ConditionWindow/ConditionWindow';
+import SuperEllipse from 'react-superellipse';
 
 const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected }) => {
     const [maximized, setMaximized] = useState(false);
@@ -151,13 +152,18 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                 style={{ opacity }}
                 onClick={handleCardClick}
             >
+                {/* <SuperEllipse
+                    r1={0.07}
+                    r2={0.2}
+                    className={'item-card__background'}
+                /> */}
                 <div className={`item-card__select-indicator ${selected || atomicSelected ? "item-card__select-indicator--visible" : ""}`}>
                     <Checkmark className='item-card__checkmark' fill="black" size="1rem" />
                 </div>
                 <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setMaximized(!maximized); }}>
                     {maximized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
                 </div>
-                {!device.isSensor && (
+                {!isSensor(device) && (
                     <div
                         className='item-card__action-btn'
                         onTouchStart={startHold}
