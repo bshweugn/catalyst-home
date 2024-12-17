@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.dto.request;
+package itmo.localpiper.backend.dto.request.device;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -3,24 +3,28 @@ package itmo.localpiper.backend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import itmo.localpiper.backend.dto.request.ImportCreateRequest;
-import itmo.localpiper.backend.dto.request.ImportRequest;
+import itmo.localpiper.backend.dto.request.device.DeviceDeleteRequest;
+import itmo.localpiper.backend.dto.request.device.ImportCreateRequest;
+import itmo.localpiper.backend.dto.request.device.ImportRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.dto.response.ImportResultResponse;
-import itmo.localpiper.backend.service.processing.ImportCreateProcessorService;
-import itmo.localpiper.backend.service.processing.ImportProcessorService;
+import itmo.localpiper.backend.dto.response.OperationResultResponse;
+import itmo.localpiper.backend.service.processing.device.DeleteDeviceProcessorService;
+import itmo.localpiper.backend.service.processing.device.ImportCreateProcessorService;
+import itmo.localpiper.backend.service.processing.device.ImportProcessorService;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("/api/create")
+@RequestMapping("/api/device")
 public class DeviceImportController {
     
     @Autowired
@@ -28,6 +32,9 @@ public class DeviceImportController {
 
     @Autowired
     private ImportCreateProcessorService importCreateProcessorService;
+
+    @Autowired
+    private DeleteDeviceProcessorService deleteDeviceProcessorService;
 
     @Autowired
     private JwtService jwtService;
@@ -45,6 +52,14 @@ public class DeviceImportController {
             String token = servletRequest.getHeader("Authorization").substring(7);
             Pair<String, ImportCreateRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return ResponseEntity.ok(importCreateProcessorService.process(crutch));
+    }
+
+    @DeleteMapping("/deleteDevice")
+    public ResponseEntity<OperationResultResponse> deleteDevice(@Valid @RequestBody DeviceDeleteRequest request,
+        HttpServletRequest servletRequest) {
+            String token = servletRequest.getHeader("Authorization").substring(7);
+            Pair<String, DeviceDeleteRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
+        return ResponseEntity.ok(deleteDeviceProcessorService.process(crutch));
     }
     
     

@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.processing;
+package itmo.localpiper.backend.service.processing.device;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import itmo.localpiper.backend.dto.request.ImportCreateRequest;
+import itmo.localpiper.backend.dto.request.device.ImportCreateRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.model.Room;
@@ -15,6 +15,7 @@ import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.repository.RoomRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.CameraService;
+import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalImportDeviceService;
 import itmo.localpiper.backend.util.enums.DeviceType;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;

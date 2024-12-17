@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.processing;
+package itmo.localpiper.backend.service.processing.device;
 
 import java.util.Map;
 
@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import itmo.localpiper.backend.dto.request.ImportRequest;
+import itmo.localpiper.backend.dto.request.device.ImportRequest;
 import itmo.localpiper.backend.dto.response.ImportResultResponse;
+import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 import lombok.AllArgsConstructor;
 
