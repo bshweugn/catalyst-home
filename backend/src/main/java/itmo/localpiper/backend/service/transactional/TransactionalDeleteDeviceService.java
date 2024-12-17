@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.User;
+import itmo.localpiper.backend.model.UserCameraActionRel;
 import itmo.localpiper.backend.model.UserDeviceActionRel;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.repository.DeviceRepository;
+import itmo.localpiper.backend.repository.UserCameraActionRelRepository;
 import itmo.localpiper.backend.repository.UserDeviceActionRelRepository;
 import itmo.localpiper.backend.util.enums.Movable;
 
@@ -29,6 +31,9 @@ public class TransactionalDeleteDeviceService {
     @Autowired
     private UserDeviceActionRelRepository udarRepository;
 
+    @Autowired
+    private UserCameraActionRelRepository ucarRepository;
+
     @Transactional(isolation= Isolation.REPEATABLE_READ, propagation=Propagation.REQUIRED)
     public void deleteDevice(User user, Long id, Movable type) {
         if (type == Movable.DEVICE) {
@@ -38,7 +43,8 @@ public class TransactionalDeleteDeviceService {
             deviceRepository.delete(device);
         } else {
             Camera camera = cameraRepository.findById(id).get();
-            // WIP
+            List<UserCameraActionRel> ucars = ucarRepository.findAllByUserAndCamera(user, camera);
+            for (UserCameraActionRel ucar : ucars) ucarRepository.delete(ucar);
             cameraRepository.delete(camera);
         }
     }
