@@ -13,10 +13,10 @@ import itmo.localpiper.backend.dto.request.user.KickRequest;
 import itmo.localpiper.backend.dto.request.user.LeaveRequest;
 import itmo.localpiper.backend.dto.request.user.ProcessInvitationRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
-import itmo.localpiper.backend.service.processing.invitations.EvictionProcessor;
-import itmo.localpiper.backend.service.processing.invitations.InvitationApplyProcessor;
-import itmo.localpiper.backend.service.processing.invitations.InvitationPersistProcessor;
-import itmo.localpiper.backend.service.processing.invitations.LeaveProcessor;
+import itmo.localpiper.backend.service.processing.invitations.EvictionProcessorService;
+import itmo.localpiper.backend.service.processing.invitations.InvitationApplyProcessorService;
+import itmo.localpiper.backend.service.processing.invitations.InvitationPersistProcessorService;
+import itmo.localpiper.backend.service.processing.invitations.LeaveProcessorService;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,16 +30,16 @@ public class User2UserController {
     private JwtService jwtService;
 
     @Autowired
-    private InvitationPersistProcessor ipp;
+    private InvitationPersistProcessorService ipp;
 
     @Autowired
-    private InvitationApplyProcessor iap;
+    private InvitationApplyProcessorService iap;
 
     @Autowired
-    private EvictionProcessor ep;
+    private EvictionProcessorService ep;
 
     @Autowired
-    private LeaveProcessor lp;
+    private LeaveProcessorService lp;
     
     @PostMapping("/inviteUser")
     public ResponseEntity<OperationResultResponse> inviteUser(@Valid @RequestBody InvitationRequest request, HttpServletRequest servletRequest) {

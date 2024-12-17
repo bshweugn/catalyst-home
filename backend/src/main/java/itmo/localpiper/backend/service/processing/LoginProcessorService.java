@@ -15,7 +15,7 @@ import itmo.localpiper.backend.util.PasswordUtils;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class LoginProcessor extends AbstractProcessor<LoginRequest, TokenResponse>{
+public class LoginProcessorService extends AbstractProcessor<LoginRequest, TokenResponse>{
 
     @Autowired
     private JwtService jwtService;

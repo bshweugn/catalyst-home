@@ -16,7 +16,7 @@ import itmo.localpiper.backend.service.transactional.TransactionalCreateRecursiv
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class AddHouseProcessor extends AbstractProcessor<Pair<String, AddHouseRequest>, HoldableResultResponse<House>>{
+public class AddHouseProcessorService extends AbstractProcessor<Pair<String, AddHouseRequest>, HoldableResultResponse<House>>{
 
     @Autowired
     private TransactionalCreateRecursiveEntityService tcres;

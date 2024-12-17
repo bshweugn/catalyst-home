@@ -12,7 +12,7 @@ import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class UserPfpProcessor extends AbstractProcessor<Pair<String, PfpRequest>, HoldableResultResponse<User>> {
+public class UserPfpProcessorService extends AbstractProcessor<Pair<String, PfpRequest>, HoldableResultResponse<User>> {
 
     @Autowired
     private UserRepository userRepository;

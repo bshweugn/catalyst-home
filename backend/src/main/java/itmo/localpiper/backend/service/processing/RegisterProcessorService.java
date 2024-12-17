@@ -11,12 +11,13 @@ import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.model.UserData;
 import itmo.localpiper.backend.repository.UserDataRepository;
 import itmo.localpiper.backend.service.entity.UserService;
+import itmo.localpiper.backend.service.transactional.TransactionalCreateRecursiveEntityService;
 import itmo.localpiper.backend.util.JwtService;
 import itmo.localpiper.backend.util.PasswordUtils;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class RegisterProcessor extends AbstractProcessor<RegisterRequest, TokenResponse>{
+public class RegisterProcessorService extends AbstractProcessor<RegisterRequest, TokenResponse>{
 
     @Autowired
     private UserService userService;
@@ -26,6 +27,9 @@ public class RegisterProcessor extends AbstractProcessor<RegisterRequest, TokenR
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private TransactionalCreateRecursiveEntityService tcres;
 
     @Override
     protected Object send(RegisterRequest request) {
@@ -39,6 +43,7 @@ public class RegisterProcessor extends AbstractProcessor<RegisterRequest, TokenR
             userData.setPassword(password);
             userData.setUser(user);
             userDataRepository.save(userData);
+            tcres.createRoom(user, "My Room");
         } catch (NonUniqueValueException e) {
             return null;
         }

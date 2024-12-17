@@ -15,7 +15,7 @@ import itmo.localpiper.backend.service.transactional.TransactionalCreateRecursiv
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class AddRoomProcessor extends AbstractProcessor<Pair<String,AddRoomRequest>, HoldableResultResponse<Room>>{
+public class AddRoomProcessorService extends AbstractProcessor<Pair<String,AddRoomRequest>, HoldableResultResponse<Room>>{
 
     @Autowired
     private RoomService roomService;

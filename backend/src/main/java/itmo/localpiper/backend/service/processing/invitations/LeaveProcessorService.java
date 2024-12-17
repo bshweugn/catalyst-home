@@ -21,7 +21,7 @@ import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class LeaveProcessor extends AbstractProcessor<Pair<String, LeaveRequest>, OperationResultResponse>{
+public class LeaveProcessorService extends AbstractProcessor<Pair<String, LeaveRequest>, OperationResultResponse>{
 
     @Autowired
     private UserHouseRelRepository uhrRepository;

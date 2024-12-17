@@ -21,7 +21,7 @@ import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class EvictionProcessor extends AbstractProcessor<Pair<String, KickRequest>, OperationResultResponse>{
+public class EvictionProcessorService extends AbstractProcessor<Pair<String, KickRequest>, OperationResultResponse>{
 
     @Autowired
     private UserRepository userRepository;

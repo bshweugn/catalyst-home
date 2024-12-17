@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import itmo.localpiper.backend.dto.request.user.DeviceCommandRequest;
 import itmo.localpiper.backend.dto.request.user.PfpRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.model.User;
-import itmo.localpiper.backend.service.processing.UserPfpProcessor;
+import itmo.localpiper.backend.service.processing.UserPfpProcessorService;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class UserModeController {
     private JwtService jwtService;
 
     @Autowired
-    private UserPfpProcessor userPfpProcessor;
+    private UserPfpProcessorService userPfpProcessorService;
     
     @PostMapping("/changePFP")
     public ResponseEntity<HoldableResultResponse<User>> changePFP(
@@ -33,7 +34,15 @@ public class UserModeController {
     ) {
         String token = servletRequest.getHeader("Authorization").substring(7);
         Pair<String, PfpRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(userPfpProcessor.process(crutch));
+        return ResponseEntity.ok(userPfpProcessorService.process(crutch));
     }
+
+    @PostMapping("/executeDeviceCommand")
+    public String executeDeviceCommand(@Valid @RequestBody DeviceCommandRequest request, HttpServletRequest servletRequest) {
+        String token = servletRequest.getHeader("Authorization").substring(7);
+        Pair<String, DeviceCommandRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
+        return null;
+    }
+    
     
 }

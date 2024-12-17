@@ -18,9 +18,9 @@ import itmo.localpiper.backend.model.House;
 import itmo.localpiper.backend.model.Location;
 import itmo.localpiper.backend.model.Room;
 import itmo.localpiper.backend.service.entity.LocationService;
-import itmo.localpiper.backend.service.processing.AddFloorProcessor;
-import itmo.localpiper.backend.service.processing.AddHouseProcessor;
-import itmo.localpiper.backend.service.processing.AddRoomProcessor;
+import itmo.localpiper.backend.service.processing.AddFloorProcessorService;
+import itmo.localpiper.backend.service.processing.AddHouseProcessorService;
+import itmo.localpiper.backend.service.processing.AddRoomProcessorService;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -31,13 +31,13 @@ import jakarta.validation.Valid;
 public class HomeUtilsController {
 
     @Autowired
-    private AddHouseProcessor addHouseProcessor;
+    private AddHouseProcessorService addHouseProcessorService;
 
     @Autowired
-    private AddFloorProcessor addFloorProcessor;
+    private AddFloorProcessorService addFloorProcessorService;
 
     @Autowired
-    private AddRoomProcessor addRoomProcessor;
+    private AddRoomProcessorService addRoomProcessorService;
 
     @Autowired
     private JwtService jwtService;
@@ -56,7 +56,7 @@ public class HomeUtilsController {
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
             Pair<String, AddHouseRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(addHouseProcessor.process(crutch));
+        return ResponseEntity.ok(addHouseProcessorService.process(crutch));
     }
 
     @PostMapping("/addFloor")
@@ -65,7 +65,7 @@ public class HomeUtilsController {
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
             Pair<String, AddFloorRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(addFloorProcessor.process(crutch));
+        return ResponseEntity.ok(addFloorProcessorService.process(crutch));
     }
     
     @PostMapping("/addRoom")
@@ -74,6 +74,6 @@ public class HomeUtilsController {
         HttpServletRequest servletRequest) {
             String token = servletRequest.getHeader("Authorization").substring(7);
             Pair<String, AddRoomRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(addRoomProcessor.process(crutch));
+        return ResponseEntity.ok(addRoomProcessorService.process(crutch));
     }
 }

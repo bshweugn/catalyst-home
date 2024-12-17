@@ -15,7 +15,7 @@ import itmo.localpiper.backend.service.transactional.TransactionalCreateRecursiv
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class AddFloorProcessor extends AbstractProcessor<Pair<String,AddFloorRequest>, HoldableResultResponse<Floor>>{
+public class AddFloorProcessorService extends AbstractProcessor<Pair<String,AddFloorRequest>, HoldableResultResponse<Floor>>{
 
     @Autowired
     private FloorService floorService;

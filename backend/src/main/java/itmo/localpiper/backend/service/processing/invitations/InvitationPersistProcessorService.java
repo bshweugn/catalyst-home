@@ -25,7 +25,7 @@ import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class InvitationPersistProcessor extends AbstractProcessor<Pair<String, InvitationRequest>, OperationResultResponse>{
+public class InvitationPersistProcessorService extends AbstractProcessor<Pair<String, InvitationRequest>, OperationResultResponse>{
 
     @Autowired
     private UserRepository userRepository;

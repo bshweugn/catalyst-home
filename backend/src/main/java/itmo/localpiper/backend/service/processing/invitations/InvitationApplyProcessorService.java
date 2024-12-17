@@ -21,7 +21,7 @@ import itmo.localpiper.backend.service.transactional.TransactionalGrantAccessSer
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class InvitationApplyProcessor extends AbstractProcessor<Pair<String, ProcessInvitationRequest>, OperationResultResponse>{
+public class InvitationApplyProcessorService extends AbstractProcessor<Pair<String, ProcessInvitationRequest>, OperationResultResponse>{
 
     @Autowired
     private InvitationService invitationService;

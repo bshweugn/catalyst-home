@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import itmo.localpiper.backend.dto.auth.LoginRequest;
 import itmo.localpiper.backend.dto.auth.RegisterRequest;
 import itmo.localpiper.backend.dto.auth.TokenResponse;
-import itmo.localpiper.backend.service.processing.LoginProcessor;
-import itmo.localpiper.backend.service.processing.RegisterProcessor;
+import itmo.localpiper.backend.service.processing.LoginProcessorService;
+import itmo.localpiper.backend.service.processing.RegisterProcessorService;
 import jakarta.validation.Valid;
 
 
@@ -21,10 +21,10 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     @Autowired
-    private LoginProcessor loginProcessor;
+    private LoginProcessorService loginProcessor;
 
     @Autowired
-    private RegisterProcessor registerProcessor;
+    private RegisterProcessorService registerProcessor;
     
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> loginUser(@Valid @RequestBody LoginRequest request) {
