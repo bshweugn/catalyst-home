@@ -11,10 +11,13 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.Room;
 import itmo.localpiper.backend.model.User;
+import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.repository.DeviceRepository;
+import itmo.localpiper.backend.service.entity.UserCameraActionRelService;
 import itmo.localpiper.backend.service.entity.UserDeviceActionRelService;
 import itmo.localpiper.backend.util.DeviceTypeHandlerService;
 import itmo.localpiper.backend.util.FeatureDefinition;
@@ -27,11 +30,15 @@ public class TransactionalImportDeviceService {
     
     private final UserDeviceActionRelService udarService;
 
+    private final UserCameraActionRelService ucarService;
+
     private final DeviceRepository deviceRepository;
+
+    private final CameraRepository cameraRepository;
 
     private final DeviceTypeHandlerService deviceTypeHandlerService;
 
-    private final HashSet<String> states = new HashSet<>(Arrays.asList("ON_OFF_STATE", "CLOSEABLE_STATE", "RC_STATE"));
+    private final HashSet<String> states = new HashSet<>(Arrays.asList("ON_OFF_STATE", "CLOSEABLE_STATE", "RC_STATE", "LEAK_STATE", "CAMERA_STATE"));
 
     private Object determineDefaultValue(FeatureDefinition featureDefinition) {
         switch (featureDefinition.getType()) {
@@ -64,7 +71,7 @@ public class TransactionalImportDeviceService {
         Map<String, Object> features = new HashMap<>();
         for (Map.Entry<String, FeatureDefinition> entry : fm.entrySet()) {
             if (states.contains(entry.getKey())) {
-                if ("ON_OFF_STATE".equals(entry.getKey()) || "RC_STATE".equals(entry.getKey())) {
+                if ("ON_OFF_STATE".equals(entry.getKey()) || "RC_STATE".equals(entry.getKey()) || "LEAK_STATE".equals(entry.getKey())) {
                     device.setStatus("OFF");
                 } else if ("CLOSEABLE_STATE".equals(entry.getKey())) {
                     device.setStatus("CLOSED");
@@ -85,5 +92,37 @@ public class TransactionalImportDeviceService {
             udarService.create(user.getId(), device.getId(), action);
         }
         return device;
+    }
+
+    @Transactional(isolation= Isolation.REPEATABLE_READ, propagation=Propagation.REQUIRED)
+    public Camera importCamera(User user, String cameraName, String serialNumber, Room room) {
+        List<String> actions = deviceTypeHandlerService.retrieveActionList(serialNumber);
+        Map<String, FeatureDefinition> fm = deviceTypeHandlerService.retrieveFeaturesWithDefinitions(serialNumber);
+        Camera camera = new Camera();
+        camera.setName(cameraName);
+        camera.setRoom(room);
+        camera.setCameraType(deviceTypeHandlerService.parseSerialNumber(serialNumber));
+        camera.setMotionSensorEnabled(false);
+        camera.setIsRecording(false);
+        for (Map.Entry<String, FeatureDefinition> entry : fm.entrySet()) {
+            if (states.contains(entry.getKey())) {
+                camera.setStatus("OFF");
+                continue;
+            }
+            if ("BATTERY".equals(entry.getKey())) {
+                camera.setBatteryLevel(100);
+                camera.setCharging(false);
+                continue;
+            }
+            if ("ROTATION".equals(entry.getKey())) {
+                camera.setXRotatePercent(50);
+                camera.setYRotatePercent(50);
+            }
+        }
+        cameraRepository.save(camera);
+        for (String action : actions) {
+            ucarService.create(user.getId(), camera.getId(), action);
+        }
+        return camera;
     }
 }

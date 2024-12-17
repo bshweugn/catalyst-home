@@ -20,6 +20,7 @@ import itmo.localpiper.backend.model.Room;
 import itmo.localpiper.backend.model.Script;
 import itmo.localpiper.backend.model.TriggerCondition;
 import itmo.localpiper.backend.model.User;
+import itmo.localpiper.backend.model.UserCameraActionRel;
 import itmo.localpiper.backend.model.UserDeviceActionRel;
 import itmo.localpiper.backend.model.UserHouseRel;
 import itmo.localpiper.backend.model.VideoRecording;
@@ -33,6 +34,7 @@ import itmo.localpiper.backend.service.entity.LocationService;
 import itmo.localpiper.backend.service.entity.RoomService;
 import itmo.localpiper.backend.service.entity.ScriptService;
 import itmo.localpiper.backend.service.entity.TriggerConditionService;
+import itmo.localpiper.backend.service.entity.UserCameraActionRelService;
 import itmo.localpiper.backend.service.entity.UserDeviceActionRelService;
 import itmo.localpiper.backend.service.entity.UserHouseRelService;
 import itmo.localpiper.backend.service.entity.UserService;
@@ -77,6 +79,9 @@ public class DataFetchController {
 
     @Autowired
     private UserDeviceActionRelService udarService;
+
+    @Autowired
+    private UserCameraActionRelService ucarService;
 
     @Autowired
     private UserHouseRelService uhrService;
@@ -142,6 +147,10 @@ public class DataFetchController {
         return ResponseEntity.ok(udarService.read());
     }
 
+    public ResponseEntity<List<UserCameraActionRel>> getUcars() {
+        return ResponseEntity.ok(ucarService.read());
+    }
+
     @GetMapping("/uhr")
     public ResponseEntity<List<UserHouseRel>> getUhrs() {
         return ResponseEntity.ok(uhrService.read());
@@ -172,6 +181,7 @@ public class DataFetchController {
             .triggerConditions(triggerConditionService.read())
             .users(userService.read())
             .userDeviceActionRels(udarService.read())
+            .userCameraActionRels(ucarService.read())
             .userHouseRels(uhrService.read())
             .videoRecordings(videoRecordingService.read())
             .invitations(invitationService.read())

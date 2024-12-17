@@ -13,6 +13,7 @@ import itmo.localpiper.backend.model.Room;
 import itmo.localpiper.backend.model.Script;
 import itmo.localpiper.backend.model.TriggerCondition;
 import itmo.localpiper.backend.model.User;
+import itmo.localpiper.backend.model.UserCameraActionRel;
 import itmo.localpiper.backend.model.UserDeviceActionRel;
 import itmo.localpiper.backend.model.UserHouseRel;
 import itmo.localpiper.backend.model.VideoRecording;
@@ -44,6 +45,8 @@ public class FullDataResponse {
     private List<User> users;
 
     private List<UserDeviceActionRel> userDeviceActionRels;
+
+    private List<UserCameraActionRel> userCameraActionRels;
 
     private List<UserHouseRel> userHouseRels;
 
