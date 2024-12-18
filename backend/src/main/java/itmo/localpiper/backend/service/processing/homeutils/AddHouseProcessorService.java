@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.processing;
+package itmo.localpiper.backend.service.processing.homeutils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ import itmo.localpiper.backend.model.Location;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.repository.LocationRepository;
 import itmo.localpiper.backend.repository.UserRepository;
+import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalCreateRecursiveEntityService;
 import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
