@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import itmo.localpiper.backend.dto.request.user.DeviceCommandRequest;
 import itmo.localpiper.backend.dto.request.user.PfpRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
+import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.service.processing.UserPfpProcessorService;
+import itmo.localpiper.backend.service.processing.commands.CameraCommandProcessorService;
 import itmo.localpiper.backend.service.processing.commands.DeviceCommandProcessorService;
 import itmo.localpiper.backend.util.RequestTransformer;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +32,9 @@ public class UserModeController {
 
     @Autowired
     private DeviceCommandProcessorService deviceCommandProcessorService;
+
+    @Autowired
+    private CameraCommandProcessorService cameraCommandProcessorService;
     
     @PostMapping("/changePFP")
     public ResponseEntity<HoldableResultResponse<User>> changePFP(
@@ -47,8 +52,8 @@ public class UserModeController {
     }
 
     @PostMapping("/executeCameraCommand")
-    public String executeCameraCommand(@Valid @RequestBody DeviceCommandRequest request, HttpServletRequest servletRequest) {
-        return null;
+    public ResponseEntity<HoldableResultResponse<Camera>> executeCameraCommand(@Valid @RequestBody DeviceCommandRequest request, HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(cameraCommandProcessorService.process(requestTransformer.transform(request, servletRequest)));
     }
     
     
