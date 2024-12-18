@@ -1,22 +1,19 @@
 package itmo.localpiper.backend.service.processing.invitations;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.user.KickRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.exceptions.RoleViolationException;
-import itmo.localpiper.backend.model.House;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.model.UserHouseRel;
-import itmo.localpiper.backend.repository.HouseRepository;
-import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalEvictUserService;
+import itmo.localpiper.backend.util.AccessValidationService;
 import itmo.localpiper.backend.util.RequestPair;
+import itmo.localpiper.backend.util.enums.AccessMode;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
@@ -27,10 +24,7 @@ public class EvictionProcessorService extends AbstractProcessor<RequestPair<Kick
     private UserRepository userRepository;
 
     @Autowired
-    private HouseRepository houseRepository;
-
-    @Autowired
-    private UserHouseRelRepository uhrRepository;
+    private AccessValidationService accessValidationService;
 
     @Autowired
     private TransactionalEvictUserService teus;
@@ -40,16 +34,11 @@ public class EvictionProcessorService extends AbstractProcessor<RequestPair<Kick
         String email = request.getEmail();
         Long userId = request.getBody().getUserId();
         Long houseId = request.getBody().getHouseId();
-        User host = userRepository.findByEmail(email).get();
         User user = userRepository.findById(userId).get();
-        House house = houseRepository.findById(houseId).get();
-        Optional<UserHouseRel> maybeUhr = uhrRepository.findByUserAndHouse(host, house);
-        Optional<UserHouseRel> maybeUhr2 = uhrRepository.findByUserAndHouse(user, house);
-        if (maybeUhr.isEmpty() || maybeUhr2.isEmpty()) throw new RoleViolationException("Can't evict user from this house!");
-        HouseOwnership hostRole = maybeUhr.get().getRole();
-        HouseOwnership role = maybeUhr2.get().getRole();
-        if (hostRole == HouseOwnership.GUEST || role == HouseOwnership.OWNER || (hostRole == role)) throw new RoleViolationException("Can't evict user - permission denied!");
-        teus.leaveHouse(maybeUhr2.get());
+        UserHouseRel uhr1 = accessValidationService.validateAccess(email, houseId, AccessMode.STRICT);
+        UserHouseRel uhr2 = accessValidationService.validateAccess(user.getEmail(), houseId, AccessMode.LIGHT);
+        if (uhr1.getRole() == uhr2.getRole() || uhr2.getRole() == HouseOwnership.OWNER) throw new RoleViolationException("Can't evict user - permission denied!");
+        teus.leaveHouse(uhr2);
         return null;
     }
 

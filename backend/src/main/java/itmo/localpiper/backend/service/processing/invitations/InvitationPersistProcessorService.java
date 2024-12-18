@@ -2,7 +2,6 @@ package itmo.localpiper.backend.service.processing.invitations;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -13,15 +12,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import itmo.localpiper.backend.dto.request.user.InvitationRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.exceptions.RoleViolationException;
-import itmo.localpiper.backend.model.House;
-import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.model.UserHouseRel;
-import itmo.localpiper.backend.repository.HouseRepository;
-import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.InvitationService;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
+import itmo.localpiper.backend.util.AccessValidationService;
 import itmo.localpiper.backend.util.RequestPair;
+import itmo.localpiper.backend.util.enums.AccessMode;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.Movable;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
@@ -36,10 +33,7 @@ public class InvitationPersistProcessorService extends AbstractProcessor<Request
     private InvitationService invitationService;
 
     @Autowired
-    private UserHouseRelRepository uhrRepository;
-
-    @Autowired
-    private HouseRepository houseRepository;
+    private AccessValidationService accessValidationService;
 
     @Override
     protected Object send(RequestPair<InvitationRequest> data) {
@@ -50,14 +44,11 @@ public class InvitationPersistProcessorService extends AbstractProcessor<Request
         Long houseId = data.getBody().getHouseId();
         Boolean isResident = data.getBody().getIsResident();
         Map<Pair<Long, Movable>, List<String>> actionMap = data.getBody().getActionList();
-        User host = userRepository.findByEmail(hostEmail).get();
-        House house = houseRepository.findById(houseId).get();
-
-        Optional<UserHouseRel> maybeUhr = uhrRepository.findByUserAndHouse(host, house);
-        if (maybeUhr.isEmpty()) throw new RoleViolationException("Can't send invite to this house!");
+        
+        UserHouseRel uhr = accessValidationService.validateAccess(hostEmail, houseId, AccessMode.STRICT);
         try {
-            HouseOwnership role = maybeUhr.get().getRole();
-            if (role == HouseOwnership.GUEST || (role == HouseOwnership.RESIDENT && isResident)) {
+            HouseOwnership role = uhr.getRole();
+            if (role == HouseOwnership.RESIDENT && isResident) {
                 throw new RoleViolationException("Can't assign role - permission denied!");
             }
             invitationService.create(hostName, questEmail, houseId, isResident, actionMap);

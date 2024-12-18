@@ -19,13 +19,13 @@ public interface UserHouseRelRepository extends CrudRepository<UserHouseRel, Lon
     
     Optional<UserHouseRel> findByUserAndHouse(User user, House house);
 
-    @Query("SELECT uhr.house FROM UserHouseRel uhr WHERE uhr.user.id = :userId AND uhr.role = RESIDENT")
+    @Query("SELECT uhr.house FROM UserHouseRel uhr WHERE uhr.user.id = :userId AND (uhr.role = RESIDENT OR uhr.role = OWNER)")
     List<House> findAllHousesWhereUserIsResident(@Param("userId") Long userId);
 
     @Query("SELECT uhr.house FROM UserHouseRel uhr WHERE uhr.user.id = :userId")
     List<House> findAllHousesByUser(@Param("userId") Long userId);
 
-    @Query("SELECT uhr.user FROM UserHouseRel uhr WHERE uhr.house.id = :houseId AND uhr.role = RESIDENT")
+    @Query("SELECT uhr.user FROM UserHouseRel uhr WHERE uhr.house.id = :houseId AND (uhr.role = RESIDENT OR uhr.role = OWNER)")
     List<User> findAllUsersWhereUserIsResident(@Param("houseId") Long houseId);
     
     @Query("SELECT uhr.user FROM UserHouseRel uhr WHERE uhr.house.id = :houseId")

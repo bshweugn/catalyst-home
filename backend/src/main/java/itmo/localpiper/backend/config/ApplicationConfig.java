@@ -13,6 +13,7 @@ import itmo.localpiper.backend.util.JwtService;
 public class ApplicationConfig {
     
     @Bean 
+    @SuppressWarnings("unused")
     ValidateUserAspect validateUserAspect(UserRepository userRepository, JwtService jwtService) {
         ValidateUserAspect myAspect = new ValidateUserAspect(userRepository, jwtService);
         return myAspect;
