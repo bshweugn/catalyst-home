@@ -1,48 +1,36 @@
 package itmo.localpiper.backend.service.processing.commands;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.user.DeviceCommandRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
-import itmo.localpiper.backend.exceptions.CommandNotAllowedException;
 import itmo.localpiper.backend.model.Device;
-import itmo.localpiper.backend.model.User;
-import itmo.localpiper.backend.model.UserDeviceActionRel;
 import itmo.localpiper.backend.repository.DeviceRepository;
-import itmo.localpiper.backend.repository.UserDeviceActionRelRepository;
-import itmo.localpiper.backend.repository.UserRepository;
+import itmo.localpiper.backend.service.handling.HandlerFactory;
+import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
+import itmo.localpiper.backend.util.AccessValidationService;
 import itmo.localpiper.backend.util.DeviceTypeHandlerService;
 import itmo.localpiper.backend.util.RequestPair;
+import itmo.localpiper.backend.util.enums.AccessMode;
+import itmo.localpiper.backend.util.enums.DeviceType;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
 public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair<DeviceCommandRequest>, OperationResultResponse>{
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private DeviceRepository deviceRepository;
 
     @Autowired
-    private UserDeviceActionRelRepository udarRepository;
+    private AccessValidationService accessValidationService;
 
     @Autowired
     private DeviceTypeHandlerService deviceTypeHandlerService;
 
-    private boolean checkAllowed(List<UserDeviceActionRel> udars, String command) {
-        boolean b = false;
-        for (UserDeviceActionRel udar : udars) {
-            if (udar.getAction().equals(command)) {
-                b = true;
-                break;
-            }
-        }
-        return b;
-    }
+    @Autowired
+    private HandlerFactory handlerFactory;
 
     @Override
     protected Object send(RequestPair<DeviceCommandRequest> request) {
@@ -51,25 +39,19 @@ public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair
         Object arg = request.getBody().getArgument();
         Long deviceId = request.getBody().getDeviceId();
 
-        User user = userRepository.findByEmail(login).get();
         Device device = deviceRepository.findById(deviceId).get();
-
-        // step 1 : check if command exists
-        List<String> actionList = deviceTypeHandlerService.retrieveActionList(deviceTypeHandlerService.extractSerialNumber(device.getDeviceType()));
-        if (!actionList.contains(command)) throw new CommandNotAllowedException("Command cannot be executed on this device!");
-
-        // step 2 : check if command allowed
-        List<UserDeviceActionRel> udars = udarRepository.findAllByUserAndDevice(user, device);
-        if (!checkAllowed(udars, command)) throw new CommandNotAllowedException("Command is not allowed to be executed on this device!");
-
-        // step 3 : call handler of given command
-        throw new UnsupportedOperationException("Unimplemented method 'send'");
+        accessValidationService.validateAccess(login, device.getRoom().getFloor().getHouse().getId(), AccessMode.LIGHT);
+        DeviceType type = deviceTypeHandlerService.extractDeviceType(device.getDeviceType());
+        if (type == DeviceType.LAMP) {
+            LampHandler lampHandler = (LampHandler)handlerFactory.getLampHandler(device);
+            lampHandler.pickCommand(command, arg);
+        }
+        return null;
     }
 
     @Override
     protected OperationResultResponse pack(Object result) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pack'");
+        return new OperationResultResponse(ProcessingStatus.SUCCESS, "Command executed");
     }
     
 }
