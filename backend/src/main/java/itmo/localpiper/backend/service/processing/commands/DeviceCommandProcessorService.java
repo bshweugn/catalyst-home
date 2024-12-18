@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.user.DeviceCommandRequest;
+import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
@@ -18,7 +19,7 @@ import itmo.localpiper.backend.util.enums.DeviceType;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair<DeviceCommandRequest>, OperationResultResponse>{
+public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair<DeviceCommandRequest>, HoldableResultResponse<Device>>{
 
     @Autowired
     private DeviceRepository deviceRepository;
@@ -46,12 +47,12 @@ public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair
             LampHandler lampHandler = (LampHandler)handlerFactory.getLampHandler(device);
             lampHandler.pickCommand(command, arg);
         }
-        return null;
+        return deviceRepository.findById(deviceId).orElse(null);
     }
 
     @Override
-    protected OperationResultResponse pack(Object result) {
-        return new OperationResultResponse(ProcessingStatus.SUCCESS, "Command executed");
+    protected HoldableResultResponse<Device> pack(Object result) {
+        return new HoldableResultResponse<>((Device)result, new OperationResultResponse(ProcessingStatus.SUCCESS, "Command executed"));
     }
     
 }
