@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.processing.commands;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.user.DeviceCommandRequest;
@@ -17,9 +16,10 @@ import itmo.localpiper.backend.repository.UserDeviceActionRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.util.DeviceTypeHandlerService;
+import itmo.localpiper.backend.util.RequestPair;
 
 @Service
-public class DeviceCommandProcessorService extends AbstractProcessor<Pair<String, DeviceCommandRequest>, OperationResultResponse>{
+public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair<DeviceCommandRequest>, OperationResultResponse>{
 
     @Autowired
     private UserRepository userRepository;
@@ -45,11 +45,11 @@ public class DeviceCommandProcessorService extends AbstractProcessor<Pair<String
     }
 
     @Override
-    protected Object send(Pair<String, DeviceCommandRequest> request) {
-        String login = request.getFirst();
-        String command = request.getSecond().getCommand();
-        Object arg = request.getSecond().getArgument();
-        Long deviceId = request.getSecond().getDeviceId();
+    protected Object send(RequestPair<DeviceCommandRequest> request) {
+        String login = request.getEmail();
+        String command = request.getBody().getCommand();
+        Object arg = request.getBody().getArgument();
+        Long deviceId = request.getBody().getDeviceId();
 
         User user = userRepository.findByEmail(login).get();
         Device device = deviceRepository.findById(deviceId).get();

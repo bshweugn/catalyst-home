@@ -21,11 +21,13 @@ import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.InvitationService;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
+import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
+import itmo.localpiper.backend.util.enums.Movable;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class InvitationPersistProcessorService extends AbstractProcessor<Pair<String, InvitationRequest>, OperationResultResponse>{
+public class InvitationPersistProcessorService extends AbstractProcessor<RequestPair<InvitationRequest>, OperationResultResponse>{
 
     @Autowired
     private UserRepository userRepository;
@@ -40,14 +42,14 @@ public class InvitationPersistProcessorService extends AbstractProcessor<Pair<St
     private HouseRepository houseRepository;
 
     @Override
-    protected Object send(Pair<String, InvitationRequest> data) {
-        String hostEmail = data.getFirst();
+    protected Object send(RequestPair<InvitationRequest> data) {
+        String hostEmail = data.getEmail();
         String hostName = userRepository.findByEmail(hostEmail).get().getName();
 
-        String questEmail = data.getSecond().getEmail();
-        Long houseId = data.getSecond().getHouseId();
-        Boolean isResident = data.getSecond().getIsResident();
-        Map<Long, List<String>> actionMap = data.getSecond().getActionList();
+        String questEmail = data.getBody().getEmail();
+        Long houseId = data.getBody().getHouseId();
+        Boolean isResident = data.getBody().getIsResident();
+        Map<Pair<Long, Movable>, List<String>> actionMap = data.getBody().getActionList();
         User host = userRepository.findByEmail(hostEmail).get();
         House house = houseRepository.findById(houseId).get();
 

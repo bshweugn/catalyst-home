@@ -1,7 +1,6 @@
 package itmo.localpiper.backend.controller.usermode;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +12,7 @@ import itmo.localpiper.backend.dto.request.user.PfpRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
 import itmo.localpiper.backend.model.User;
 import itmo.localpiper.backend.service.processing.UserPfpProcessorService;
-import itmo.localpiper.backend.util.JwtService;
+import itmo.localpiper.backend.util.RequestTransformer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -22,7 +21,7 @@ import jakarta.validation.Valid;
 public class UserModeController {
 
     @Autowired
-    private JwtService jwtService;
+    private RequestTransformer requestTransformer;
 
     @Autowired
     private UserPfpProcessorService userPfpProcessorService;
@@ -32,17 +31,21 @@ public class UserModeController {
         @Valid @RequestBody PfpRequest request,
         HttpServletRequest servletRequest
     ) {
-        String token = servletRequest.getHeader("Authorization").substring(7);
-        Pair<String, PfpRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(userPfpProcessorService.process(crutch));
+        return ResponseEntity.ok(userPfpProcessorService.process(
+            requestTransformer.transform(request, servletRequest)
+        ));
     }
 
     @PostMapping("/executeDeviceCommand")
     public String executeDeviceCommand(@Valid @RequestBody DeviceCommandRequest request, HttpServletRequest servletRequest) {
-        String token = servletRequest.getHeader("Authorization").substring(7);
-        Pair<String, DeviceCommandRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
         return null;
     }
+
+    @PostMapping("/executeCameraCommand")
+    public String executeCameraCommand(@Valid @RequestBody DeviceCommandRequest request, HttpServletRequest servletRequest) {
+        return null;
+    }
+    
     
     
 }

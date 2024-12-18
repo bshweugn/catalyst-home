@@ -1,7 +1,6 @@
 package itmo.localpiper.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,7 @@ import itmo.localpiper.backend.service.entity.LocationService;
 import itmo.localpiper.backend.service.processing.AddFloorProcessorService;
 import itmo.localpiper.backend.service.processing.AddHouseProcessorService;
 import itmo.localpiper.backend.service.processing.AddRoomProcessorService;
-import itmo.localpiper.backend.util.JwtService;
+import itmo.localpiper.backend.util.RequestTransformer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -40,7 +39,7 @@ public class HomeUtilsController {
     private AddRoomProcessorService addRoomProcessorService;
 
     @Autowired
-    private JwtService jwtService;
+    private RequestTransformer requestTransformer;
 
     @Autowired
     private LocationService locationService;
@@ -54,26 +53,25 @@ public class HomeUtilsController {
     public ResponseEntity<HoldableResultResponse<House>> addHouse(
         @Valid @RequestBody AddHouseRequest request,
         HttpServletRequest servletRequest) {
-            String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, AddHouseRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(addHouseProcessorService.process(crutch));
+        return ResponseEntity.ok(addHouseProcessorService.process(
+            requestTransformer.transform(request, servletRequest)
+        ));
     }
 
     @PostMapping("/addFloor")
     public ResponseEntity<HoldableResultResponse<Floor>> addFloor(
         @Valid @RequestBody AddFloorRequest request,
         HttpServletRequest servletRequest) {
-            String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, AddFloorRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(addFloorProcessorService.process(crutch));
+        return ResponseEntity.ok(addFloorProcessorService.process(
+            requestTransformer.transform(request, servletRequest)
+        ));
     }
     
     @PostMapping("/addRoom")
     public ResponseEntity<HoldableResultResponse<Room>> addRoom(
         @Valid @RequestBody AddRoomRequest request,
         HttpServletRequest servletRequest) {
-            String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, AddRoomRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(addRoomProcessorService.process(crutch));
+        return ResponseEntity.ok(addRoomProcessorService.process(
+                requestTransformer.transform(request, servletRequest)));
     }
 }

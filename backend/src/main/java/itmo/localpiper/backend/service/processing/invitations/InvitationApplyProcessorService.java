@@ -18,10 +18,12 @@ import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.InvitationService;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalGrantAccessService;
+import itmo.localpiper.backend.util.RequestPair;
+import itmo.localpiper.backend.util.enums.Movable;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class InvitationApplyProcessorService extends AbstractProcessor<Pair<String, ProcessInvitationRequest>, OperationResultResponse>{
+public class InvitationApplyProcessorService extends AbstractProcessor<RequestPair<ProcessInvitationRequest>, OperationResultResponse>{
 
     @Autowired
     private InvitationService invitationService;
@@ -33,10 +35,10 @@ public class InvitationApplyProcessorService extends AbstractProcessor<Pair<Stri
     private TransactionalGrantAccessService tgas;
 
     @Override
-    protected Object send(Pair<String, ProcessInvitationRequest> request) {
-        String email = request.getFirst();
-        Long inviteId = request.getSecond().getInviteId();
-        Boolean status = request.getSecond().getAccept();
+    protected Object send(RequestPair<ProcessInvitationRequest> request) {
+        String email = request.getEmail();
+        Long inviteId = request.getBody().getInviteId();
+        Boolean status = request.getBody().getAccept();
         if (!status) {
             invitationService.delete(inviteId);
             return ProcessingStatus.ERROR;
@@ -46,7 +48,7 @@ public class InvitationApplyProcessorService extends AbstractProcessor<Pair<Stri
         
         Invitation invitation = maybeInvitation.get();
         User user = userRepository.findByEmail(email).get();
-        Map<Long, List<String>> privileges;
+        Map<Pair<Long, Movable>, List<String>> privileges;
         try {
             privileges = invitation.getPrivilegesAsMap();
         } catch (JsonProcessingException e) {

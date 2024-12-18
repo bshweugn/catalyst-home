@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.processing.device;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,6 +20,7 @@ import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalImportDeviceService;
+import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.enums.DeviceType;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class ImportCreateProcessorService extends AbstractProcessor<Pair<String, ImportCreateRequest>, HoldableResultResponse<?>>{
+public class ImportCreateProcessorService extends AbstractProcessor<RequestPair<ImportCreateRequest>, HoldableResultResponse<?>>{
 
     private final Map<String, JsonNode> deviceRegistry;
 
@@ -41,11 +41,11 @@ public class ImportCreateProcessorService extends AbstractProcessor<Pair<String,
     private final TransactionalImportDeviceService tids;
 
     @Override
-    protected Object send(Pair<String, ImportCreateRequest> request) {
-        String email = request.getFirst();
-        String serialNumber = request.getSecond().getSerialNumber();
-        String deviceName = request.getSecond().getName();
-        Long roomId = request.getSecond().getRoomId();
+    protected Object send(RequestPair<ImportCreateRequest> request) {
+        String email = request.getEmail();
+        String serialNumber = request.getBody().getSerialNumber();
+        String deviceName = request.getBody().getName();
+        Long roomId = request.getBody().getRoomId();
 
         User user = userRepository.findByEmail(email).get();
         Room room = roomRepository.findById(roomId).get();

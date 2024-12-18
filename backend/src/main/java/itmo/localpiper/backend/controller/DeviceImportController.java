@@ -1,7 +1,6 @@
 package itmo.localpiper.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,7 @@ import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.service.processing.device.DeleteDeviceProcessorService;
 import itmo.localpiper.backend.service.processing.device.ImportCreateProcessorService;
 import itmo.localpiper.backend.service.processing.device.ImportProcessorService;
-import itmo.localpiper.backend.util.JwtService;
+import itmo.localpiper.backend.util.RequestTransformer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -36,7 +35,7 @@ public class DeviceImportController {
     private DeleteDeviceProcessorService deleteDeviceProcessorService;
 
     @Autowired
-    private JwtService jwtService;
+    private RequestTransformer requestTransformer;
 
     @PostMapping("/checkDevice")
     public ResponseEntity<ImportResultResponse> checkDeviceNumber(
@@ -48,17 +47,17 @@ public class DeviceImportController {
     public ResponseEntity<HoldableResultResponse<?>> importAndCreateDevice(
         @Valid @RequestBody ImportCreateRequest request,
         HttpServletRequest servletRequest) {
-            String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, ImportCreateRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(importCreateProcessorService.process(crutch));
+        return ResponseEntity.ok(importCreateProcessorService.process(
+            requestTransformer.transform(request, servletRequest)
+        ));
     }
 
     @PostMapping("/deleteDevice")
     public ResponseEntity<OperationResultResponse> deleteDevice(@Valid @RequestBody DeviceDeleteRequest request,
         HttpServletRequest servletRequest) {
-            String token = servletRequest.getHeader("Authorization").substring(7);
-            Pair<String, DeviceDeleteRequest> crutch = Pair.of(jwtService.extractEmail(token), request);
-        return ResponseEntity.ok(deleteDeviceProcessorService.process(crutch));
+        return ResponseEntity.ok(deleteDeviceProcessorService.process(
+            requestTransformer.transform(request, servletRequest)
+        ));
     }
     
     

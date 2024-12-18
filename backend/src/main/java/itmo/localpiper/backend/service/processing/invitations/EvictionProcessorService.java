@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.processing.invitations;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.user.KickRequest;
@@ -17,11 +16,12 @@ import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalEvictUserService;
+import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class EvictionProcessorService extends AbstractProcessor<Pair<String, KickRequest>, OperationResultResponse>{
+public class EvictionProcessorService extends AbstractProcessor<RequestPair<KickRequest>, OperationResultResponse>{
 
     @Autowired
     private UserRepository userRepository;
@@ -36,10 +36,10 @@ public class EvictionProcessorService extends AbstractProcessor<Pair<String, Kic
     private TransactionalEvictUserService teus;
 
     @Override
-    protected Object send(Pair<String, KickRequest> request) {
-        String email = request.getFirst();
-        Long userId = request.getSecond().getUserId();
-        Long houseId = request.getSecond().getHouseId();
+    protected Object send(RequestPair<KickRequest> request) {
+        String email = request.getEmail();
+        Long userId = request.getBody().getUserId();
+        Long houseId = request.getBody().getHouseId();
         User host = userRepository.findByEmail(email).get();
         User user = userRepository.findById(userId).get();
         House house = houseRepository.findById(houseId).get();

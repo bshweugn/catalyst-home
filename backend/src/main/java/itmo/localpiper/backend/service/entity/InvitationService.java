@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +14,7 @@ import itmo.localpiper.backend.model.House;
 import itmo.localpiper.backend.model.Invitation;
 import itmo.localpiper.backend.repository.HouseRepository;
 import itmo.localpiper.backend.repository.InvitationRepository;
+import itmo.localpiper.backend.util.enums.Movable;
 
 @Service
 public class InvitationService {
@@ -28,7 +30,7 @@ public class InvitationService {
     }
 
 
-    public void create(String hostName, String guestEmail, Long houseId, Boolean isResident, Map<Long, List<String>> actionMap) throws JsonProcessingException {
+    public void create(String hostName, String guestEmail, Long houseId, Boolean isResident, Map<Pair<Long, Movable>, List<String>> actionMap) throws JsonProcessingException {
         Invitation invitation = new Invitation();
         House house = houseRepository.findById(houseId).get();
         invitation.setHostName(hostName);

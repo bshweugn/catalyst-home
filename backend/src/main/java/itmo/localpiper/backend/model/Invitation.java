@@ -3,12 +3,15 @@ package itmo.localpiper.backend.model;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.util.Pair;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import itmo.localpiper.backend.util.enums.Movable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,12 +54,12 @@ public class Invitation {
     @Column(name = "privileges", columnDefinition = "TEXT")
     private String privileges;
 
-    public Map<Long, List<String>> getPrivilegesAsMap() throws JsonProcessingException {
+    public Map<Pair<Long, Movable>, List<String>> getPrivilegesAsMap() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(privileges, new TypeReference<Map<Long, List<String>>>() {});
+        return mapper.readValue(privileges, new TypeReference<Map<Pair<Long, Movable>, List<String>>>() {});
     }
 
-    public void setPrivilegesFromMap(Map<Long, List<String>> privilegesMap) throws JsonProcessingException {
+    public void setPrivilegesFromMap(Map<Pair<Long, Movable>, List<String>> privilegesMap) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         this.privileges = mapper.writeValueAsString(privilegesMap);
     }

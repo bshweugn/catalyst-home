@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.processing.invitations;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.user.LeaveRequest;
@@ -17,11 +16,12 @@ import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.service.transactional.TransactionalEvictUserService;
+import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class LeaveProcessorService extends AbstractProcessor<Pair<String, LeaveRequest>, OperationResultResponse>{
+public class LeaveProcessorService extends AbstractProcessor<RequestPair<LeaveRequest>, OperationResultResponse>{
 
     @Autowired
     private UserHouseRelRepository uhrRepository;
@@ -36,9 +36,9 @@ public class LeaveProcessorService extends AbstractProcessor<Pair<String, LeaveR
     private TransactionalEvictUserService teus;
 
     @Override
-    protected Object send(Pair<String, LeaveRequest> request) {
-        String email = request.getFirst();
-        Long houseId = request.getSecond().getHouseId();
+    protected Object send(RequestPair<LeaveRequest> request) {
+        String email = request.getEmail();
+        Long houseId = request.getBody().getHouseId();
         User user = userRepository.findByEmail(email).get();
         House house = houseRepository.findById(houseId).get();
         Optional<UserHouseRel> maybeUhr = uhrRepository.findByUserAndHouse(user, house);
@@ -47,7 +47,7 @@ public class LeaveProcessorService extends AbstractProcessor<Pair<String, LeaveR
         HouseOwnership role = uhr.getRole();
         if (role == HouseOwnership.OWNER) {
             // new owner required, else the house is deleted
-            Long newOwnerId = request.getSecond().getNewOwnerId();
+            Long newOwnerId = request.getBody().getNewOwnerId();
             if (newOwnerId == null) {
                 teus.leaveHouseWithDeletion(house.getId());
                 return null;

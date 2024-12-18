@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.processing;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import itmo.localpiper.backend.dto.request.homeutils.AddRoomRequest;
@@ -19,11 +18,12 @@ import itmo.localpiper.backend.repository.UserHouseRelRepository;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.entity.RoomService;
 import itmo.localpiper.backend.service.transactional.TransactionalCreateRecursiveEntityService;
+import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.enums.HouseOwnership;
 import itmo.localpiper.backend.util.enums.ProcessingStatus;
 
 @Service
-public class AddRoomProcessorService extends AbstractProcessor<Pair<String,AddRoomRequest>, HoldableResultResponse<Room>>{
+public class AddRoomProcessorService extends AbstractProcessor<RequestPair<AddRoomRequest>, HoldableResultResponse<Room>>{
 
     @Autowired
     private RoomService roomService;
@@ -42,10 +42,10 @@ public class AddRoomProcessorService extends AbstractProcessor<Pair<String,AddRo
 
 
     @Override
-    protected Object send(Pair<String,AddRoomRequest> request) {
-        String email = request.getFirst();
-        String name = request.getSecond().getName();
-        Long floorId = request.getSecond().getFloorId();
+    protected Object send(RequestPair<AddRoomRequest> request) {
+        String email = request.getEmail();
+        String name = request.getBody().getName();
+        Long floorId = request.getBody().getFloorId();
 
         User user = userRepository.findByEmail(email).get();
         if (floorId == null) {
