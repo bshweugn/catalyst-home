@@ -136,7 +136,7 @@ const AuthScreen = (args) => {
                     <h1 className='auth-screen__title'>Происходит регистрация</h1>
                     <p className='auth-screen__label'>Один момент, пожалуйста.</p>
                 </div>
-                <IonSpinner className={"auth-screen__spinner"} color={"light"}></IonSpinner>
+                <IonSpinner className={"auth-screen__spinner"}></IonSpinner>
             </div>
         </div>
     );

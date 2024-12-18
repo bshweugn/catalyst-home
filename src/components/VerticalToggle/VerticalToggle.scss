@@ -1,6 +1,52 @@
 .vertical-toggle {
+    width: 8rem;
+    height: 17rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: relative;
+    border-radius: 2rem;
+    overflow: hidden;
+    padding: 0.5rem;
+    box-sizing: border-box;
 
-    &__element {
+    &__toggle {
+        height: calc(50% - 1rem);
+        width: calc(100% - 1rem);
+        position: absolute;
+        bottom: 0.5rem;
+        left: 0.5rem;
+        background-color: white;
+        border-radius: 1.5rem;
+        transition: 0.25s cubic-bezier(0.35, 0.01, 0.01, 1.26);
 
+        &--active{
+            transform: translateY(calc(-100% - 1rem));
+        }
+    }
+
+    &__label{
+        height: calc(50% - 1rem);
+        width: calc(100% - 1rem);
+        position: absolute;
+        font-size: 2rem;
+        font-weight: 500;
+        opacity: 0.3;
+        left: 0.5rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .2s;
+
+        &--top{
+            top: 0.5rem
+        }
+
+        &--bottom{
+            bottom: 0.5rem
+        }
+
+        &--active{
+            color: white;
+        }
     }
 }

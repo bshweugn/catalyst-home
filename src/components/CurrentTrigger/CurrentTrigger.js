@@ -10,7 +10,7 @@ const CurrentTrigger = (args) => {
         const [mainType, subType] = type.split('_');
 
         switch (mainType) {
-            case "LEAK_SENSOR":
+            case "LEAK":
                 if (action === "LEAK_DETECTED") {
                     return "Обнаружена протечка";
                 }
@@ -22,7 +22,7 @@ const CurrentTrigger = (args) => {
                 } else if (action === "TEMP_LOWER_THAN") {
                     return `Температура ниже ${parameter}°C`;
                 }
-            case "HUMIDITY_SENSOR":
+            case "HUMIDITY":
                 if (action === "HUMIDITY_EQUALS") {
                     return `Влажность равна ${parameter}%`;
                 } else if (action === "HUMIDITY_HIGHER_THAN") {

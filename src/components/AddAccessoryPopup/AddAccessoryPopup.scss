@@ -89,6 +89,13 @@
         }
     }
 
+    &__spinner-wrapper{
+        height: 8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     &__buttons-group-tint {
         height: 100%;
         width: 100%;

@@ -15,9 +15,13 @@ const ItemSettings = (args) => {
     const handleDeviceDelete = async () => {
         try {
             const result = await deleteDevice(args.token, args.itemId, args.houseId, true);
-            return result;
-        } catch{
-            console.log("Ошиюка удаления устройтва.");
+
+            if (result) {
+                args.visibilityFunc(false);
+                args.closeRequired(true)
+            }
+        } catch {
+            console.log("Ошибка удаления устройтва.");
         }
     }
 
@@ -45,7 +49,7 @@ const ItemSettings = (args) => {
                     setSelectedOption={args.setRoom}
                     label="Комната"
                 />
-                <WideButton red separated label={"Удалить устройство"} onClick={ () => handleDeviceDelete() ? args.visibilityFunc(false) : () => {} }/>
+                <WideButton red separated label={"Удалить устройство"} onClick={() => handleDeviceDelete()} />
             </div>
         </div>
     );

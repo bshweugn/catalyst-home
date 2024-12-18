@@ -46,6 +46,7 @@ import Warn from '../icons/Warn/Warn';
 import { error } from '@splidejs/splide/src/js/utils';
 import ScriptDevicesList from '../ScriptDevicesList/ScriptDevicesList';
 import ScriptActionsList from '../ScriptActionsList/ScriptActionsList';
+import { IonSpinner } from '@ionic/react';
 
 const AddAccessoryPopup = (args) => {
     const dispatch = useDispatch();
@@ -121,6 +122,8 @@ const AddAccessoryPopup = (args) => {
     const [newRoomName, setNewRoomName] = useState("");
     const [newFloorName, setNewFloorName] = useState("");
     const [newDeviceName, setNewDeviceName] = useState("");
+    const [newDeviceNameInvisible, setNewDeviceNameInvisible] = useState("");
+
 
 
 
@@ -134,6 +137,7 @@ const AddAccessoryPopup = (args) => {
                 const roomsData = getRoomsByHouseId(args.currentHouseID, data);
                 args.setRooms(roomsData);
                 console.log(roomsData);
+                return data;
             } else {
                 console.warn("Данные не были получены");
             }
@@ -144,18 +148,23 @@ const AddAccessoryPopup = (args) => {
 
     const getDevice = async () => {
         try {
+            setView('device-checking')
             const device = await checkDevice(dispatch, args.token, code);
 
             if (device !== null) {
                 setDevice(device);
+                setNewDeviceNameInvisible(renderItemName(device))
                 console.log(device);
+                animate();
                 setView('device');
             } else {
                 console.warn('Устройство не найдено или структура ответа некорректна:', device);
+                animate();
                 setView('unknown-device');
             }
         } catch (error) {
             console.error('Ошибка при получении устройства:', error);
+            animate();
             setView('unknown-device');
         }
     };
@@ -164,41 +173,57 @@ const AddAccessoryPopup = (args) => {
 
     const importDevice = async () => {
         try {
-            const result = await addDevice(dispatch, args.token, { serialNumber: code, name: newDeviceName, roomId: currentRoom.id });
+            let deviceName = "";
+            if (newDeviceName === "") {
+                deviceName = newDeviceNameInvisible;
+            } else {
+                deviceName = newDeviceName;
+            }
+
+            animate();
+            setView('device-importing');
+            const result = await addDevice(dispatch, args.token, { serialNumber: code, name: deviceName, roomId: currentRoom.id });
             console.log(result);
             if (result) {
-                fetchData(args.token);
-                handleClose();
+                const result = fetchData(args.token);
+                if (result) setTimeout(() => handleClose(), 200);
             }
         } catch (error) {
+            animate();
+            setView('error');
             console.error('Ошибка при получении устройства:', error);
         }
     }
 
     const handleRoomCreate = async () => {
         try {
+            animate();
+            setView('room-creating');
             const room = await createRoom(dispatch, args.token, newRoomName, 1);
             console.log(room);
             const house = await fetchHousesData(args.token);
             console.log(house);
-            handleClose();
+            if (house) handleClose();
         } catch (error) {
+            animate();
+            setView('error');
             console.error('Ошибка при получении устройства:', error);
-            setDevice('Ошибка.');
         }
     }
 
 
     const handleFloorCreate = async () => {
         try {
-            const room = await createFloor(dispatch, args.token, newFloorName, args.currentHouseID);
-            console.log(room);
+            const floor = await createFloor(dispatch, args.token, newFloorName, args.currentHouseID);
+            console.log(floor);
             const house = await fetchHousesData(args.token);
             console.log(house);
-            handleClose();
+
+            if (house) handleClose();
         } catch (error) {
+            animate();
+            setView('error');
             console.error('Ошибка при получении устройства:', error);
-            setDevice('Ошибка.');
         }
     }
 
@@ -284,11 +309,7 @@ const AddAccessoryPopup = (args) => {
         // }
     }, [trigger]);
 
-    const actions = [{
-        device: args.devices[1],
-        deviceAction: "BRIGHTNESS",
-        parameter: "50"
-    }]
+    const actions = []
 
     const renderAccessoryContent = () => {
         return manualInput ? (
@@ -328,9 +349,9 @@ const AddAccessoryPopup = (args) => {
     };
 
     useEffect(() => {
-        if (view === "default" || view === "accessory" || view === "invite-sent" || view === "unknown-accessory") {
+        if (view === "default" || view === "accessory" || view === "invite-sent" || view === "unknown-accessory" || view === "device-checking" || view === "error") {
             setFullscreenRequired(false);
-        } else if (view === "home" || view === "level" || view === "room" || view === "user" || view === "device" || view === "automation") {
+        } else if (view === "home" || view === "level" || view === "room" || view === "user" || view === "device" || view === "automation" || view === "device-importing" || view === "room-creating") {
             setFullscreenRequired(true);
         }
     }, [view]);
@@ -435,13 +456,36 @@ const AddAccessoryPopup = (args) => {
                         </div>
                     </>
                 );
+            case "device-checking":
+                return (
+                    <>
+                        <div className='add-accessory-popup__spinner-wrapper'>
+                            <IonSpinner className={"add-accessory-popup__spinner"}></IonSpinner>
+                        </div>
+                    </>
+                );
+            case "device-importing":
+                return (
+                    <>
+                        <div className='add-accessory-popup__spinner-wrapper'>
+                            <IonSpinner className={"add-accessory-popup__spinner"}></IonSpinner>
+                        </div>
+                    </>
+                );
+            case "room-creating":
+                return (
+                    <>
+                        <div className='add-accessory-popup__spinner-wrapper'>
+                            <IonSpinner className={"add-accessory-popup__spinner"}></IonSpinner>
+                        </div>
+                    </>
+                );
             case "invite-sent":
                 return (
                     <>
                         <EnvelopePerson fill="rgb(2, 123, 255)" size="4.2rem" className='add-accessory-popup__main-icon' />
                         <p className='add-accessory-popup__title'>Приглашение отправлено</p>
                         <p className='add-accessory-popup__text add-accessory-popup__text--bottom-separated'>Если пользователь примет приглашение, то сможет управлять и просматривать информацию о Доме и устройствах в нём.</p>
-                        {/* <Description text="Вы сможете переместить аксессуар в другую комнату позднее в его параметрах." /> */}
                         <div className="add-accessory-popup__buttons-group">
                             <Button primary label="Готово" onClick={() => handleClose()} />
                             {/* <Button onClick={() => setView("default")} label="Назад" /> */}
@@ -454,10 +498,21 @@ const AddAccessoryPopup = (args) => {
                         <Warn fill="rgb(170, 170, 170)" size="3.6rem" className='add-accessory-popup__main-icon' />
                         <p className='add-accessory-popup__title'>Неизвестное устройство</p>
                         <p className='add-accessory-popup__text add-accessory-popup__text--bottom-separated'>Кажется, Вы ввели некорректный код или аксессуар больше недоступен для добавления.</p>
-                        {/* <Description text="Вы сможете переместить аксессуар в другую комнату позднее в его параметрах." /> */}
                         <div className="add-accessory-popup__buttons-group">
                             <Button primary label="Готово" onClick={() => handleClose()} />
                             <Button onClick={() => { setView("accessory"); animate() }} label="Добавить заново" />
+                        </div>
+                    </>
+                );
+            case "error":
+                return (
+                    <>
+                        <Warn fill="rgb(170, 170, 170)" size="3.6rem" className='add-accessory-popup__main-icon' />
+                        <p className='add-accessory-popup__title'>Ошибка добавления</p>
+                        <p className='add-accessory-popup__text add-accessory-popup__text--bottom-separated'>При добавлении объекта в Ваш Дом произошла ошибка. Пожалуйста, повторите попытку позднее.</p>
+                        <div className="add-accessory-popup__buttons-group">
+                            <Button primary label="Готово" onClick={() => handleClose()} />
+                            <Button onClick={() => { setView("default"); animate() }} label="Добавить заново" />
                         </div>
                     </>
                 );
@@ -598,23 +653,29 @@ const AddAccessoryPopup = (args) => {
                 view === "default" ? "Добавить в Дом" :
                     view === "accessory" ? "Добавить аксессуар" :
                         view === "room" ? "Добавить комнату" :
-                            view === "level" ? "Добавить этаж" :
-                                view === "user" ? "Поделиться доступом" :
-                                    view === "device" ? "" :
-                                        view === "automation" ? "Создать автоматизацию" :
-                                            view === "invite-sent" || view === "unknown-device" ? "" :
-                                                "Создать новый Дом"
+                            view === "room-creating" ? "Добавление комнаты" :
+                                view === "level" ? "Добавить этаж" :
+                                    view === "user" ? "Поделиться доступом" :
+                                        view === "device" ? "" :
+                                            view === "device-checking" ? "Проверка аксессуара" :
+                                                view === "device-importing" ? "Добавление аксессуара" :
+                                                    view === "automation" ? "Создать автоматизацию" :
+                                                        view === "invite-sent" || view === "unknown-device" || view === "error" ? "" :
+                                                            "Создать новый Дом"
             }
             label={
                 view === "default" ? "" :
                     view === "accessory" ? manualInput ? "Введите шестизначный код, указанный на устройстве, упаковке или документации." : "Отсканируйте код на аксессуаре для добавления в Ваш дом." :
                         view === "room" ? "Задайте имя и фон для новой комнаты." :
-                            view === "level" ? "Задайте имя для нового этажа." :
-                                view === "user" ? deviceSelectMode ? "Выберите аксессуары, доступ к которым Вы хотите предоставить." : "Поделитесь доступом к управлению Домом c другим пользователем." :
-                                    view === "device" ? "" :
-                                        view === "automation" ? deviceSelectMode ? "Выберите устройство для добавления условия активации сценария." : "Настройте автоматизацию для взаимодействия между устройствами." :
-                                            view === "invite-sent" || view === "unknown-device" ? "" :
-                                                "Задайте имя и фон для нового Дома."
+                            view === "room-creating" ? "Комната добавляется в Ваш дом." :
+                                view === "level" ? "Задайте имя для нового этажа." :
+                                    view === "user" ? deviceSelectMode ? "Выберите аксессуары, доступ к которым Вы хотите предоставить." : "Поделитесь доступом к управлению Домом c другим пользователем." :
+                                        view === "device" ? "" :
+                                            view === "device-checking" ? "Это не займёт много времени." :
+                                                view === "device-importing" ? "Аксессуар добавляется в Ваш дом." :
+                                                    view === "automation" ? deviceSelectMode ? "Выберите устройство для добавления условия активации сценария." : "Настройте автоматизацию для взаимодействия между устройствами." :
+                                                        view === "invite-sent" || view === "unknown-device" || view === "error" ? "" :
+                                                            "Задайте имя и фон для нового Дома."
             }
         >
             {renderContent()}

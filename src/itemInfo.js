@@ -1,9 +1,12 @@
+import Curtains from "./components/icons/Curtains/Curtains";
 import Drop from "./components/icons/Drop/Drop";
 import Fan from "./components/icons/Fan/Fan";
 import Humidifier from "./components/icons/Humidifier/Humidifier";
 import Lightbulb from "./components/icons/Lightbulb/Lightbulb";
 import Relay from "./components/icons/Relay/Relay";
 import Thermometer from "./components/icons/Thermometer/Thermometer";
+import Valve from "./components/icons/Valve/Valve";
+import VideoIcon from "./components/icons/VideoIcon/VideoIcon";
 
 export function renderItemStatus(device, concise) {
     const [mainType, subType] = device.deviceType.split('_');
@@ -24,6 +27,21 @@ export function renderItemStatus(device, concise) {
                 return `Цвет: ${device.features.COLOR}`;
             }
             return device.status === 'ON' ? 'Вкл.' : 'Выкл.';
+
+        case 'CURTAIN': // Лампа
+            if (device.features.PERCENTAGE !== undefined) {
+                if (device.features.PERCENTAGE === 0) {
+                    return 'Закрыто';
+                } else if (device.features.PERCENTAGE === 100) {
+                    return 'Открыто';
+                } else {
+                    return `Открыто на ${device.features.PERCENTAGE}%`;
+                }
+            }
+            if (device.status === "CLOSED") {
+                return 'Закрыто';
+            }
+            return 'Открыто';
 
         case 'FAN': // Вентилятор
             return device.status === 'ON' ? 'Вкл.' : 'Выкл.';
@@ -153,6 +171,10 @@ export function renderItemIcon(device, displayText, size, className) {
                 return <Lightbulb size={(size ? size : "1.6rem")} fill="#ffbf0d" className={className} />
             }
 
+            if (mainType === 'CURTAIN') {
+                return <Curtains size={(size ? size : "1.6rem")} fill="rgb(162 0 226)" className={className} />
+            }
+
             if (mainType === 'LEAK') {
                 return <Drop size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
             }
@@ -167,6 +189,14 @@ export function renderItemIcon(device, displayText, size, className) {
 
             if (mainType === 'RELAY') {
                 return <Relay size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
+            }
+
+            if (mainType === 'VALVE') {
+                return <Valve size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
+            }
+
+            if (mainType === 'CAMERA') {
+                return <VideoIcon size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
             }
 
             return null;
@@ -200,7 +230,11 @@ export function isVerticalControls(device) {
     switch (mainType) {
         case 'THERMOSTAT':
             return true;
+        case 'AC':
+            return true;
         case 'TEMPERATURE':
+            return true;
+        case 'HUMIDIFIER':
             return true;
         default:
             return false;

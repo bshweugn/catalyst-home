@@ -5,7 +5,7 @@ const TempIndicator = (args) => {
     const finalClassName = 'temp-indicator ' + (args.className || '')
     return (
         <div className={finalClassName}>
-            <p className='temp-indicator__temp'>{args.temp}°</p>
+            <p className='temp-indicator__temp'>{args.temp}{args.append}</p>
         </div>
     );
 };

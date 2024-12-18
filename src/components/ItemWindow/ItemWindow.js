@@ -23,6 +23,7 @@ import SimpleLabel from '../SimpleLabel/SimpleLabel';
 import IconSelect from '../IconSelect/IconSelect';
 import DialLow from '../icons/DialLow/DialLow';
 import Curtains from '../icons/Curtains/Curtains';
+import VerticalToggle from '../VerticalToggle/VerticalToggle';
 
 
 
@@ -30,6 +31,18 @@ const ItemWindow = (args) => {
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [icons, setIcons] = useState([]);
     const [selectedIcon, setSelectedIcon] = useState(<Lightbulb />);
+
+    const [closeRequired, setCloseRequired] = useState(false);
+
+    useEffect(() => {
+        console.log("REQUIRED")
+        if (closeRequired) {
+            args.idFunc(0);
+            setCloseRequired(false);
+        }
+    }, [closeRequired]);
+
+
 
     const thermostatPowerOptions = [
         {
@@ -63,17 +76,17 @@ const ItemWindow = (args) => {
         {
             label: "Мин.",
             icon: DialLow,
-            value: "SUN",
+            value: "SOFT",
         },
         {
             label: "Норм.",
-            icon: Lightbulb,
-            value: "MOON",
+            icon: DialLow,
+            value: "NORMAL",
         },
         {
             label: "Макс.",
-            icon: Lightbulb,
-            value: "CLOUD",
+            icon: DialLow,
+            value: "MAX",
         },
     ];
 
@@ -81,22 +94,46 @@ const ItemWindow = (args) => {
         {
             label: "Авто",
             icon: Power,
-            value: "OFF",
+            value: "SWING",
         },
         {
             label: "Низ",
             icon: DialLow,
-            value: "SUN",
+            value: "DOWN",
         },
         {
             label: "Середина",
-            icon: Lightbulb,
-            value: "MOON",
+            icon: DialLow,
+            value: "MIDDLE",
         },
         {
             label: "Верх",
-            icon: Lightbulb,
-            value: "CLOUD",
+            icon: DialLow,
+            value: "UP",
+        },
+    ];
+
+
+    const humidifierPowerOptions = [
+        {
+            label: "Выкл.",
+            icon: Power,
+            value: "OFF",
+        },
+        {
+            label: "Мин.",
+            icon: DialLow,
+            value: "SOFT",
+        },
+        {
+            label: "Норм.",
+            icon: DialLow,
+            value: "NORMAL",
+        },
+        {
+            label: "Макс.",
+            icon: DialLow,
+            value: "MAX",
         },
     ];
 
@@ -115,8 +152,13 @@ const ItemWindow = (args) => {
     const [targetTemp, setTargetTemp] = useState(0);
     const [currentTemp, setCurrentTemp] = useState(0);
 
-    /* -----------*/
+    const [currentHum, setCurrentHum] = useState(0);
+    const [targetHum, setTargetHum] = useState(0);
 
+
+    const [curtainPercentage, setCurtainPercentage] = useState(0);
+
+    /* -----------*/
 
 
     const fetchDeviceData = () => {
@@ -158,23 +200,30 @@ const ItemWindow = (args) => {
                 if (args.device.features.CURRENT_TEMP !== undefined) {
                     setCurrentTemp(args.device.features.CURRENT_TEMP);
                 }
+            case "CURTAIN":
+                if (args.device.features.PERCENTAGE !== undefined) {
+                    setCurtainPercentage(args.device.features.PERCENTAGE);
+                }
         }
     }
 
+    useEffect(() => {
+        fetchDeviceData();
+    }, [args.device, args.visible]);
 
 
-    /* ----- РЕЖИМЫ ТЕРМОСТАТА И КОНДИЦИОНЕРА -----*/
-    
-    const getThermoMode = () => {
-        if(state === "OFF"){
+    /* ----- РЕЖИМЫ ТЕРМОСТАТА, КОНДИЦИОНЕРА И УВЛАЖНИТЕЛЯ -----*/
+
+    const getThermoOrHumMode = () => {
+        if (state === "OFF") {
             return state;
         } else {
             return mode;
         }
     }
 
-    const setThermoMode = (mode) => {
-        if(mode === "OFF"){
+    const setThermoOrHumMode = (mode) => {
+        if (mode === "OFF") {
             setState("OFF")
         } else {
             setState("ON");
@@ -185,10 +234,40 @@ const ItemWindow = (args) => {
     /* ----------*/
 
 
+    /* ----- ПЕРЕКЛЮЧАТЕЛЬ КЛАПАНА -----*/
 
-    useEffect(() => {
-        fetchDeviceData();
-    }, [args.device, args.visible]);
+    const setValveOrCurtainStateWithToggle = (state) => {
+        if (!state) {
+            setState("CLOSED");
+        } else {
+            setState("OPENED");
+        }
+    }
+
+    const getValveOrCurtainState = () => {
+        return state === "OPENED";
+    }
+
+    /* ----------*/
+
+
+    /* ----- ПЕРЕКЛЮЧАТЕЛЬ -----*/
+
+    const setStateWithToggle = (state) => {
+        if (!state) {
+            setState("OFF");
+        } else {
+            setState("ON");
+        }
+    }
+
+    const getState = () => {
+        return state === "ON";
+    }
+
+    /* ----------*/
+
+
 
 
 
@@ -210,33 +289,34 @@ const ItemWindow = (args) => {
         const [mainType, subType] = (args.device.deviceType || args.device.type || "").split('_');
 
         if (mainType === 'LAMP') {
-            if (args.device.features.COLOR_TEMP !== undefined) {
-                return (
-                    <>
-                        <VerticalSlider sliderIcon={Sun} setValue={setBrightness} value={brightness} />
-                        <HueSelector colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} color={colorTemp} setColor={setColorTemp} />
-                    </>
-                );
-            } else {
-                return (
-                    <>
-                        <VerticalSlider sliderIcon={Sun} />
-                    </>
-                );
-            }
+            return (
+                <>
+                    {args.device.features.BRIGHTNESS !== undefined ? <VerticalSlider sliderIcon={Sun} setValue={setBrightness} value={brightness} /> : null}
+                    {args.device.features.COLOR_TEMP !== undefined ? <HueSelector colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} color={colorTemp} setColor={setColorTemp} /> : null}
+                    {args.device.features.BRIGHTNESS === undefined ? <VerticalToggle setValue={setStateWithToggle} value={getState()} /> : null}
+                </>
+            )
+        }
+
+        if (mainType === 'RELAY') {
+            return (
+                <>
+                    <VerticalToggle setValue={setStateWithToggle} value={getState()} />
+                </>
+            )
         }
 
         if (mainType === 'CURTAIN') {
             if (args.device.features.PERCENTAGE !== undefined) {
                 return (
                     <>
-                        <VerticalSlider sliderIcon={Curtains} color={args.device.color} />
+                        <VerticalSlider sliderIcon={Curtains} setValue={setCurtainPercentage} value={curtainPercentage} />
                     </>
                 );
             } else {
                 return (
                     <>
-                        {/* <VerticalSlider sliderIcon={Sun} color={args.device.color} /> */}
+                        <VerticalToggle setValue={setValveOrCurtainStateWithToggle} value={getValveOrCurtainState()} />
                     </>
                 );
             }
@@ -245,14 +325,51 @@ const ItemWindow = (args) => {
         if (mainType === 'THERMOSTAT') {
             return (
                 <>
-                    <TempIndicator temp={currentTemp} />
-                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={targetTemp} setValue={setTargetTemp} id={0} />
-                    <IconSelect
+                    <TempIndicator temp={currentTemp} append={"°"} />
+                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={targetTemp} setValue={setTargetTemp} />
+                    {args.device.features.MODE !== undefined ? <IconSelect
                         options={thermostatPowerOptions}
-                        selectedOption={getThermoMode()}
-                        setSelectedOption={setThermoMode}
-                    />
+                        selectedOption={getThermoOrHumMode()}
+                        setSelectedOption={setThermoOrHumMode}
+                    /> : <ActionButton active={getState()} setActive={setStateWithToggle} icon={Power} labels={["Вкл.", "Выкл."]} />}
                     {/* <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} /> */}
+                </>
+            );
+        }
+
+        if (mainType === 'HUMIDIFIER') {
+            return (
+                <>
+                    <TempIndicator temp={currentHum} append={"%"} />
+                    <HorizontalSelector values={[20, 25, 30, 35, 40, 45, 50, 55, 60]} append={""} selectedValue={targetHum} setValue={setTargetHum} />
+                    {args.device.features.MODE !== undefined ?
+                        <IconSelect
+                            options={humidifierPowerOptions}
+                            selectedOption={getThermoOrHumMode()}
+                            setSelectedOption={setThermoOrHumMode}
+                        /> : null
+                    }
+                    {/* <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} /> */}
+                </>
+            );
+        }
+
+        if (mainType === 'AC') {
+            return (
+                <>
+                    <TempIndicator temp={currentTemp} append={"°"} />
+                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={targetTemp} setValue={setTargetTemp} />
+                    {args.device.features.MODE !== undefined ? <IconSelect
+                        options={ACPowerOptions}
+                        selectedOption={getThermoOrHumMode()}
+                        setSelectedOption={setThermoOrHumMode}
+                    /> : null}
+                    {args.device.features.WIND_MODE !== undefined ? <IconSelect
+                        options={ACWindOptions}
+                        selectedOption={windMode}
+                        setSelectedOption={setWindMode}
+                    /> : null}
+                    {args.device.features.MODE === undefined ? <ActionButton active={getState()} setActive={setStateWithToggle} icon={Power} labels={["Вкл.", "Выкл."]} /> : null}
                 </>
             );
         }
@@ -260,7 +377,7 @@ const ItemWindow = (args) => {
         if (mainType === 'TEMPERATURE') {
             return (
                 <>
-                    <TempIndicator temp={currentTemp} />
+                    <TempIndicator temp={currentTemp} append={"°"} />
                     <SimpleLabel>Текущая температура</SimpleLabel>
                 </>
             );
@@ -269,7 +386,7 @@ const ItemWindow = (args) => {
         if (mainType === 'VALVE') {
             return (
                 <>
-                    <ActionButton active={args.device.status === 'OPENED'} icon={Power} labels={["Открыто", "Закрыто"]} />
+                    <VerticalToggle setValue={setValveOrCurtainStateWithToggle} value={getValveOrCurtainState()} />
                 </>
             );
         }
@@ -340,6 +457,7 @@ const ItemWindow = (args) => {
                 icons={icons}
                 selectedIcon={selectedIcon}
                 setSelectedIcon={setSelectedIcon}
+                closeRequired={setCloseRequired}
             />
             <div className="item-window__back" />
             <div className={`item-window__header ${settingsVisible ? "item-window__header--hidden" : ""}`}>
