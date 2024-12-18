@@ -1,6 +1,6 @@
 package itmo.localpiper.backend.service.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,14 @@ public class VideoRecordingService {
         return videoRecordingRepository.findAll();
     }
 
-    public void create(Long cameraId, LocalDateTime time, String source) {
+    public void create(Long cameraId, ZonedDateTime from, ZonedDateTime to) {
         VideoRecording videoRecording = new VideoRecording();
         Camera camera = cameraRepository.findById(cameraId).get();
         videoRecording.setCamera(camera);
-        videoRecording.setTime(time);
-        videoRecording.setSource(source);
-        
+        videoRecording.setFrom(from);
+        videoRecording.setTo(to);
+        videoRecording.setSource("video.mp4"); // why? because.
+    
         videoRecordingRepository.save(videoRecording);
     }
 

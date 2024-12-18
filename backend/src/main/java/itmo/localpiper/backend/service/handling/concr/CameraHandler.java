@@ -1,20 +1,29 @@
 package itmo.localpiper.backend.service.handling.concr;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
+import itmo.localpiper.backend.service.entity.VideoRecordingService;
 import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHanlder;
+import itmo.localpiper.backend.service.handling.state.RecordingStateManager;
 
 public class CameraHandler extends AbstractCameraHanlder {
 
     private final Camera camera;
     private final CameraRepository repository;
+    private final VideoRecordingService service;
+    private final RecordingStateManager recordingStateManager = RecordingStateManager.getInstance();
 
-    public CameraHandler(List<String> commands, Camera camera, CameraRepository cameraRepository) {
+    public CameraHandler(List<String> commands, Camera camera, VideoRecordingService videoRecordingService, CameraRepository cameraRepository) {
         super(commands);
         this.camera = camera;
         this.repository = cameraRepository;
+        this.service = videoRecordingService;
     }
 
     @Override
@@ -51,23 +60,29 @@ public class CameraHandler extends AbstractCameraHanlder {
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     protected void startRecording() {
         checkCommand("START_RECORDING");
         if (!"OFF".equals(camera.getStatus())) {
             camera.setIsRecording(true);
-            // TODO: start recording
+            repository.save(camera);
+            if (!recordingStateManager.isRecording(camera.getId())) recordingStateManager.startRecording(camera.getId());
         }
-        repository.save(camera);
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     protected void stopRecording() {
         checkCommand("STOP_RECORDING");
         if (!"OFF".equals(camera.getStatus())) {
             camera.setIsRecording(false);
-            // TODO: stop recording
+            repository.save(camera);
+            if (recordingStateManager.isRecording(camera.getId())) {
+                ZonedDateTime startTime = recordingStateManager.getRecordingStartTime(camera.getId());
+                service.create(camera.getId(), startTime, ZonedDateTime.now());
+                recordingStateManager.stopRecording(camera.getId());
+            }
         }
-        repository.save(camera);
     }
 
     @Override

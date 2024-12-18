@@ -1,6 +1,6 @@
 package itmo.localpiper.backend.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,8 +31,11 @@ public class VideoRecording {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="time", nullable=false)
-    private LocalDateTime time;
+    @Column(name="from_time", nullable=false)
+    private ZonedDateTime from;
+
+    @Column(name="to_time", nullable=false)
+    private ZonedDateTime to;
 
     @Column(name="source", nullable =false)
     private String source;
@@ -47,7 +50,8 @@ public class VideoRecording {
         ObjectNode node = objectMapper.createObjectNode();
 
         node.put("id", id);
-        node.put("time", time.toString());
+        node.put("from", from.toString());
+        node.put("to", to.toString());
         node.put("source", source);
         try {
             node.set("camera", objectMapper.readTree(camera.toJson()));
