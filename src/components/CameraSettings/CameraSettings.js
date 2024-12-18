@@ -34,6 +34,7 @@ const CameraSettings = (args) => {
                 <TextInput value={args.name} label="Имя камеры" setValue={args.visibilityFunc} placeholder={""} />
                 <ToggleList separated bottomSeparated toggles={toggleStates} label="Настройки камеры" />
                 <CapitalLabel label="Расположение" />
+                <p>{JSON.stringify(args.rooms)}</p>
                 <DropdownSelect
                     options={args.rooms}
                     selectedOption={args.room}

@@ -1,6 +1,8 @@
 import Drop from "./components/icons/Drop/Drop";
 import Fan from "./components/icons/Fan/Fan";
+import Humidifier from "./components/icons/Humidifier/Humidifier";
 import Lightbulb from "./components/icons/Lightbulb/Lightbulb";
+import Relay from "./components/icons/Relay/Relay";
 import Thermometer from "./components/icons/Thermometer/Thermometer";
 
 export function renderItemStatus(device, concise) {
@@ -24,6 +26,9 @@ export function renderItemStatus(device, concise) {
             return device.status === 'ON' ? 'Вкл.' : 'Выкл.';
 
         case 'FAN': // Вентилятор
+            return device.status === 'ON' ? 'Вкл.' : 'Выкл.';
+
+        case 'RELAY': // Реле
             return device.status === 'ON' ? 'Вкл.' : 'Выкл.';
 
         case 'LEAK': // Датчик протечки
@@ -55,8 +60,12 @@ export function renderItemStatus(device, concise) {
         case 'HUMIDIFIER': // Увлажнитель
             const currentHum = device.features.CURRENT_HUM;
             const targetHum = device.features.TARGET_HUM;
-            if (concise) return `${currentHum || 0}% влажности`;
-            return `Цель: ${targetHum || 0}%, текущая: ${currentHum || 0}%`;
+            if (currentHum !== undefined && targetHum !== undefined) {
+                if (currentHum < targetHum) return `Увлажнение до ${target}%`;
+                if (currentHum > targetHum) return `Ожидание`;
+                return concise ? "Поддержание" : 'Поддержание влажности';
+            }
+            return 'Нет данных';
 
         case 'CAMERA': // Камера
             if (device.features.RECORDING && device.status === 'ON') {
@@ -79,7 +88,7 @@ export function renderItemStatus(device, concise) {
 
 
 export function renderItemName(device) {
-    const [mainType] = device.type.split('_');
+    const [mainType] = (device.deviceType || device.type || "").split('_');
 
     switch (mainType) {
         case 'LAMP':
@@ -149,7 +158,15 @@ export function renderItemIcon(device, displayText, size, className) {
             }
 
             if (mainType === 'FAN') {
-                return <Fan size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
+                return <Fan size={(size ? size : "1.4rem")} fill="#1290ff" className={className} />
+            }
+
+            if (mainType === 'HUMIDIFIER') {
+                return <Humidifier size={(size ? size : "1.8rem")} fill="#1290ff" className={className} />
+            }
+
+            if (mainType === 'RELAY') {
+                return <Relay size={(size ? size : "1.6rem")} fill="#1290ff" className={className} />
             }
 
             return null;
@@ -157,6 +174,13 @@ export function renderItemIcon(device, displayText, size, className) {
     } else {
         return null;
     }
+}
+
+export function itemPrimaryType(device) {
+    console.log(device);
+    const [mainType, subType] = (device.deviceType).split('_');
+
+    return mainType;
 }
 
 export function isSensor(device) {
@@ -175,6 +199,8 @@ export function isVerticalControls(device) {
 
     switch (mainType) {
         case 'THERMOSTAT':
+            return true;
+        case 'TEMPERATURE':
             return true;
         default:
             return false;

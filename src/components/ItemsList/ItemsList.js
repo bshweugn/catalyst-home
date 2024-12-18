@@ -6,8 +6,9 @@ import './ItemsList.scss';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import CustomDragLayer from '../CustomDragLayer/CustomDragLayer';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { isSensor } from '../../itemInfo';
 
-const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, multipleSelection, conditionWindow, setCondition, canSave, atomicSelected, hiddenTitle=false }) => {
+const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, multipleSelection, conditionWindow, setCondition, canSave, atomicSelected, hiddenTitle = false }) => {
     const [cards, setCards] = useState(devices);
 
     const moveCard = (fromIndex, toIndex) => {
@@ -27,7 +28,7 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
 
             setter((prevSelected) => {
                 const allSelected = deviceIds.every((id) => prevSelected.includes(id));
-                
+
                 if (allSelected) {
                     return prevSelected.filter((id) => !deviceIds.includes(id));
                 } else {
@@ -42,7 +43,8 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
             <div className={`items-list ${light ? "items-list--light" : ""} ${setCondition ? "items-list--atomic-selection" : ""} ${hiddenTitle ? "items-list--separated" : ""}`}>
                 {!hiddenTitle ? <h2 className='items-list__room-name' onClick={() => touchFunc(roomID)}>{roomName}</h2> : null}
                 <div className="items-list__wrapper">
-                    {cards.map((device, index) => (
+                    {/* <p>{cards ? cards : "НЕМА"}</p> */}
+                    {devices.map((device, index) => (
                         <ItemCard
                             selectable={multipleSelection}
                             setter={setter}
@@ -55,7 +57,7 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
                             idFunc={multipleSelection ? setter : setItemID}
                             moveCard={moveCard}
                             opened={device.id === openedID}
-                            conditionWindow={device.type == "LEAK_SENSOR" || device.type == "TEMPERATURE_SENSOR" || device.type == "HUMIDITY_SENSOR" ? conditionWindow : null}
+                            conditionWindow={isSensor(device) ? conditionWindow : null}
                             setCondition={setCondition}
                             canSave={canSave}
                             atomicSelected={atomicSelected === device.id}

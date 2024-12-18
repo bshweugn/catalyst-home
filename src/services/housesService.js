@@ -2,7 +2,7 @@
 import { addFloorRequest, addHouseRequest, addRoomRequest, getHousesData } from '../api/housesAPI';
 import { setFloor, setHouse, setRoom } from '../store';
 
-// Добавление дома
+
 export const createHouse = async (dispatch, token, name, coordinates) => {
     try {
         const result = await addHouseRequest(token, name, coordinates);
@@ -14,7 +14,6 @@ export const createHouse = async (dispatch, token, name, coordinates) => {
     }
 };
 
-// Добавление этажа
 export const createFloor = async (dispatch, token, name, houseId) => {
     try {
         const result = await addFloorRequest(token, name, houseId);
@@ -26,11 +25,10 @@ export const createFloor = async (dispatch, token, name, houseId) => {
     }
 };
 
-// Добавление комнаты
 export const createRoom = async (dispatch, token, name, floorId) => {
     try {
         const result = await addRoomRequest(token, name, floorId);
-        dispatch(setRoom({ houseId: null, floorId, room: result.data })); // Добавьте корректный houseId
+        dispatch(setRoom({ houseId: null, floorId, room: result.data }));
         return result.data;
     } catch (error) {
         console.error('Ошибка при добавлении комнаты:', error);
@@ -38,22 +36,9 @@ export const createRoom = async (dispatch, token, name, floorId) => {
     }
 };
 
-export const fetchHousesData = async (dispatch, token) => {
+export const fetchHousesData = async (token) => {
     try {
         const houses = await getHousesData(token);
-
-        houses.forEach(house => {
-            dispatch(setHouse({ id: house.id, data: house }));
-
-            house.floors.forEach(floor => {
-                dispatch(setFloor({ houseId: house.id, floor }));
-
-                floor.rooms.forEach(room => {
-                    dispatch(setRoom({ houseId: house.id, floorId: floor.id, room }));
-                });
-            });
-        });
-
         return houses;
     } catch (error) {
         console.error('Ошибка при получении данных о домах:', error);
@@ -108,12 +93,11 @@ export const getRoomsAndDevicesByHouseId = (houseId, houses) => {
             const hasDevices = (room.devices && room.devices.length > 0);
             const hasCameras = (room.cameras && room.cameras.length > 0);
 
-            if (!hasDevices && !hasCameras) {
-                console.warn(`Комната "${room.name}" (ID: ${room.id}) пуста и будет исключена.`);
-                return;
-            }
+            // if (!hasDevices && !hasCameras) {
+            //     console.warn(`Комната "${room.name}" (ID: ${room.id}) пуста и будет исключена.`);
+            //     return;
+            // }
 
-            // Убираем дубликаты комнат по названию
             if (seenRoomNames.has(room.name)) {
                 console.warn(`Комната с именем "${room.name}" уже обработана, пропускаем.`);
                 return;
@@ -122,8 +106,8 @@ export const getRoomsAndDevicesByHouseId = (houseId, houses) => {
 
             console.log(`Добавляем комнату: ${room.name} (ID: ${room.id})`);
             roomsWithDevices.push({
-                roomId: room.id,
-                roomName: room.name,
+                id: room.id,
+                name: room.name,
                 devices: room.devices || [],
                 cameras: room.cameras || []
             });
@@ -198,6 +182,33 @@ export const getRoomsByHouseId = (houseId, houses) => {
 
     return allRooms;
 };
+
+
+export const ensureFloorExists = async (dispatch, token, currentHouseId, houses) => {
+    // Находим дом по ID
+    const house = houses.find(h => h.id === currentHouseId);
+
+    if (!house) {
+        console.error(`Дом с ID ${currentHouseId} не найден.`);
+        return;
+    }
+
+    // Проверяем наличие этажей в доме
+    if (!house.floors || house.floors.length === 0) {
+        console.log(`Этажи в доме с ID ${currentHouseId} отсутствуют. Создаём новый этаж...`);
+        try {
+            // Вызываем функцию создания этажа
+            await createFloor(dispatch, token, "Основной", currentHouseId);
+            console.log(`Этаж "Основной" успешно создан в доме с ID ${currentHouseId}.`);
+        } catch (error) {
+            console.error(`Ошибка при создании этажа в доме с ID ${currentHouseId}:`, error);
+        }
+    } else {
+        console.log(`В доме с ID ${currentHouseId} уже есть этажи.`);
+    }
+};
+
+
 
 
 

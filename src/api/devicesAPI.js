@@ -1,8 +1,8 @@
-const API_URL = 'http://192.168.31.47:8080/api';
+const API_URL = 'http://94.228.115.5:8080/api';
 
 export const importDeviceRequest = async (token, data) => {
     try {
-        const response = await fetch(`${API_URL}/create/importDevice`, {
+        const response = await fetch(`${API_URL}/device/importDevice`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,14 +23,20 @@ export const importDeviceRequest = async (token, data) => {
     }
 };
 
-export const deleteDeviceRequest = async (token, id) => {
+export const deleteDeviceRequest = async (token, id, houseId, isDevice) => {
     try {
-        const response = await fetch(`${API_URL}/delete/device/${id}`, {
-            method: 'DELETE',
+        const response = await fetch(`${API_URL}/device/deleteDevice`, {
+            method: 'POST',
             headers: {
                 'Accept': '*/*',
                 'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
+            body: JSON.stringify({
+                deviceId: id,
+                houseId: houseId,
+                type: isDevice ? "DEVICE" : "CAMERA"
+            })
         });
 
         if (!response.ok) {
@@ -68,7 +74,7 @@ export const syncDevicesRequest = async (token) => {
 
 export const checkDeviceRequest = async (token, serialNumber) => {
     try {
-        const response = await fetch(`${API_URL}/create/checkDevice`, {
+        const response = await fetch(`${API_URL}/device/checkDevice`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

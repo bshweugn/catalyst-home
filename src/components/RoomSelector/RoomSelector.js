@@ -11,8 +11,8 @@ const RoomSelector = ({ rooms, setRoomId, roomId, className }) => {
             </div>
             <div className='room-selector__separator' />
             {rooms.map((room, index) => (
-                <div key={index} className={`room-selector__room ${roomId === room.roomId ? "room-selector__room--selected" : ""}`} onClick={() => { setRoomId(room.roomId) }}>
-                    {room.roomName}
+                <div key={index} className={`room-selector__room ${roomId === room.id ? "room-selector__room--selected" : ""}`} onClick={() => { setRoomId(room.id) }}>
+                    {room.name}
                 </div>
             ))}
         </div>

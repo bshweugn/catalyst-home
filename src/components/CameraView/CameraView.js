@@ -14,7 +14,7 @@ const CameraView = ({ camera, room, className, idFunc, id, opened }) => {
                 <p className='camera-view__camera-name'>{camera.name}</p>
                 <div className='camera-view__camera-status'>
                     <p className='camera-view__rec-status'>
-                        {room.roomName} · {camera.isRecording ? 'Запись' : 'Запись приостановлена'}
+                        {room.name} · {camera.isRecording ? 'Запись' : 'Запись приостановлена'}
                     </p>
                 </div>
             </div>

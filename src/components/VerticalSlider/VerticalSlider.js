@@ -2,8 +2,7 @@ import React, { useState, useRef } from 'react';
 import './VerticalSlider.scss';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
-const VerticalSlider = ({ sliderIcon: SliderIconComponent, color = "gray" }) => {
-    const [value, setValue] = useState(50);
+const VerticalSlider = ({ sliderIcon: SliderIconComponent, setValue, value }) => {
     const containerRef = useRef(null);
     const touchStartY = useRef(0);
 

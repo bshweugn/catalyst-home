@@ -21,17 +21,11 @@ const TabBar = (args) => {
                 </div>
                 <div className={`tab-bar__pair ${args.activeTab === 1 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(1)}>
                     <div className='tab-bar__icon'>
-                        <Room size='1.5rem' color="white" />
-                    </div>
-                    <p className='tab-bar__label'>Аксессуары</p>
-                </div>
-                <div className={`tab-bar__pair ${args.activeTab === 2 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(2)}>
-                    <div className='tab-bar__icon'>
                         <VideoIcon size='1.5rem' color="white" />
                     </div>
                     <p className='tab-bar__label'>Камеры</p>
                 </div>
-                <div className={`tab-bar__pair ${args.activeTab === 3 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(3)}>
+                <div className={`tab-bar__pair ${args.activeTab === 2 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(2)}>
                     <div className='tab-bar__icon'>
                         <Play size='1.5rem' color="white" />
                     </div>

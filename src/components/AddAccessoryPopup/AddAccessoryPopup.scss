@@ -36,13 +36,13 @@
         flex-direction: row;
         gap: 0.75rem;
 
-        &--wide{
+        &--wide {
             width: 100%;
             margin-top: 0.75rem
         }
     }
 
-    &__avatar{
+    &__avatar {
         height: 2rem;
         width: 2rem;
         border-radius: 50%;
@@ -58,7 +58,7 @@
         margin: 0;
         text-align: left;
 
-        &--centered{
+        &--centered {
             text-align: center;
         }
     }
@@ -79,42 +79,56 @@
 
     &__buttons-group {
         position: relative;
-        
-        &--bottom{
+
+        &--bottom {
             position: absolute;
-            bottom: 1rem;
-            left: 1.5rem;
+            bottom: 0;
+            left: 0;
+            padding: 1rem 1.5rem;
             width: calc(100% - 3rem);
         }
     }
 
-    &__item-name{
+    &__buttons-group-tint {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+        z-index: -1;
+    }
+
+    &__item-name {
         font-size: 1.25rem;
         font-weight: 500;
         margin-bottom: 0.25rem;
     }
 
-    &__item-manufacturer{
+    &__item-manufacturer {
         margin: 0;
         margin-bottom: 2rem;
     }
 
-    &__main-icon{
+    &__main-icon {
         margin-top: -0.5rem;
         margin-bottom: 0.5rem;
     }
 
-    &__title{
+    &__title {
         font-size: 1.25rem;
         font-weight: 500;
         margin-bottom: 0.5rem;
         margin-top: 0;
     }
 
-    &__text{
+    &__text {
         margin: 0;
 
-        &--bottom-separated{
+        &--bottom-separated {
             padding-bottom: 2rem;
         }
     }

@@ -6,12 +6,16 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, lig
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOptionSelect = (option) => {
-        setSelectedOption(option.id); // Передаём id вместо name
-        setIsOpen(false);
+        if (option?.id) {
+            setSelectedOption(option?.id);
+            setIsOpen(false);
+        }
     };
+
 
     return (
         <div className={`dropdown-select ${light ? "dropdown-select--light" : ""}`}>
+            {/* <p>{JSON.stringify(options)}</p> */}
             <div
                 className={`dropdown-select__field ${isOpen ? 'dropdown-select__field--open' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
@@ -19,9 +23,10 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, lig
                 <p className="dropdown-select__label">{label}</p>
                 <p className="dropdown-select__selected-option">
                     {selectedOption
-                        ? options.find(option => option.id === selectedOption)?.name || "Не выбрано"
+                        ? options.find(option => option?.id === selectedOption)?.name || "Не выбрано"
                         : "Не выбрано"}
                 </p>
+
             </div>
 
             <div
@@ -30,24 +35,22 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, lig
                 }
                 style={{ maxHeight: isOpen ? `${48 * (options.length + 1)}px` : "46px" }}
             >
-                {options.map((option) => (
+                {(Array.isArray(options) ? options : []).map((option) => (
                     <div
-                        key={option.id}
-                        className={`dropdown-select__option ${selectedOption === option.id ? 'dropdown-select__option--selected' : ''
+                        key={option?.id}
+                        className={`dropdown-select__option ${selectedOption === option?.id ? 'dropdown-select__option--selected' : ''
                             }`}
                         onClick={() => handleOptionSelect(option)}
                     >
-                        {option.name}
-                        {selectedOption === option.id && (
+                        {option?.name}
+                        {selectedOption === option?.id && (
                             <div className="dropdown-select__checkmark">
                                 <Checkmark size="0.875rem" fill="white" />
                             </div>
                         )}
                     </div>
+                    // <p>{JSON.stringify(option)}</p>
                 ))}
-                <div className="dropdown-select__option dropdown-select__option--add">
-                    <button onClick={() => alert('Добавить')}>Добавить</button>
-                </div>
             </div>
         </div>
     );

@@ -1,4 +1,6 @@
+import { useDispatch } from "react-redux";
 import { loginAPI, registerUserAPI } from "../api/oauth";
+import { createFloor } from "../services/housesService";
 
 export const registerUser = async (username, email, password) => {
 
@@ -12,7 +14,7 @@ export const registerUser = async (username, email, password) => {
       return (result.response?.message || 'Register error.');
     }
   } catch (error) {
-    return ('Register error.');
+    return ('Register error: ' + error);
   }
 };
 

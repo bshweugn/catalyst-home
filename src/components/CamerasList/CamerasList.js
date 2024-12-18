@@ -4,18 +4,18 @@ import CameraView from '../CameraView/CameraView';
 import CamerasRow from '../CamerasRow/CamerasRow';
 
 const CamerasList = ({ rooms, editMode, setItemID, openedID, roomId }) => {
-    console.log('Rooms:', rooms);
-    console.log('Selected Room ID:', roomId);
+    // console.log('Rooms:', rooms);
+    // console.log('Selected Room ID:', roomId);
 
     const camerasArray = rooms.flatMap(room => {
-        console.log('Processing Room:', room);
+        // console.log('Processing Room:', room);
         if (roomId === 0 || room.roomId === roomId) {
             return (room.cameras || []).map(camera => ({ ...camera, room }));
         }
         return [];
     });
 
-    console.log('Filtered Cameras Array:', camerasArray);
+    // console.log('Filtered Cameras Array:', camerasArray);
 
     return (
         <CamerasRow>

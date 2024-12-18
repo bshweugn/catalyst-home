@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = 'http://94.228.115.5:8080';
 
 export const registerUserAPI = async (userData) => {
   try {
@@ -46,6 +46,29 @@ export const loginAPI = async (userData) => {
 export const getUserInfoAPI = async (token) => {
   try {
     const response = await fetch(`${API_URL}/api/data/user`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка при получении данных пользователя: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Ошибка API:', error);
+    throw error;
+  }
+};
+
+
+export const getMyInfoAPI = async (token) => {
+  try {
+    const response = await fetch(`${API_URL}/api/local/getUserData`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

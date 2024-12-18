@@ -139,11 +139,9 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
     return (
         <>
             {conditionWindow ?
-                <>
-                    <ConditionWindow func={() => idFunc(-1)} visible={opened && conditionWindow} icon={renderItemIcon(device, true)} name={device.name} canSave={canSave}>
-                        {conditionWindow(device, setCondition)}
-                    </ConditionWindow>
-                </>
+                <ConditionWindow func={() => idFunc(0)} visible={opened && conditionWindow} icon={renderItemIcon(device, true)} name={device.name} canSave={canSave}>
+                    {conditionWindow(device, setCondition)}
+                </ConditionWindow>
                 :
                 <></>}
             <div

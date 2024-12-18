@@ -6,9 +6,22 @@ import IconSelector from '../IconSelector/IconSelector';
 import DropdownSelect from '../DropdownSelect/DropdownSelect';
 import CapitalLabel from '../CapitalLabel/CapitalLabel';
 import WideButton from '../WideButton/WideButton';
+import { deleteDevice } from '../../services/devicesService';
 
 const ItemSettings = (args) => {
     const finalClassName = 'item-settings ' + (args.visible ? 'item-settings--visible ' : '') + (args.className || '')
+
+
+    const handleDeviceDelete = async () => {
+        try {
+            const result = await deleteDevice(args.token, args.itemId, args.houseId, true);
+            return result;
+        } catch{
+            console.log("Ошиюка удаления устройтва.");
+        }
+    }
+
+
     return (
         <div className={finalClassName}>
             <div className="item-settings__header">
@@ -32,7 +45,7 @@ const ItemSettings = (args) => {
                     setSelectedOption={args.setRoom}
                     label="Комната"
                 />
-                <WideButton red separated label={"Удалить устройство"}/>
+                <WideButton red separated label={"Удалить устройство"} onClick={ () => handleDeviceDelete() ? args.visibilityFunc(false) : () => {} }/>
             </div>
         </div>
     );

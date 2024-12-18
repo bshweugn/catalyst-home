@@ -1,6 +1,4 @@
-// housesAPI.js
-
-const API_URL = 'http://192.168.31.47:8080'; // Укажите ваш базовый URL
+const API_URL = 'http://94.228.115.5:8080';
 
 // Запрос на добавление дома
 export const addHouseRequest = async (token, name, coordinates) => {

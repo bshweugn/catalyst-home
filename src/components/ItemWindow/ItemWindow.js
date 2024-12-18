@@ -8,7 +8,7 @@ import Sun from '../icons/Sun/Sun';
 import Power from '../icons/Power/Power';
 import { useDispatch } from 'react-redux';
 import { setFav, setThermostatTemp, toggleDeviceStatus } from '../../store';
-import { isSensor, isVerticalControls, renderItemIcon, renderItemStatus } from '../../itemInfo';
+import { isSensor, isVerticalControls, itemPrimaryType, renderItemIcon, renderItemStatus } from '../../itemInfo';
 import TextInput from '../TextInput/TextInput';
 import StarOutline from '../icons/StarOutline/StarOutline';
 import Star from '../icons/Star/Star';
@@ -19,6 +19,10 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Lightbulb from '../icons/Lightbulb/Lightbulb';
 import DeskLamp from '../icons/DeskLamp/DeskLamp';
 import CeilingLamp from '../icons/CeilingLamp/CeilingLamp';
+import SimpleLabel from '../SimpleLabel/SimpleLabel';
+import IconSelect from '../IconSelect/IconSelect';
+import DialLow from '../icons/DialLow/DialLow';
+import Curtains from '../icons/Curtains/Curtains';
 
 
 
@@ -26,6 +30,167 @@ const ItemWindow = (args) => {
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [icons, setIcons] = useState([]);
     const [selectedIcon, setSelectedIcon] = useState(<Lightbulb />);
+
+    const thermostatPowerOptions = [
+        {
+            label: "Выкл.",
+            icon: Power,
+            value: "OFF",
+        },
+        {
+            label: "Мин.",
+            icon: DialLow,
+            value: "SOFT",
+        },
+        {
+            label: "Норм.",
+            icon: DialLow,
+            value: "MORMAL",
+        },
+        {
+            label: "Макс.",
+            icon: DialLow,
+            value: "MAX",
+        },
+    ];
+
+    const ACPowerOptions = [
+        {
+            label: "Выкл.",
+            icon: Power,
+            value: "OFF",
+        },
+        {
+            label: "Мин.",
+            icon: DialLow,
+            value: "SUN",
+        },
+        {
+            label: "Норм.",
+            icon: Lightbulb,
+            value: "MOON",
+        },
+        {
+            label: "Макс.",
+            icon: Lightbulb,
+            value: "CLOUD",
+        },
+    ];
+
+    const ACWindOptions = [
+        {
+            label: "Авто",
+            icon: Power,
+            value: "OFF",
+        },
+        {
+            label: "Низ",
+            icon: DialLow,
+            value: "SUN",
+        },
+        {
+            label: "Середина",
+            icon: Lightbulb,
+            value: "MOON",
+        },
+        {
+            label: "Верх",
+            icon: Lightbulb,
+            value: "CLOUD",
+        },
+    ];
+
+
+    /* ----- БЛОК ПЕРЕМЕННЫХ ------*/
+
+    const [state, setState] = useState("OFF");
+
+    const [mode, setMode] = useState("");
+
+    const [windMode, setWindMode] = useState("");
+
+    const [brightness, setBrightness] = useState(0);
+    const [colorTemp, setColorTemp] = useState(0);
+
+    const [targetTemp, setTargetTemp] = useState(0);
+    const [currentTemp, setCurrentTemp] = useState(0);
+
+    /* -----------*/
+
+
+
+    const fetchDeviceData = () => {
+        if (args.device.status !== undefined) {
+            setState(args.device.status);
+        }
+        switch (itemPrimaryType(args.device)) {
+            case "LAMP":
+                if (args.device.features.COLOR_TEMP !== undefined) {
+                    setColorTemp(args.device.features.COLOR_TEMP);
+                }
+                if (args.device.features.BRIGHTNESS !== undefined) {
+                    setBrightness(args.device.features.BRIGHTNESS);
+                }
+            case "THERMOSTAT":
+                if (args.device.features.TARGET_TEMP !== undefined) {
+                    setTargetTemp(args.device.features.TARGET_TEMP);
+                }
+                if (args.device.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(args.device.features.CURRENT_TEMP);
+                }
+                if (args.device.features.MODE !== undefined) {
+                    setMode(args.device.features.MODE);
+                }
+            case "AC":
+                if (args.device.features.TARGET_TEMP !== undefined) {
+                    setTargetTemp(args.device.features.TARGET_TEMP);
+                }
+                if (args.device.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(args.device.features.CURRENT_TEMP);
+                }
+                if (args.device.features.MODE !== undefined) {
+                    setMode(args.device.features.MODE);
+                }
+                if (args.device.features.WIND_MODE !== undefined) {
+                    setWindMode(args.device.features.WIND_MODE);
+                }
+            case "TEMPERATURE":
+                if (args.device.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(args.device.features.CURRENT_TEMP);
+                }
+        }
+    }
+
+
+
+    /* ----- РЕЖИМЫ ТЕРМОСТАТА И КОНДИЦИОНЕРА -----*/
+    
+    const getThermoMode = () => {
+        if(state === "OFF"){
+            return state;
+        } else {
+            return mode;
+        }
+    }
+
+    const setThermoMode = (mode) => {
+        if(mode === "OFF"){
+            setState("OFF")
+        } else {
+            setState("ON");
+            setMode(mode)
+        }
+    }
+
+    /* ----------*/
+
+
+
+    useEffect(() => {
+        fetchDeviceData();
+    }, [args.device, args.visible]);
+
+
 
     const dispatch = useDispatch();
 
@@ -48,14 +213,30 @@ const ItemWindow = (args) => {
             if (args.device.features.COLOR_TEMP !== undefined) {
                 return (
                     <>
-                        <VerticalSlider sliderIcon={Sun} color={args.device.color} />
-                        <HueSelector setColorFunc={args.setColor} colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} color={"#74B9FF"} setColor={() => { }} />
+                        <VerticalSlider sliderIcon={Sun} setValue={setBrightness} value={brightness} />
+                        <HueSelector colors={["#74B9FF", "#B4D9FF", "#DEEEFF", "#FFFFFF", "#FFE8D6", "#FFD8B9", "#FFB073"]} color={colorTemp} setColor={setColorTemp} />
                     </>
                 );
             } else {
                 return (
                     <>
-                        <VerticalSlider sliderIcon={Sun} color={args.device.color} />
+                        <VerticalSlider sliderIcon={Sun} />
+                    </>
+                );
+            }
+        }
+
+        if (mainType === 'CURTAIN') {
+            if (args.device.features.PERCENTAGE !== undefined) {
+                return (
+                    <>
+                        <VerticalSlider sliderIcon={Curtains} color={args.device.color} />
+                    </>
+                );
+            } else {
+                return (
+                    <>
+                        {/* <VerticalSlider sliderIcon={Sun} color={args.device.color} /> */}
                     </>
                 );
             }
@@ -64,9 +245,23 @@ const ItemWindow = (args) => {
         if (mainType === 'THERMOSTAT') {
             return (
                 <>
-                    <TempIndicator temp={args.device.features.CURRENT_TEMP} />
-                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={20} setValue={() => { }} id={0} />
-                    <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} />
+                    <TempIndicator temp={currentTemp} />
+                    <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={targetTemp} setValue={setTargetTemp} id={0} />
+                    <IconSelect
+                        options={thermostatPowerOptions}
+                        selectedOption={getThermoMode()}
+                        setSelectedOption={setThermoMode}
+                    />
+                    {/* <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} /> */}
+                </>
+            );
+        }
+
+        if (mainType === 'TEMPERATURE') {
+            return (
+                <>
+                    <TempIndicator temp={currentTemp} />
+                    <SimpleLabel>Текущая температура</SimpleLabel>
                 </>
             );
         }
@@ -135,8 +330,11 @@ const ItemWindow = (args) => {
         >
             <ItemSettings
                 rooms={Object.values(args.rooms).map(room => room.roomName)}
-                room={args.room.roomName || "Неизвестная комната"}
+                room={args.room.name || "Неизвестная комната"}
                 name={args.device.name}
+                token={args.token}
+                itemId={args.device.id}
+                houseId={args.houseId}
                 visible={settingsVisible}
                 visibilityFunc={setSettingsVisible}
                 icons={icons}
@@ -156,11 +354,15 @@ const ItemWindow = (args) => {
                 <div className="item-window__item-info" onClick={handleContentClick}>
                     <p className="item-window__item-name">{args.device.name}</p>
                     <p className="item-window__room-name">
-                        {args.room.roomName || "Неизвестная комната"}
+                        {args.room.name || "Неизвестная комната"}
                     </p>
-                    <div className="item-window__item-status" style={{ width: statusWidth }}>
-                        <p ref={statusRef} className={isFading ? "fading" : ""}>{deviceStatus}</p>
-                    </div>
+                    {deviceStatus ?
+                        <div className="item-window__item-status" style={{ width: statusWidth }}>
+                            <p ref={statusRef} className={isFading ? "fading" : ""}>{deviceStatus}</p>
+                        </div>
+                        :
+                        null
+                    }
                 </div>
                 <div className="item-window__content-wrapper" onClick={handleContentClick}>
                     {renderDeviceControls()}

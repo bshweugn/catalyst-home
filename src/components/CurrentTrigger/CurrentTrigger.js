@@ -7,17 +7,19 @@ const CurrentTrigger = (args) => {
     const finalClassName = 'current-trigger ' + (args.className || '')
 
     const renderLabel = (type, action, parameter) => {
-        switch (type) {
+        const [mainType, subType] = type.split('_');
+
+        switch (mainType) {
             case "LEAK_SENSOR":
                 if (action === "LEAK_DETECTED") {
                     return "Обнаружена протечка";
                 }
-            case "TEMPERATURE_SENSOR":
-                if (action === "TEMPERATURE_EQUALS") {
+            case "TEMPERATURE":
+                if (action === "TEMP_EQUALS") {
                     return `Температура равна ${parameter}°C`;
-                } else if (action === "TEMPERATURE_HIGHER_THAN") {
+                } else if (action === "TEMP_HIGHER_THAN") {
                     return `Температура выше ${parameter}°C`;
-                } else if (action === "TEMPERATURE_LOWER_THAN") {
+                } else if (action === "TEMP_LOWER_THAN") {
                     return `Температура ниже ${parameter}°C`;
                 }
             case "HUMIDITY_SENSOR":
@@ -48,7 +50,7 @@ const CurrentTrigger = (args) => {
                         </div>
                         <div className='current-trigger__info' onClick={args.addFunc}>
                             <p className='current-trigger__name'>{args.trigger.device.name}</p>
-                            <p className='current-trigger__state'>{renderLabel(args.trigger.device.type, args.trigger.condition, args.trigger.parameter)}</p>
+                            <p className='current-trigger__state'>{renderLabel(args.trigger.device.deviceType, args.trigger.condition, args.trigger.parameter)}</p>
                         </div>
                     </>
                 )

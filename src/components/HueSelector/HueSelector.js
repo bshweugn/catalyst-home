@@ -37,7 +37,7 @@ function HueSelector({ colors, color, setColor }) {
         if (sliderRef.current) {
             const initialSlideIndex = color;
             if (initialSlideIndex !== -1) {
-                setIsProgrammaticChange(true); // Устанавливаем флаг перед программным изменением
+                setIsProgrammaticChange(true);
                 sliderRef.current.slickGoTo(initialSlideIndex);
             }
         }

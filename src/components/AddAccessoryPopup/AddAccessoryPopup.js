@@ -30,7 +30,7 @@ import ItemsList from '../ItemsList/ItemsList';
 import { useDispatch, useSelector } from 'react-redux';
 import ItemsShortPreview from '../ItemsShortPreview/ItemsShortPreview';
 import VisibilityWrapper from '../VisiilityWrapper/VisiilityWrapper';
-import { renderItemIcon, renderItemName } from '../../itemInfo';
+import { isSensor, renderItemIcon, renderItemName } from '../../itemInfo';
 import DropdownSelect from '../DropdownSelect/DropdownSelect';
 import EnvelopePerson from '../icons/EnvelopePerson/EnvelopePerson';
 
@@ -44,6 +44,8 @@ import { addDevice, checkDevice, getDevicesByIdsInRooms } from '../../services/d
 import { createFloor, createRoom, fetchHousesData, getRoomsAndDevicesByHouseId, getRoomsByHouseId } from '../../services/housesService';
 import Warn from '../icons/Warn/Warn';
 import { error } from '@splidejs/splide/src/js/utils';
+import ScriptDevicesList from '../ScriptDevicesList/ScriptDevicesList';
+import ScriptActionsList from '../ScriptActionsList/ScriptActionsList';
 
 const AddAccessoryPopup = (args) => {
     const dispatch = useDispatch();
@@ -62,6 +64,8 @@ const AddAccessoryPopup = (args) => {
     const [roomId, setRoomId] = useState(-1);
     const [device, setDevice] = useState(null);
 
+    const [conditionValue, setConditionValue] = useState('');
+
     const [inputValue, setInputValue] = useState("");
     const [pageBackground, setPageBackground] = useState(background);
 
@@ -78,7 +82,7 @@ const AddAccessoryPopup = (args) => {
 
 
     useEffect(() => {
-        setSelectedDevices(getDevicesByIdsInRooms(selectedDevicesIds, rooms));
+        setSelectedDevices(getDevicesByIdsInRooms(selectedDevicesIds, args.rooms));
     }, [selectedDevicesIds]);
 
     const handleToggleChange = (index, value) => {
@@ -114,9 +118,6 @@ const AddAccessoryPopup = (args) => {
 
     const [code, setCode] = useState("");
 
-    const [rooms, setRooms] = useState([]);
-    const [houses, setHouses] = useState([]);
-
     const [newRoomName, setNewRoomName] = useState("");
     const [newFloorName, setNewFloorName] = useState("");
     const [newDeviceName, setNewDeviceName] = useState("");
@@ -124,12 +125,15 @@ const AddAccessoryPopup = (args) => {
 
 
     const fetchData = async () => {
+        console.log("TTTTT " + args.token);
         try {
-            const data = await fetchHousesData(dispatch, args.token);
+            const data = await fetchHousesData(args.token);
             if (data) {
-                setHouses(data);
+                args.setHouses(data);
+
                 const roomsData = getRoomsByHouseId(args.currentHouseID, data);
-                setRooms(roomsData);
+                args.setRooms(roomsData);
+                console.log(roomsData);
             } else {
                 console.warn("Данные не были получены");
             }
@@ -138,17 +142,13 @@ const AddAccessoryPopup = (args) => {
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, [dispatch, args.token, args.currentHouseID]);
-
     const getDevice = async () => {
         try {
             const device = await checkDevice(dispatch, args.token, code);
-    
+
             if (device !== null) {
-                setDevice(device); // Устанавливаем весь объект device
-                console.log(device); // Логируем объект device
+                setDevice(device);
+                console.log(device);
                 setView('device');
             } else {
                 console.warn('Устройство не найдено или структура ответа некорректна:', device);
@@ -166,8 +166,10 @@ const AddAccessoryPopup = (args) => {
         try {
             const result = await addDevice(dispatch, args.token, { serialNumber: code, name: newDeviceName, roomId: currentRoom.id });
             console.log(result);
-            fetchData();
-            handleClose();
+            if (result) {
+                fetchData(args.token);
+                handleClose();
+            }
         } catch (error) {
             console.error('Ошибка при получении устройства:', error);
         }
@@ -177,7 +179,7 @@ const AddAccessoryPopup = (args) => {
         try {
             const room = await createRoom(dispatch, args.token, newRoomName, 1);
             console.log(room);
-            const house = await fetchHousesData(dispatch, args.token);
+            const house = await fetchHousesData(args.token);
             console.log(house);
             handleClose();
         } catch (error) {
@@ -191,7 +193,7 @@ const AddAccessoryPopup = (args) => {
         try {
             const room = await createFloor(dispatch, args.token, newFloorName, args.currentHouseID);
             console.log(room);
-            const house = await fetchHousesData(dispatch, args.token);
+            const house = await fetchHousesData(args.token);
             console.log(house);
             handleClose();
         } catch (error) {
@@ -235,20 +237,43 @@ const AddAccessoryPopup = (args) => {
 
     const handleConditionChange = (id, device, condition, parameter) => {
         setCondition(condition);
-        createTrigger(selectedDevice, devices["id" + selectedDevice], condition, parameter);
+        createTrigger(selectedDevice, devices[selectedDevice], condition, parameter);
+    }
+
+    const handleSetConditionValue = (value) => {
+        setConditionValue(value);
+        createTrigger(selectedDevice, devices[selectedDevice], condition, value);
     }
 
 
     const renderConditionContent = (device) => {
-        if (device.type == "LEAK_SENSOR") {
+        const [mainType, subType] = device.deviceType.split('_');
+
+
+        if (mainType == "LEAK") {
             return (
                 <>
                     <Select light options={["Обнаружение протечки"]} actualOptions={["LEAK_DETECTED"]} setSelectedOption={handleConditionChange} selectedOption={condition} />
                 </>
             )
         }
+
+        if (mainType == "TEMPERATURE") {
+            return (
+                <>
+                    <Select light options={["Температура равна", "Температура ниже", "Температура выше"]} actualOptions={["TEMP_EQUALS", "TEMP_LOWER_THAN", "TEMP_HIGHER_THAN"]} setSelectedOption={handleConditionChange} selectedOption={condition} inputValue={conditionValue} setInputValue={handleSetConditionValue} placeholder=" " append={"°C"} />
+                </>
+            )
+        }
     }
 
+    useEffect(() => {
+        console.log(selectedDevice);
+        // console.log(trigger.id, trigger.id != -1, trigger.action, trigger.action !== "", devices["id" + selectedDevice], devices["id" + selectedDevice].isSensor)
+        // if(trigger.id && trigger.id != -1 && trigger.action !== "" && devices["id" + selectedDevice]){
+        //     if()
+        // }
+    }, [selectedDevice]);
 
     useEffect(() => {
         console.log(trigger);
@@ -258,6 +283,12 @@ const AddAccessoryPopup = (args) => {
         //     if()
         // }
     }, [trigger]);
+
+    const actions = [{
+        device: args.devices[1],
+        deviceAction: "BRIGHTNESS",
+        parameter: "50"
+    }]
 
     const renderAccessoryContent = () => {
         return manualInput ? (
@@ -385,13 +416,14 @@ const AddAccessoryPopup = (args) => {
                         <p className='add-accessory-popup__item-manufacturer'>{device.manufacturer}</p>
                         <TextInput light value={newDeviceName} setValue={setNewDeviceName} placeholder={' '} label={"Имя аксессуара"} />
                         <Description bottomSeparated text="Вы сможете изменить имя и расположение позднее в параметрах аксессуара." />
+                        {/* <p>{JSON.stringify(args.rooms)}</p> */}
                         <DropdownSelect
                             light
-                            options={rooms.map(room => ({ id: room.id, name: room.name }))} // Передаём объекты с id и name
-                            selectedOption={currentRoom?.id || null} // Используем id для выбранной комнаты
+                            options={args.rooms.map(room => ({ id: room.id, name: room.name }))}
+                            selectedOption={currentRoom?.id || null}
                             setSelectedOption={(roomId) => {
-                                const selectedRoom = rooms.find(room => room.id === roomId); // Находим комнату по id
-                                setCurrentRoom(selectedRoom); // Устанавливаем выбранную комнату
+                                const selectedRoom = args.rooms.find(room => room.id === roomId);
+                                setCurrentRoom(selectedRoom);
                             }}
                             label="Комната"
                         />
@@ -406,7 +438,7 @@ const AddAccessoryPopup = (args) => {
             case "invite-sent":
                 return (
                     <>
-                        <EnvelopePerson fill="rgb(2, 123, 255)" size="4rem" className='add-accessory-popup__main-icon' />
+                        <EnvelopePerson fill="rgb(2, 123, 255)" size="4.2rem" className='add-accessory-popup__main-icon' />
                         <p className='add-accessory-popup__title'>Приглашение отправлено</p>
                         <p className='add-accessory-popup__text add-accessory-popup__text--bottom-separated'>Если пользователь примет приглашение, то сможет управлять и просматривать информацию о Доме и устройствах в нём.</p>
                         {/* <Description text="Вы сможете переместить аксессуар в другую комнату позднее в его параметрах." /> */}
@@ -451,6 +483,8 @@ const AddAccessoryPopup = (args) => {
                                 <Button primary label="Поделиться" onClick={() => { handleInviteSent(); animate() }} />
                                 {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                                 <Button label="" />
+                                <div className='add-accessory-popup__buttons-group-tint' />
+
                             </div>
                         </>
                     );
@@ -458,7 +492,7 @@ const AddAccessoryPopup = (args) => {
                     return (
                         <>
                             {
-                                Object.values(rooms).map((room) => (
+                                Object.values(args.rooms).map((room) => (
                                     <ItemsList
                                         light
                                         preview
@@ -477,6 +511,7 @@ const AddAccessoryPopup = (args) => {
                                 <Button primary label="Сохранить" onClick={() => { setDeviceSelectMode(false); animate() }} />
                                 {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                                 <Button label="" />
+                                <div className='add-accessory-popup__buttons-group-tint' />
                             </div>
                         </>
                     );
@@ -487,7 +522,8 @@ const AddAccessoryPopup = (args) => {
                     return (
                         <>
                             <CurrentTrigger trigger={trigger} addFunc={() => { setDeviceSelectMode(true); animate() }} />
-                            <Description text="Сценарий будет запущени при соблюдении выбранного условия активации." />
+                            <Description text="Сценарий будет запущен при соблюдении выбранного условия активации." />
+                            <ScriptActionsList actions={actions} />
                             {/* <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
                             <VisibilityWrapper defaultState={true} visible={!toggleStates[0].value}>
                                 <ItemsShortPreview label={"Выбор аксессуаров"} devices={devices} action={() => { setDeviceSelectMode(true); animate() }} />
@@ -496,46 +532,51 @@ const AddAccessoryPopup = (args) => {
                                 <Button primary label="Поделиться" onClick={() => { setView('invite-sent'); animate() }} />
                                 {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                                 <Button label="" />
+                                <div className='add-accessory-popup__buttons-group-tint' />
                             </div>
                         </>
                     );
                 } else {
                     return (
                         <>
-                            {Object.keys(rooms)
-                                .sort((a, b) => rooms[a].order - rooms[b].order)
-                                .map(roomId => {
-                                    const roomDevices = Object.keys(devices)
-                                        .filter(deviceId =>
-                                            devices[deviceId].roomID === rooms[roomId].id &&
-                                            devices[deviceId].isSensor === true
-                                        )
-                                        .map(deviceId => devices[deviceId]);
+                            {Object.values(args.rooms).map((room) => {
+                                // Фильтруем устройства, исключая сенсоры
+                                const filteredDevices = room.devices.filter(
+                                    (device) => isSensor(device)
+                                );
 
-                                    if (roomDevices.length === 0) return null;
+                                // Если после фильтрации устройств не осталось — не рендерим комнату
+                                if (filteredDevices.length === 0) return null;
 
-                                    return (
-                                        <ItemsList
-                                            light
-                                            preview
-                                            openedID={selectedDevice}
-                                            key={roomId}
-                                            setItemID={setSelectedDevice}
-                                            roomName={rooms[roomId].name}
-                                            roomID={rooms[roomId].id}
-                                            devices={roomDevices}
-                                            conditionWindow={renderConditionContent}
-                                            setCondition={setCondition}
-                                            atomicSelected={trigger.id}
-                                            canSave={trigger.id && trigger.id != -1 && trigger.action !== "" && devices["id" + selectedDevice]}
-                                        />
-                                    );
-                                })}
+                                return (
+                                    <ItemsList
+                                        light
+                                        preview
+                                        openedID={selectedDevice}
+                                        setItemID={setSelectedDevice}
+                                        key={room.id}
+                                        roomName={room.name}
+                                        roomID={room.id}
+                                        devices={filteredDevices} // Передаем отфильтрованные устройства
+                                        conditionWindow={renderConditionContent}
+                                        setCondition={setCondition}
+                                        atomicSelected={trigger.id}
+                                        canSave={
+                                            trigger.id &&
+                                            trigger.id !== -1 &&
+                                            trigger.action !== "" &&
+                                            devices[selectedDevice]
+                                        }
+                                    />
+                                );
+                            })}
+
 
                             <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
                                 <Button primary label="Готово" onClick={() => { setDeviceSelectMode(false); animate() }} />
                                 {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                                 <Button label="" />
+                                <div className='add-accessory-popup__buttons-group-tint' />
                             </div>
                         </>
                     );

@@ -11,10 +11,12 @@ export const addDevice = async (dispatch, token, deviceData) => {
     }
 };
 
-export const deleteDevice = async (dispatch, token, id) => {
+export const deleteDevice = async (token, id, houseId, isDevice) => {
     try {
-        await deleteDeviceRequest(token, id);
-        dispatch(removeDevice({ id }));
+        console.log( token, id, houseId, isDevice);
+        const result = await deleteDeviceRequest(token, id, houseId, isDevice);
+        // dispatch(removeDevice({ id }));
+        return result;
     } catch (error) {
         console.error('Ошибка при удалении устройства:', error);
     }

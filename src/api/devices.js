@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api';
+const API_URL = 'http:/94.228.115.5:8080/api';
 
 export const checkDeviceAPI = async (token, serialNumber) => {
     try {

@@ -1,0 +1,50 @@
+.icon-select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.3rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3rem;
+    margin-top: 1rem;
+
+    &__option {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 3.2rem;
+        height: 3.2rem;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        position: relative;
+
+        &--selected {
+            background-color: #000000;
+            color: rgb(0, 0, 0);
+            filter: invert(1);
+        }
+
+    }
+
+    &__icon{
+        margin-top: 0.25rem;
+    }
+
+    &__label {
+        position: absolute;
+        font-size: 0.75rem;
+        text-align: center;
+        color: rgb(255, 255, 255);
+        bottom: -1.75rem;
+        transition: all 0.1s ease-in-out;
+        opacity: 0.3;
+
+        &--selected {
+            color: rgb(0, 0, 0);
+            opacity: 1;
+        }
+    }
+}
