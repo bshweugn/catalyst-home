@@ -3,7 +3,7 @@
             "type" : "ENUM",
             "values" : ["ON", "OFF"]
         },
-        "CLOSABLE_STATE" : {
+        "CLOSEABLE_STATE" : {
             "type" : "ENUM",
             "values" : ["OPENED", "CLOSED"]
         },
