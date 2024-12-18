@@ -12,6 +12,7 @@ import itmo.localpiper.backend.dto.request.homeutils.AddHouseRequest;
 import itmo.localpiper.backend.dto.request.homeutils.AddLocationRequest;
 import itmo.localpiper.backend.dto.request.homeutils.AddRoomRequest;
 import itmo.localpiper.backend.dto.response.HoldableResultResponse;
+import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.model.Floor;
 import itmo.localpiper.backend.model.House;
 import itmo.localpiper.backend.model.Location;
@@ -20,6 +21,9 @@ import itmo.localpiper.backend.service.entity.LocationService;
 import itmo.localpiper.backend.service.processing.AddFloorProcessorService;
 import itmo.localpiper.backend.service.processing.AddHouseProcessorService;
 import itmo.localpiper.backend.service.processing.AddRoomProcessorService;
+import itmo.localpiper.backend.service.processing.DeleteFloorProcessorService;
+import itmo.localpiper.backend.service.processing.DeleteHouseProcessorService;
+import itmo.localpiper.backend.service.processing.DeleteRoomProcessorService;
 import itmo.localpiper.backend.util.RequestTransformer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -37,6 +41,15 @@ public class HomeUtilsController {
 
     @Autowired
     private AddRoomProcessorService addRoomProcessorService;
+
+    @Autowired
+    private DeleteHouseProcessorService deleteHouseProcessorService;
+
+    @Autowired
+    private DeleteFloorProcessorService deleteFloorProcessorService;
+
+    @Autowired
+    private DeleteRoomProcessorService deleteRoomProcessorService;
 
     @Autowired
     private RequestTransformer requestTransformer;
@@ -74,4 +87,37 @@ public class HomeUtilsController {
         return ResponseEntity.ok(addRoomProcessorService.process(
                 requestTransformer.transform(request, servletRequest)));
     }
+
+    @PostMapping("/deleteHouse")
+    public ResponseEntity<OperationResultResponse> deleteHouse(@RequestBody Long houseId,
+    HttpServletRequest servletRequest) {        
+        return ResponseEntity.ok(
+            deleteHouseProcessorService.process(
+                requestTransformer.transform(houseId, servletRequest)
+            )
+        );
+    }
+
+    @PostMapping("/deleteFloor")
+    public ResponseEntity<OperationResultResponse> deleteFloor(@RequestBody Long floorId,
+    HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(
+            deleteFloorProcessorService.process(
+                requestTransformer.transform(floorId, servletRequest)
+            )
+        );
+    }
+
+    @PostMapping("/deleteRoom")
+    public ResponseEntity<OperationResultResponse> deleteRoom(@RequestBody Long roomId,
+    HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(
+            deleteRoomProcessorService.process(
+                requestTransformer.transform(roomId, servletRequest)
+            )
+        );
+    }
+    
+    
+    
 }

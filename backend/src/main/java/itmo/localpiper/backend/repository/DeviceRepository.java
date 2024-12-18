@@ -20,4 +20,10 @@ public interface DeviceRepository extends CrudRepository<Device, Long>{
            "JOIN f.house h " +
            "WHERE h.id = :houseId")
     List<Device> findAllByHouseId(@Param("houseId") Long houseId);
+
+    @Query("SELECT d FROM Device d " +
+           "JOIN d.room r " +
+           "JOIN r.floor f " +
+           "WHERE f.id = :floorId")
+    List<Device> findAllByFloorId(@Param("floorId") Long floorId);
 }

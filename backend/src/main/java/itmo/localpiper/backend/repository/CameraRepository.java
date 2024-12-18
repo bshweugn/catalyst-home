@@ -20,4 +20,10 @@ public interface CameraRepository extends CrudRepository<Camera, Long>{
            "JOIN f.house h " +
            "WHERE h.id = :houseId")
     List<Camera> findAllByHouseId(@Param("houseId") Long houseId);
+
+    @Query("SELECT c FROM Camera c " +
+           "JOIN c.room r " +
+           "JOIN r.floor f " +
+           "WHERE f.id = :floorId")
+    List<Camera> findAllByFloorId(@Param("floorId") Long floorId);
 }
