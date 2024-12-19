@@ -38,7 +38,7 @@ public class DeleteFloorProcessorService extends AbstractProcessor<RequestPair<L
 
     @Override
     protected OperationResultResponse pack(Object result) {
-        return new OperationResultResponse(ProcessingStatus.SUCCESS, "House deleted, users evicted");
+        return new OperationResultResponse(ProcessingStatus.SUCCESS, "Floor deleted");
     }
     
 }
