@@ -117,11 +117,10 @@ public class CameraHandler extends AbstractCameraHanlder {
     protected void rotateX(boolean neg) {
         checkCommand("ROTATE_X");
         if (!"OFF".equals(camera.getStatus())) {
-            if (!neg) {
-                camera.setYRotatePercent(Math.max(100, camera.getYRotatePercent() + 8));
-            } else {
-                camera.setYRotatePercent(Math.min(0, camera.getYRotatePercent() - 8));
-            }
+            int currentX = camera.getXRotatePercent();
+            int newX = neg ? currentX - 8 : currentX + 8;
+            newX = Math.max(0, Math.min(100, newX));
+            camera.setXRotatePercent(newX);
             repository.save(camera);
         }
         
@@ -131,11 +130,10 @@ public class CameraHandler extends AbstractCameraHanlder {
     protected void rotateY(boolean neg) {
         checkCommand("ROTATE_Y");
         if (!"OFF".equals(camera.getStatus())) {
-            if (!neg) {
-                camera.setYRotatePercent(Math.max(100, camera.getYRotatePercent() + 8));
-            } else {
-                camera.setYRotatePercent(Math.min(0, camera.getYRotatePercent() - 8));
-            }
+            int currentY = camera.getYRotatePercent();
+            int newY = neg ? currentY - 8 : currentY + 8;
+            newY = Math.max(0, Math.min(100, newY));
+            camera.setYRotatePercent(newY);
             repository.save(camera);
         }
         
