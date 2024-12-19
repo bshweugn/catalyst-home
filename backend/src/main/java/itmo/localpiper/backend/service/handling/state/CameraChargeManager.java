@@ -2,19 +2,22 @@ package itmo.localpiper.backend.service.handling.state;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
 
 
-public class CameraChargeManager implements Runnable {
+public class CameraChargeManager {
 
     private static final CameraChargeManager INSTANCE = new CameraChargeManager();
 
     private final Map<Long, CameraChargeState> cameraStates = new ConcurrentHashMap<>();
 
-    private volatile boolean running = true;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private CameraChargeManager() {}
 
@@ -35,27 +38,15 @@ public class CameraChargeManager implements Runnable {
     }
 
     public void start() {
-        Thread thread = new Thread(this);
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-    public void stop() {
-        running = false;
-    }
-
-    @Override
-    public void run() {
-        while (running) {
+        scheduler.scheduleAtFixedRate(() -> {
             for (CameraChargeState state : cameraStates.values()) {
                 state.update();
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+        }, 0, 3, TimeUnit.SECONDS);
+    }
+
+    public void stop() {
+        scheduler.shutdownNow();
     }
 }
 
