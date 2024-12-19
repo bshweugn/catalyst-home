@@ -37,8 +37,11 @@ public class LampHandler extends AbstractLampHandler {
         if (brightness < 0 || brightness > 100) {
             throw new IllegalArgumentException("Brightness must be between 0 and 100");
         }
-        if (!"OFF".equals(lamp.getStatus())) {
-            lamp.getFeatures().put("BRIGHTNESS", brightness);
+        lamp.getFeatures().put("BRIGHTNESS", brightness);
+        if (brightness > 0) {
+            lamp.setStatus("ON");
+        } else {
+            lamp.setStatus("OFF");
         }
         repository.save(lamp);
     }
@@ -49,9 +52,7 @@ public class LampHandler extends AbstractLampHandler {
         if (!color.matches("^#[0-9A-Fa-f]{6}$")) {
             throw new IllegalArgumentException("Color does not match hex pattern");
         }
-        if (!"OFF".equals(lamp.getStatus())) {
-            lamp.getFeatures().put("COLOR", color);
-        }
+        lamp.getFeatures().put("COLOR", color);
         repository.save(lamp);
     }
 
@@ -61,9 +62,7 @@ public class LampHandler extends AbstractLampHandler {
         if (colorTemperature < 0 || colorTemperature > 6) {
             throw new IllegalArgumentException("Color temperature must be between 0 and 6");
         }
-        if (!"OFF".equals(lamp.getStatus())) {
-            lamp.getFeatures().put("COLOR_TEMP", colorTemperature);
-        }
+        lamp.getFeatures().put("COLOR_TEMP", colorTemperature);
         repository.save(lamp);
     }
 
