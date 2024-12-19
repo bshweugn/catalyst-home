@@ -10,7 +10,7 @@ import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
-import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHanlder;
+import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLampHandler;
 import itmo.localpiper.backend.service.handling.concr.CameraHandler;
 import itmo.localpiper.backend.service.handling.concr.LampHandler;
@@ -34,7 +34,7 @@ public class HandlerFactory {
         return new LampHandler(commands, device, deviceRepository);
     }
 
-    public AbstractCameraHanlder getCameraHandler(Camera camera) {
+    public AbstractCameraHandler getCameraHandler(Camera camera) {
         String serialNumber = deviceTypeHandlerService.extractSerialNumber(camera.getCameraType());
         List<String> commands = actionRegistry.get(serialNumber);
         if (commands == null) throw new IllegalArgumentException("Unknown device number: " + serialNumber);

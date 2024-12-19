@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
-import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHanlder;
+import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHandler;
 import itmo.localpiper.backend.service.handling.state.CameraChargeManager;
 import itmo.localpiper.backend.service.handling.state.RecordingStateManager;
 
-public class CameraHandler extends AbstractCameraHanlder {
+public class CameraHandler extends AbstractCameraHandler {
 
     private final Camera camera;
     private final CameraRepository repository;
