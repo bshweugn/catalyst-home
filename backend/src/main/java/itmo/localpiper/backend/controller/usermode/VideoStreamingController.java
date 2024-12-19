@@ -2,21 +2,21 @@ package itmo.localpiper.backend.controller.usermode;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import itmo.localpiper.backend.dto.request.VideoStreamingRequest;
 import itmo.localpiper.backend.service.processing.video.GetRecordingIntervalsService;
 import itmo.localpiper.backend.service.processing.video.VideoStreamingService;
@@ -46,15 +46,13 @@ public class VideoStreamingController {
         ));
     }
 
-    @GetMapping("/stream")
+    @PostMapping("/stream")
     public ResponseEntity<byte[]> stream(
-        @RequestParam Long cameraId,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime timestamp,
+        @RequestBody VideoStreamingRequest request,
         @RequestHeader HttpHeaders headers, 
         HttpServletRequest servletRequest) {
         try {
-            VideoStreamingRequest vsr = new VideoStreamingRequest(cameraId, timestamp);
-            byte[] videoData = videoStreamingService.process(requestTransformer.transform(vsr, servletRequest), headers);
+            byte[] videoData = videoStreamingService.process(requestTransformer.transform(request, servletRequest), headers);
 
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.add("Content-Type", "video/mp4");
