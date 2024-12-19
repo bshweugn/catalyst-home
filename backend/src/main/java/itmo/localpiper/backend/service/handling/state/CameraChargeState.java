@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
+import itmo.localpiper.backend.service.handling.state.manager.RecordingStateManager;
 
 public class CameraChargeState {
 

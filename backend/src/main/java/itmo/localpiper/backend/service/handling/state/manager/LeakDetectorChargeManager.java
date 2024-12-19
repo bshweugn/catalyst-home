@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.handling.state;
+package itmo.localpiper.backend.service.handling.state.manager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
+import itmo.localpiper.backend.service.handling.state.LeakDetectorChargeState;
 
 public class LeakDetectorChargeManager {
 

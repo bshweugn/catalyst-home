@@ -22,7 +22,7 @@ public abstract class AbstractThermostatHandler implements Handler{
     public abstract void pickCommand(String command, Object arg);
     protected abstract void turnOn();
     protected abstract void turnOff();
-    protected abstract void heat();
-    protected abstract void cool();
+    protected abstract void heat(int target);
+    protected abstract void cool(int target);
     protected abstract void changeMode(WorkMode mode);
 }

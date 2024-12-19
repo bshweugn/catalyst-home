@@ -5,7 +5,7 @@ import java.util.List;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.handling.abstr.AbstractRelayHandler;
-import itmo.localpiper.backend.service.handling.state.RelayChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.RelayChargeManager;
 
 public class RelayHandler extends AbstractRelayHandler {
 

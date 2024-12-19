@@ -5,7 +5,7 @@ import java.util.List;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLeakDetectorHandler;
-import itmo.localpiper.backend.service.handling.state.LeakDetectorChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.LeakDetectorChargeManager;
 
 public class LeakDetectorHandler extends AbstractLeakDetectorHandler {
 

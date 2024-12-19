@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.handling.state;
+package itmo.localpiper.backend.service.handling.state.manager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
+import itmo.localpiper.backend.service.handling.state.CameraChargeState;
 
 
 public class CameraChargeManager {

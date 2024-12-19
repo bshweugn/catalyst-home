@@ -1,4 +1,4 @@
-package itmo.localpiper.backend.service.handling.state;
+package itmo.localpiper.backend.service.handling.state.manager;
 
 import java.time.ZonedDateTime;
 import java.util.Map;

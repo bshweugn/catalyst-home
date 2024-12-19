@@ -6,11 +6,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import itmo.localpiper.backend.aspect.ValidateUserAspect;
 import itmo.localpiper.backend.repository.UserRepository;
-import itmo.localpiper.backend.service.handling.state.CameraChargeManager;
-import itmo.localpiper.backend.service.handling.state.LeakDetectorChargeManager;
-import itmo.localpiper.backend.service.handling.state.RelayChargeManager;
-import itmo.localpiper.backend.service.handling.state.TemperatureSensorChargeManager;
-import itmo.localpiper.backend.service.handling.state.ValveChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.CameraChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.LeakDetectorChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.RelayChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.TemperatureSensorChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.ValveChargeManager;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.annotation.PreDestroy;
 

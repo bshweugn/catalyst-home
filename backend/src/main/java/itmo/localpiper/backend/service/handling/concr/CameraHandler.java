@@ -10,8 +10,8 @@ import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
 import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHandler;
-import itmo.localpiper.backend.service.handling.state.CameraChargeManager;
-import itmo.localpiper.backend.service.handling.state.RecordingStateManager;
+import itmo.localpiper.backend.service.handling.state.manager.CameraChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.RecordingStateManager;
 
 public class CameraHandler extends AbstractCameraHandler {
 

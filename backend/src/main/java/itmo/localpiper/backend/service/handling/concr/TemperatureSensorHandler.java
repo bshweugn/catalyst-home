@@ -5,7 +5,7 @@ import java.util.List;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.handling.abstr.AbstractTemperatureSensorHandler;
-import itmo.localpiper.backend.service.handling.state.TemperatureSensorChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.TemperatureSensorChargeManager;
 
 public class TemperatureSensorHandler extends AbstractTemperatureSensorHandler {
 
