@@ -6,17 +6,21 @@ import Maximize from '../icons/Maximize/Maximize';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Lightbulb from '../icons/Lightbulb/Lightbulb';
 import Power from '../icons/Power/Power';
-import { isSensor, renderItemIcon, renderItemStatus } from '../../itemInfo';
+import { getItemAction, getItemStatus, isSensor, renderItemIcon, renderItemStatus } from '../../itemInfo';
 import Checkmark from '../icons/Checkmark/Checkmark';
 import ConditionWindow from '../ConditionWindow/ConditionWindow';
 import SuperEllipse from 'react-superellipse';
+import { executeDeviceCommand, getDeviceById } from '../../services/devicesService';
+import { fetchHousesData } from '../../services/housesService';
 
-const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected, toDelete }) => {
+const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected, toDelete, token }) => {
     const [maximized, setMaximized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
-    const [active, setActive] = useState(device.active);
+    const [active, setActive] = useState(getItemStatus(device));
+    const [status, setStatus] = useState(renderItemStatus(device, true));
     const [isHolding, setIsHolding] = useState(false);
     const [isHeld, setIsHeld] = useState(false);
+
 
     const [selected, setSelected] = useState(false);
 
@@ -27,7 +31,63 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
 
 
     useEffect(() => {
-        setTimeout(() => {setToDeleteState(toDelete)}, 700)
+        const handleToggle = async () => {
+            try {
+                const newState = !active;
+                let result;
+
+                if (newState) {
+                    result = await executeDeviceCommand(token, device.id, getItemAction(device, false), "");
+
+                } else {
+                    result = await executeDeviceCommand(token, device.id, getItemAction(device, true), "");
+                }
+
+                if (result) {
+                    const updatedStatus = getItemStatus(result.data);
+                    console.log(updatedStatus !== active)
+
+                    if (updatedStatus !== active) {
+                        console.log("LALA")
+                        setActive(updatedStatus);
+                        
+                    }
+
+                    setStatus(renderItemStatus(result.data, true));
+                }
+            } catch (error) {
+                console.error('Ошибка при изменении состояния:', error);
+            }
+        };
+
+        handleToggle();
+    }, [active]);
+
+
+    useEffect(() => {
+        setActive(getItemStatus(device));
+    }, []);
+
+
+    useEffect(() => {
+        const fetchStatus = async () => {
+            try {
+                const result = await fetchHousesData(token);
+
+                if (result) {
+                    setStatus(renderItemStatus(getDeviceById(device.id, result), true));
+                }
+            } catch (error) {
+                console.error('Ошибка при получении устройства:', error);
+            }
+        }
+
+        fetchStatus();
+    }, [opened, active]);
+
+
+    useEffect(() => {
+        setTimeout(() => { setToDeleteState(toDelete) }, 700)
     }, [toDelete]);
 
 
@@ -144,6 +204,12 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
         setTimeout(() => setIsHolding(false), 100);
     };
 
+
+    const getState = (device) => {
+
+    }
+
+
     return (
         <>
             {conditionWindow ?
@@ -183,7 +249,7 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                 </div>
                 <div className='item-card__item-info'>
                     <p className='item-card__item-name'>{device.name}</p>
-                    <p className='item-card__item-status'>{renderItemStatus(device, true)}</p>
+                    <p className='item-card__item-status'>{status}</p>
                 </div>
             </div>
         </>

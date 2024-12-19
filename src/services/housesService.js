@@ -1,5 +1,5 @@
 // housesService.js
-import { addFloorRequest, addHouseRequest, addRoomRequest, getHousesData, moveRoomToFloorRequest } from '../api/housesAPI';
+import { addFloorRequest, addHouseRequest, addRoomRequest, deleteRoomRequest, getHousesData, moveRoomToFloorRequest, renameRequest } from '../api/housesAPI';
 import { setFloor, setHouse, setRoom } from '../store';
 
 
@@ -29,9 +29,19 @@ export const createRoom = async (dispatch, token, name, floorId) => {
     try {
         const result = await addRoomRequest(token, name, floorId);
         // dispatch(setRoom({ houseId: null, floorId, room: result.data }));
-        return result.data;
+        return result;
     } catch (error) {
         console.error('Ошибка при добавлении комнаты:', error);
+        throw error;
+    }
+};
+
+export const deleteRoom = async (token, roomId) => {
+    try {
+        const result = await deleteRoomRequest(token, roomId);
+        return result;
+    } catch (error) {
+        console.error('Ошибка при удалении комнаты:', error);
         throw error;
     }
 };
@@ -39,12 +49,24 @@ export const createRoom = async (dispatch, token, name, floorId) => {
 export const moveRoomToFloor = async (token, roomId, floorId) => {
     try {
         const result = await moveRoomToFloorRequest(token, roomId, floorId);
-        return result.data;
+        return result;
     } catch (error) {
         console.error('Ошибка при перемещении комнаты:', error);
         throw error;
     }
 };
+
+
+export const rename = async (token, id, newName, entity) => {
+    try {
+        const result = await renameRequest(token, id, newName, entity);
+        return result;
+    } catch (error) {
+        console.error('Ошибка при переименовании:', error);
+        throw error;
+    }
+};
+
 
 export const fetchHousesData = async (token) => {
     try {

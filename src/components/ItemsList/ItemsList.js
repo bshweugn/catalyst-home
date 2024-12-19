@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ItemCard from '../ItemCard/ItemCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -8,7 +8,15 @@ import CustomDragLayer from '../CustomDragLayer/CustomDragLayer';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { isSensor } from '../../itemInfo';
 
-const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, multipleSelection, conditionWindow, setCondition, canSave, atomicSelected, hiddenTitle = false, toDeleteId }) => {
+const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, multipleSelection, conditionWindow, setCondition, canSave, atomicSelected, hiddenTitle = false, toDeleteId, toDeleteRoomId, token }) => {
+    const [toDeleteState, setToDeleteState] = useState(false);
+
+    useEffect(() => {
+        if (toDeleteRoomId === roomID) {
+            setTimeout(() => { setToDeleteState(true) }, 700)
+        }
+    }, [toDeleteRoomId]);
+
     const [cards, setCards] = useState(devices);
 
     const moveCard = (fromIndex, toIndex) => {
@@ -40,10 +48,9 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
 
     return (
         <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-            <div className={`items-list ${light ? "items-list--light" : ""} ${setCondition ? "items-list--atomic-selection" : ""} ${hiddenTitle ? "items-list--separated" : ""}`}>
+            <div className={`items-list ${light ? "items-list--light" : ""} ${setCondition ? "items-list--atomic-selection" : ""} ${hiddenTitle ? "items-list--separated" : ""} ${toDeleteState ? "items-list--to-delete" : ""}`}>
                 {!hiddenTitle ? <h2 className='items-list__room-name' onClick={() => touchFunc(roomID)}>{roomName}</h2> : null}
                 <div className="items-list__wrapper">
-                    {/* <p>{cards ? cards : "НЕМА"}</p> */}
                     {devices.map((device, index) => (
                         <ItemCard
                             selectable={multipleSelection}
@@ -62,6 +69,7 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
                             canSave={canSave}
                             atomicSelected={atomicSelected === device.id}
                             toDelete={toDeleteId === device.id}
+                            token={token}
                         />
                     ))}
                 </div>

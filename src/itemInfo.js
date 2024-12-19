@@ -20,9 +20,17 @@ export function renderItemStatus(device, concise) {
 
         case 'LAMP': // Лампа
             if (device.features.BRIGHTNESS !== undefined && device.features.COLOR_TEMP !== undefined) {
-                return `${device.features.BRIGHTNESS}%`;
+                if (device.status === 'ON' && device.features.BRIGHTNESS !== 0) {
+                    return `${device.features.BRIGHTNESS}%`;
+                } else {
+                    return 'Выкл.'
+                }
             } else if (device.features.BRIGHTNESS !== undefined) {
-                return `${device.features.BRIGHTNESS}%`;
+                if (device.status === 'ON' && device.features.BRIGHTNESS !== 0) {
+                    return `${device.features.BRIGHTNESS}%`;
+                } else {
+                    return 'Выкл.'
+                }
             } else if (device.features.COLOR !== undefined) {
                 return `Цвет: ${device.features.COLOR}`;
             }
@@ -100,6 +108,116 @@ export function renderItemStatus(device, concise) {
 
         default:
             return 'Неизвестное устройство';
+    }
+}
+
+
+export function getItemStatus(device) {
+    const [mainType, subType] = device.deviceType.split('_');
+
+    if (mainType !== "ROBOT" && mainType !== "VALVE" && mainType !== "CURTAIN" && mainType !== "LAMP" && mainType !== "RELAY") {
+        return (device.status !== "OFF");
+    } else if (mainType === "ROBOT") {
+        if (device.status !== "OFF" && device.status !== "PAUSED" && device.status !== "ERROR") {
+            return true;
+        } else {
+            return false;
+        }
+    } else if (mainType === "VALVE") {
+        if (device.status === "CLOSED") {
+            return false;
+        } else {
+            return true;
+        }
+    } else if (mainType === "CURTAIN") {
+        if (device.status === "CLOSED" || device.features.PERCENTAGE === 100) {
+            return false;
+        } else {
+            return true;
+        }
+    } else if (mainType === "LAMP") {
+        if (device.status === "OFF" || device.features.BRIGHTNESS === 0) {
+            return false;
+        } else {
+            return true;
+        }
+    } else if (mainType === "RELAY") {
+        if (device.status === "OFF") {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+
+export function getItemAction(device, enableAction) {
+    const [mainType, subType] = device.deviceType.split('_');
+
+    if (enableAction) {
+        switch (mainType) {
+            case 'LAMP': // Лампа
+                return 'TURN_ON';
+
+            case 'CURTAIN':
+                return 'CLOSE';
+
+            case 'FAN': // Вентилятор
+                return 'TURN_ON'
+
+            case 'RELAY': // Реле
+                return 'TURN_ON';
+
+            case 'VALVE': // Клапан
+                return 'OPEN';
+
+            case 'THERMOSTAT': // Термостат
+                return 'TURN_ON';
+
+            case 'AC':
+                return 'TURN_ON';
+
+            case 'HUMIDIFIER':
+                return 'TURN_ON';
+
+            case 'ROBOT':
+                return 'RUN'
+
+            default:
+                return 'TURN_ON';
+        }
+    } else {
+        switch (mainType) {
+            case 'LAMP': // Лампа
+                return 'TURN_OFF';
+
+            case 'CURTAIN':
+                return 'OPEN';
+
+            case 'FAN': // Вентилятор
+                return 'TURN_OFF'
+
+            case 'RELAY': // Реле
+                return 'TURN_OFF';
+
+            case 'VALVE': // Клапан
+                return 'CLOSE';
+
+            case 'THERMOSTAT': // Термостат
+                return 'TURN_OFF';
+
+            case 'AC':
+                return 'TURN_OFF';
+
+            case 'HUMIDIFIER':
+                return 'TURN_OFF';
+
+            case 'ROBOT':
+                return 'FINISH'
+
+            default:
+                return 'TURN_OFF';
+        }
     }
 }
 

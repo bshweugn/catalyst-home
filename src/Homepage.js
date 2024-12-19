@@ -134,6 +134,8 @@ function Homepage(args) {
     const [currentRoomId, setCurrentRoomId] = useState(0);
 
     const [toDeleteId, setToDeleteId] = useState(0);
+    const [toDeleteRoomId, setToDeleteRoomId] = useState(0);
+
 
 
     const navigate = useNavigate();
@@ -146,8 +148,13 @@ function Homepage(args) {
 
     useEffect(() => {
         setTimeout(() => { args.fetchData() }, 600);
-    }, [toDeleteId]);
+    }, [toDeleteId, toDeleteRoomId]);
 
+
+
+    useEffect(() => {
+        args.fetchData();
+    }, [itemID]);
 
 
     // useEffect(() => {
@@ -290,13 +297,10 @@ function Homepage(args) {
 
 
     useEffect(() => {
-        if (args.token === undefined || args.token === null) {
+        if (localStorage.getItem('token') === "null") {
             navigate('/auth');
-            // console.log("to /auth " + args.token);
         }
-
-
-    }, [args.token]);
+    }, []);
 
     useEffect(() => {
         console.log(selectedRoomID)
@@ -343,7 +347,7 @@ function Homepage(args) {
 
             {args.rooms
                 .map(room => (
-                    <RoomWindow fetchData={args.fetchData} token={args.token} room={room} visible={selectedRoomID === room.id} idFunc={setSelectedRoomID} floors={args.floors} floor={getFloorByRoomId(room.id, args.houses)}/>
+                    <RoomWindow key={`window-${room.id}`} fetchData={args.fetchData} setToDeleteId={setToDeleteRoomId} token={args.token} room={room} visible={selectedRoomID === room.id} idFunc={setSelectedRoomID} floors={args.floors} floor={getFloorByRoomId(room.id, args.houses)} />
                 ))}
 
             {/* <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} /> */}
@@ -370,7 +374,7 @@ function Homepage(args) {
 
 
                 <Section visible={args.currentPage === 0}>
-                    <RoomSelector rooms={Object.values(args.rooms)} setRoomId={setCurrentRoomId} roomId={currentRoomId} />
+                    <RoomSelector rooms={Object.values(args.rooms)} setRoomId={setCurrentRoomId} roomId={currentRoomId} setActiveRoom={setSelectedRoomID} />
 
                     {/* <MainWidgetsRow>
                         <MainWidget title="Климат" badge="Сейчас">
@@ -452,6 +456,8 @@ function Homepage(args) {
                             currentRoomId={currentRoomId}
                             editMode={editMode}
                             toDeleteId={toDeleteId}
+                            toDeleteRoomsId={toDeleteRoomId}
+                            token={args.token}
                         />
                     </div>
 
@@ -486,7 +492,7 @@ function Homepage(args) {
                                     />
                                 );
                             })} */}
-                            <CameraStream token={args.token}/>
+                        <CameraStream token={args.token} />
                     </div>
 
                 </Section>

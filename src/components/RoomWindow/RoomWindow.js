@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './RoomWindow.scss';
 import TextInput from '../TextInput/TextInput';
 import DropdownSelect from '../DropdownSelect/DropdownSelect';
-import { moveRoomToFloor } from '../../services/housesService';
+import { deleteRoom, moveRoomToFloor } from '../../services/housesService';
 import WideButton from '../WideButton/WideButton';
 
 const RoomWindow = (args) => {
@@ -10,8 +10,21 @@ const RoomWindow = (args) => {
 
     const [selectedOption, setSelectedOption] = useState('');
 
-    const [currentFloor, setCurrentFloor] = useState(args.floor);
+    const [closeRequired, setCloseRequired] = useState(false);
 
+    useEffect(() => {
+        if (closeRequired) {
+            console.log("REQUIRED")
+            args.idFunc(-1);
+            args.setToDeleteId(args.room.id)
+
+            setCloseRequired(false);
+        }
+    }, [closeRequired]);
+
+
+
+    const [currentFloor, setCurrentFloor] = useState(args.floor);
 
     const handleFloorChange = async (newFloor) => {
         try {
@@ -25,16 +38,16 @@ const RoomWindow = (args) => {
     }
 
 
-    // const handleFloorDelete = async (newFloor) => {
-    //     try {
-    //         const result = await deleteFloor(args.token, args.room.id);
-    //         if (result) {
-    //             const result = args.fetchData(args.token);
-    //         }
-    //     } catch (error) {
-    //         console.error('Ошибка при получении устройства:', error);
-    //     }
-    // }
+    const handleRoomDelete = async () => {
+        try {
+            const result = await deleteRoom(args.token, args.room.id);
+            if (result) {
+                setCloseRequired(true);
+            }
+        } catch (error) {
+            console.error('Ошибка при получении устройства:', error);
+        }
+    }
 
 
 
@@ -58,7 +71,7 @@ const RoomWindow = (args) => {
                         }}
                         label="Этаж"
                     />
-                    <WideButton red label={"Удалить комнату"} onClick={() => {}} />
+                    <WideButton red label={"Удалить комнату"} onClick={() => { handleRoomDelete() }} />
                     {args.children}
                 </div>
             </div>

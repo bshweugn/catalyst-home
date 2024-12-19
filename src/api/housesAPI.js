@@ -81,11 +81,27 @@ export const deleteRoomRequest = async (token, roomId) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-            roomId: roomId,
-        }),
+        body: roomId
     });
     if (!response.ok) throw new Error('Ошибка удаления комнаты.');
+    return response.json();
+};
+
+
+export const renameRequest = async (token, id, newName, entity) => {
+    const response = await fetch(`${API_URL}/api/modify/rename`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            id: id,
+            newName: newName,
+            entity: entity
+        }),
+    });
+    if (!response.ok) throw new Error('Ошибка переименования.');
     return response.json();
 };
 

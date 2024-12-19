@@ -40,13 +40,14 @@ import Play from '../icons/Play/Play';
 import CurrentTrigger from '../CurrentTrigger/CurrentTrigger';
 import Select from '../Select/Select';
 import ConditionWindow from '../ConditionWindow/ConditionWindow';
-import { addDevice, checkDevice, getDevicesByIdsInRooms } from '../../services/devicesService';
+import { addDevice, checkDevice, getDeviceById, getDevicesByIdsInRooms } from '../../services/devicesService';
 import { createFloor, createRoom, fetchHousesData, getRoomsAndDevicesByHouseId, getRoomsByHouseId } from '../../services/housesService';
 import Warn from '../icons/Warn/Warn';
 import { error } from '@splidejs/splide/src/js/utils';
 import ScriptDevicesList from '../ScriptDevicesList/ScriptDevicesList';
 import ScriptActionsList from '../ScriptActionsList/ScriptActionsList';
 import { IonSpinner } from '@ionic/react';
+import ActionWindow from '../ActionWindow/ActionWindow';
 
 const AddAccessoryPopup = (args) => {
     const dispatch = useDispatch();
@@ -130,7 +131,6 @@ const AddAccessoryPopup = (args) => {
 
 
     const fetchData = async () => {
-        console.log("TTTTT " + args.token);
         try {
             const data = await fetchHousesData(args.token);
             if (data) {
@@ -188,7 +188,7 @@ const AddAccessoryPopup = (args) => {
             console.log(result);
             if (result) {
                 const result = fetchData(args.token);
-                if (result) setTimeout(() => handleClose(), 200);
+                if (result) setTimeout(() => handleClose(), 400);
             }
         } catch (error) {
             animate();
@@ -203,9 +203,10 @@ const AddAccessoryPopup = (args) => {
             setView('room-creating');
             const room = await createRoom(dispatch, args.token, newRoomName, 1);
             console.log(room);
-            const house = await fetchHousesData(args.token);
-            console.log(house);
-            if (house) handleClose();
+            if (room) {
+                const result = fetchData(args.token);
+                if (result) setTimeout(() => handleClose(), 400);
+            }
         } catch (error) {
             animate();
             setView('error');
@@ -218,10 +219,10 @@ const AddAccessoryPopup = (args) => {
         try {
             const floor = await createFloor(dispatch, args.token, newFloorName, args.currentHouseID);
             console.log(floor);
-            const house = await fetchHousesData(args.token);
-            console.log(house);
-
-            if (house) handleClose();
+            if (floor) {
+                const result = fetchData(args.token);
+                if (result) setTimeout(() => handleClose(), 400);
+            }
         } catch (error) {
             animate();
             setView('error');
@@ -589,45 +590,45 @@ const AddAccessoryPopup = (args) => {
                     } else {
                         return (
                             <>
-                                <div className='add-accessory-popup__scrollable-list'>
-                                    <div className='add-accessory-popup__scrollable-list-tint'/>
-                                    {Object.values(args.rooms).map((room) => {
-                                        const filteredDevices = room.devices.filter(
-                                            (device) => !isSensor(device)
-                                        );
+                                {selectedDevice <= 0 ?
+                                    <>
+                                        <div className='add-accessory-popup__scrollable-list'>
+                                            <div className='add-accessory-popup__scrollable-list-tint' />
+                                            {Object.values(args.rooms).map((room) => {
+                                                const filteredDevices = room.devices.filter(
+                                                    (device) => !isSensor(device)
+                                                );
 
-                                        if (filteredDevices.length === 0) return null;
+                                                if (filteredDevices.length === 0) return null;
 
-                                        return (
-                                            <ItemsList
-                                                light
-                                                preview
-                                                openedID={selectedDevice}
-                                                setItemID={setSelectedDevice}
-                                                key={room.id}
-                                                roomName={room.name}
-                                                roomID={room.id}
-                                                devices={filteredDevices}
-                                                conditionWindow={renderConditionContent}
-                                                setCondition={setCondition}
-                                                atomicSelected={trigger.id}
-                                                canSave={
-                                                    trigger.id &&
-                                                    trigger.id !== -1 &&
-                                                    trigger.action !== "" &&
-                                                    devices[selectedDevice]
-                                                }
-                                            />
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                                    <Button primary label="Готово" onClick={() => { setScriptDeviceSelectMode(false); animate() }} />
-                                    {/* <Button onClick={() => setView("default")} label="Назад" /> */}
-                                    <Button label="" />
-                                    <div className='add-accessory-popup__buttons-group-tint' />
-                                </div>
+                                                return (
+                                                    <ItemsList
+                                                        light
+                                                        preview
+                                                        openedID={selectedDevice}
+                                                        setItemID={setSelectedDevice}
+                                                        key={room.id}
+                                                        roomName={room.name}
+                                                        roomID={room.id}
+                                                        devices={filteredDevices}
+                                                        conditionWindow={renderConditionContent}
+                                                        setCondition={setCondition}
+                                                        atomicSelected={trigger.id}
+                                                        canSave={
+                                                            devices[selectedDevice]
+                                                        }
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
+                                            <Button primary label="Готово" onClick={() => { setScriptDeviceSelectMode(false); animate() }} />
+                                            {/* <Button onClick={() => setView("default")} label="Назад" /> */}
+                                            <Button label="" />
+                                            <div className='add-accessory-popup__buttons-group-tint' />
+                                        </div>
+                                    </>
+                                    : <ActionWindow device={getDeviceById(selectedDevice, args.houses)} idFunc={setSelectedDevice}/>}
                             </>
                         );
                     }

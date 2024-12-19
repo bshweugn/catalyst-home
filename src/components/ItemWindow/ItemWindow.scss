@@ -12,6 +12,23 @@
     max-height: 200rem;
     box-sizing: border-box;
 
+
+    &--action-window{
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        background-color: transparent;
+        backdrop-filter: none;
+        position: relative;
+    }
+
+
+    &--action-window &__header{
+        display: none;
+    }
+
+
+
     &--hidden {
         opacity: 0;
         pointer-events: none;
@@ -22,6 +39,30 @@
     &--hidden &__content {
         transform: scale(0.85);
         filter: blur(1rem);
+    }
+
+
+    &__battery-wrapper{
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 1.2rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    &__battery{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__battery-percentage{
+        margin: 0;
+        font-size: 0.75rem;
     }
 
 

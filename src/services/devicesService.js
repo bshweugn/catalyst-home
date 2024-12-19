@@ -1,37 +1,48 @@
-import { checkDeviceRequest, deleteDeviceRequest, importDeviceRequest, moveDeviceToRoomRequest, syncDevicesRequest } from "../api/devicesAPI";
+import { checkDeviceRequest, deleteDeviceRequest, executeDeviceCommandRequest, importDeviceRequest, moveDeviceToRoomRequest, syncDevicesRequest } from "../api/devicesAPI";
 import { setDevice, removeDevice } from "../store";
 
 export const addDevice = async (dispatch, token, deviceData) => {
     try {
         const result = await importDeviceRequest(token, deviceData);
-        dispatch(setDevice({ id: result.data.id, data: result.data, status: result.status }));
+        if (result) {
+            dispatch(setDevice({ id: result.data.id, data: result.data }));
+        }
         return result;
     } catch (error) {
         console.error('Ошибка при добавлении устройства:', error);
+        throw error;
     }
 };
 
-export const deleteDevice = async (token, id, houseId, isDevice) => {
+
+export const deleteDevice = async (token, id, houseId, isDevice, dispatch) => {
     try {
-        console.log( token, id, houseId, isDevice);
         const result = await deleteDeviceRequest(token, id, houseId, isDevice);
-        // dispatch(removeDevice({ id }));
+        if (result) {
+            // dispatch(removeDevice({ id }));
+        }
         return result;
     } catch (error) {
         console.error('Ошибка при удалении устройства:', error);
+        throw error;
     }
 };
+
 
 export const syncDevices = async (dispatch, token) => {
     try {
         const result = await syncDevicesRequest(token);
-        result.data.forEach((device) => {
-            dispatch(setDevice({ id: device.id, data: device, status: result.status }));
-        });
+        if (result?.data) {
+            result.data.forEach((device) => {
+                dispatch(setDevice({ id: device.id, data: device }));
+            });
+        }
     } catch (error) {
         console.error('Ошибка при синхронизации устройств:', error);
+        throw error;
     }
 };
+
 
 export const checkDevice = async (dispatch, token, serialNumber) => {
     try {
@@ -99,6 +110,34 @@ export const getDevicesByIdsInRooms = (devicesIds, rooms) => {
     return allDevices;
 };
 
+export const getDeviceById = (deviceId, houses) => {
+    console.log(`Ищем устройство с ID: ${deviceId}`);
+
+    for (const house of houses) {
+        if (!house.floors || house.floors.length === 0) {
+            continue;
+        }
+
+        for (const floor of house.floors) {
+            if (!floor.rooms || floor.rooms.length === 0) {
+                continue;
+            }
+
+            for (const room of floor.rooms) {
+                const device = room.devices?.find(d => d.id === deviceId);
+                if (device) {
+                    console.log(`Найдено устройство: ${device.name}`);
+                    return device;
+                }
+            }
+        }
+    }
+
+    console.warn(`Устройство с ID ${deviceId} не найдено.`);
+    return null; // Возвращаем null, если устройство не найдено
+};
+
+
 export const getDevicesAndCamerasByRoomAndHouseId = (houseId, roomId, houses) => {
     console.log(`Ищем дом с ID: ${houseId}`);
 
@@ -148,9 +187,28 @@ export const getDevicesAndCamerasByRoomAndHouseId = (houseId, roomId, houses) =>
 export const moveDeviceToRoom = async (token, deviceId, roomId, isCamera) => {
     try {
         const result = await moveDeviceToRoomRequest(token, deviceId, roomId, isCamera);
-        return result;
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     } catch (error) {
         console.error('Ошибка при перемещении устройства: ', error);
         throw error;
     }
 };
+
+
+export const executeDeviceCommand = async (token, deviceId, command, argument) => {
+    try {
+        const result = await executeDeviceCommandRequest(token, deviceId, command, argument);
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Не удалось отправить команду:', error);
+        throw new Error('Не удалось отправить команду.');
+    }
+}

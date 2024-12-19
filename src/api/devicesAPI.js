@@ -112,3 +112,30 @@ export const moveDeviceToRoomRequest = async (token, deviceId, roomId, isCamera)
     if (!response.ok) throw new Error('Ошибка перемещения устройства.');
     return response.json();
 };
+
+export const executeDeviceCommandRequest = async (token, deviceId, command, argument) => {
+    try {
+        const response = await fetch(`${API_URL}/user/executeDeviceCommand`, {
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                command: command,
+                argument: argument,
+                deviceId: deviceId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Не удалось отправить команду.');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Не удалось отправить команду:', error);
+        throw error;
+    }
+};

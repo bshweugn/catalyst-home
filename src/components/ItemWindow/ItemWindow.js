@@ -25,10 +25,22 @@ import DialLow from '../icons/DialLow/DialLow';
 import Curtains from '../icons/Curtains/Curtains';
 import VerticalToggle from '../VerticalToggle/VerticalToggle';
 import Fan from '../icons/Fan/Fan';
+import { executeDeviceCommand, getDeviceById } from '../../services/devicesService';
+import { fetchHousesData } from '../../services/housesService';
+import { executeCameraCommand } from '../../services/camerasService';
+import BatteryGauge from 'react-battery-gauge';
 
 
 
 const ItemWindow = (args) => {
+    const [device, setDevice] = useState(args.device);
+
+    const [deviceStatus, setDeviceStatus] = useState(renderItemStatus(args.device));
+    const [statusWidth, setStatusWidth] = useState('auto');
+    const [isFading, setIsFading] = useState(false);
+    const [isFav, setIsFav] = useState(args.device.favourite);
+    const statusRef = useRef(null);
+
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [icons, setIcons] = useState([]);
     const [selectedIcon, setSelectedIcon] = useState(<Lightbulb />);
@@ -36,13 +48,24 @@ const ItemWindow = (args) => {
     const [closeRequired, setCloseRequired] = useState(false);
 
     useEffect(() => {
-        console.log("REQUIRED")
         if (closeRequired) {
             args.idFunc(0);
             args.setToDeleteId(args.device.id)
             setCloseRequired(false);
         }
     }, [closeRequired]);
+
+
+    const updateStatus = (newStatus) => {
+        setIsFading(true);
+        setTimeout(() => {
+            setDeviceStatus(newStatus);
+            requestAnimationFrame(() => {
+                updateStatusWidth();
+                setIsFading(false);
+            });
+        }, 300);
+    }
 
 
 
@@ -142,14 +165,15 @@ const ItemWindow = (args) => {
 
     /* ----- БЛОК ПЕРЕМЕННЫХ ------*/
 
-    const [state, setState] = useState("OFF");
+    const [state, setState] = useState(device.state);
+    const [toggleState, setToggleState] = useState(device.state);
 
     const [mode, setMode] = useState("");
 
     const [windMode, setWindMode] = useState("");
 
-    const [brightness, setBrightness] = useState(0);
-    const [colorTemp, setColorTemp] = useState(0);
+    const [brightness, setBrightness] = useState(device.features !== undefined && device.features.BRIGHTNESS !== undefined ? device.status !== "OFF" ? device.features.BRIGHTNESS : 0 : 0);
+    const [colorTemp, setColorTemp] = useState(device.features !== undefined && device.features.COLOR_TEMP !== undefined ? device.features.COLOR_TEMP : 0);
 
     const [targetTemp, setTargetTemp] = useState(0);
     const [currentTemp, setCurrentTemp] = useState(0);
@@ -161,62 +185,80 @@ const ItemWindow = (args) => {
 
     const [curtainPercentage, setCurtainPercentage] = useState(0);
 
+    const timerRef = useRef(null);
+
     /* -----------*/
 
 
-    const fetchDeviceData = () => {
-        if (args.device.status !== undefined) {
-            setState(args.device.status);
+    const fetchDeviceData = async () => {
+        try {
+            const result = await fetchHousesData(args.token);
+
+            if (result) {
+                setDevice(getDeviceById(device.id, result));
+                console.log(device);
+            }
+        } catch (error) {
+            console.error('Ошибка при получении устройства:', error);
         }
-        switch (itemPrimaryType(args.device)) {
+
+
+        if (device.status !== undefined) {
+            setState(device.status);
+        }
+        switch (itemPrimaryType(device)) {
             case "LAMP":
-                if (args.device.features.COLOR_TEMP !== undefined) {
-                    setColorTemp(args.device.features.COLOR_TEMP);
+                if (device.features.COLOR_TEMP !== undefined) {
+                    setColorTemp(device.features.COLOR_TEMP);
                 }
-                if (args.device.features.BRIGHTNESS !== undefined) {
-                    setBrightness(args.device.features.BRIGHTNESS);
+                if (device.features.BRIGHTNESS !== undefined) {
+                    if (device.status !== "OFF") {
+                        setBrightness(device.features.BRIGHTNESS);
+                    }
                 }
             case "THERMOSTAT":
-                if (args.device.features.TARGET_TEMP !== undefined) {
-                    setTargetTemp(args.device.features.TARGET_TEMP);
+                if (device.features.TARGET_TEMP !== undefined) {
+                    setTargetTemp(device.features.TARGET_TEMP);
                 }
-                if (args.device.features.CURRENT_TEMP !== undefined) {
-                    setCurrentTemp(args.device.features.CURRENT_TEMP);
+                if (device.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(device.features.CURRENT_TEMP);
                 }
-                if (args.device.features.MODE !== undefined) {
-                    setMode(args.device.features.MODE);
+                if (device.features.MODE !== undefined) {
+                    setMode(device.features.MODE);
                 }
             case "AC":
-                if (args.device.features.TARGET_TEMP !== undefined) {
-                    setTargetTemp(args.device.features.TARGET_TEMP);
+                if (device.features.TARGET_TEMP !== undefined) {
+                    setTargetTemp(device.features.TARGET_TEMP);
                 }
-                if (args.device.features.CURRENT_TEMP !== undefined) {
-                    setCurrentTemp(args.device.features.CURRENT_TEMP);
+                if (device.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(device.features.CURRENT_TEMP);
                 }
-                if (args.device.features.MODE !== undefined) {
-                    setMode(args.device.features.MODE);
+                if (device.features.MODE !== undefined) {
+                    setMode(device.features.MODE);
                 }
-                if (args.device.features.WIND_MODE !== undefined) {
-                    setWindMode(args.device.features.WIND_MODE);
+                if (device.features.WIND_MODE !== undefined) {
+                    setWindMode(device.features.WIND_MODE);
                 }
             case "TEMPERATURE":
-                if (args.device.features.CURRENT_TEMP !== undefined) {
-                    setCurrentTemp(args.device.features.CURRENT_TEMP);
+                if (device.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(device.features.CURRENT_TEMP);
                 }
             case "CURTAIN":
-                if (args.device.features.PERCENTAGE !== undefined) {
-                    setCurtainPercentage(args.device.features.PERCENTAGE);
+                if (device.features.PERCENTAGE !== undefined) {
+                    setCurtainPercentage(device.features.PERCENTAGE);
                 }
             case "FAN":
-                if (args.device.features.SPEED !== undefined) {
-                    setFanSpeed(args.device.features.SPEED);
+                if (device.features.SPEED !== undefined) {
+                    setFanSpeed(device.features.SPEED);
                 }
         }
     }
 
     useEffect(() => {
-        fetchDeviceData();
-    }, [args.device, args.visible]);
+        if (args.visible && !args.actionWindow) {
+            fetchDeviceData();
+        }
+    }, [args.device, args.visible, settingsVisible]);
 
 
     /* ----- РЕЖИМЫ ТЕРМОСТАТА, КОНДИЦИОНЕРА И УВЛАЖНИТЕЛЯ -----*/
@@ -245,9 +287,9 @@ const ItemWindow = (args) => {
 
     const setValveOrCurtainStateWithToggle = (state) => {
         if (!state) {
-            setState("CLOSED");
+            setToggleState("CLOSED");
         } else {
-            setState("OPENED");
+            setToggleState("OPENED");
         }
     }
 
@@ -258,23 +300,121 @@ const ItemWindow = (args) => {
     /* ----------*/
 
 
+
+
     /* ----- ПЕРЕКЛЮЧАТЕЛЬ -----*/
 
     const setStateWithToggle = (state) => {
         if (!state) {
-            setState("OFF");
+            setToggleState("OFF");
         } else {
-            setState("ON");
+            setToggleState("ON");
         }
     }
 
     const getState = () => {
-        return state === "ON";
+        return toggleState === "ON";
     }
 
     /* ----------*/
 
 
+
+
+
+    /* ----- ХЕНДЛЕРЫ ЛАМПЫ -----*/
+
+    useEffect(() => {
+        const handleBrightnessChange = async () => {
+            try {
+                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_BRIGHTNESS", Math.round(brightness));
+                if (result) {
+                    console.log(result);
+                    updateStatus(renderItemStatus(result.data));
+                    setDevice((prevDevice) => ({
+                        ...prevDevice,
+                        features: {
+                            ...prevDevice.features,
+                            BRIGHTNESS: Math.round(brightness),
+                        },
+                    }));
+                }
+
+            } catch (error) {
+                console.error('Ошибка при изменении яркости:', error);
+            }
+        };
+
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+
+        timerRef.current = setTimeout(() => {
+            if(!args.actionWindow) handleBrightnessChange();
+        }, 200);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [brightness]);
+
+    useEffect(() => {
+        const handleColorTempChange = async () => {
+            try {
+                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_COLOR_TEMPERATURE", colorTemp);
+                if (result) {
+                    console.log(result);
+                    setDevice((prevDevice) => ({
+                        ...prevDevice,
+                        features: {
+                            ...prevDevice.features,
+                            COLOR_TEMP: colorTemp,
+                        },
+                    }));
+                }
+
+            } catch (error) {
+                console.error('Ошибка при изменении цветовой температуры:', error);
+            }
+        };
+
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+
+        timerRef.current = setTimeout(() => {
+            if(!args.actionWindow) handleColorTempChange();
+        }, 200);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [colorTemp]);
+
+    useEffect(() => {
+        console.log("haha")
+        const handleToggle = async () => {
+            try {
+                const result = await executeDeviceCommand(args.token, device.id, toggleState === "ON" ? "TURN_ON" : "TURN_OFF", "");
+                if (result) {
+                    console.log(result);
+                    setState(result.data.status);
+                    updateStatus(renderItemStatus(result.data));
+                }
+
+            } catch (error) {
+                console.error('Ошибка при изменении состояния:', error);
+            }
+        };
+
+        if(!args.actionWindow) handleToggle();
+    }, [toggleState]);
+
+    /* ----------*/
 
 
 
@@ -423,12 +563,6 @@ const ItemWindow = (args) => {
         }
     };
 
-    const [deviceStatus, setDeviceStatus] = useState(renderItemStatus(args.device));
-    const [statusWidth, setStatusWidth] = useState('auto');
-    const [isFading, setIsFading] = useState(false);
-    const [isFav, setIsFav] = useState(args.device.favourite);
-    const statusRef = useRef(null);
-
     const handleFavChange = (dID, fav) => {
         // dispatch(setFav({ id: dID, favourite: fav })); // TODO: fix
     };
@@ -443,7 +577,7 @@ const ItemWindow = (args) => {
     };
 
     useEffect(() => {
-        const newStatus = renderItemStatus(args.device);
+        const newStatus = renderItemStatus(device);
         if (newStatus !== deviceStatus) {
             setIsFading(true);
             setTimeout(() => {
@@ -454,7 +588,7 @@ const ItemWindow = (args) => {
                 });
             }, 300);
         }
-    }, [args.device.status, args.device.dim, args.device.targetTemp]);
+    }, [device.status, device.features]);
 
     useEffect(() => {
         requestAnimationFrame(() => {
@@ -465,10 +599,11 @@ const ItemWindow = (args) => {
     return (
         <div
             className={`item-window 
-                ${!args.visible ? "item-window--hidden" : ""} 
-                ${isVerticalControls(args.device) ? "item-window--vertical" : ""}`}
+                ${!args.visible && !args.actionWindow ? "item-window--hidden" : ""} 
+                ${isVerticalControls(args.device) ? "item-window--vertical" : ""} 
+                ${args.actionWindow ? "item-window--action-window" : ""}`}
         >
-            <ItemSettings
+            {!args.actionWindow ? <ItemSettings
                 fetchData={args.fetchData}
                 rooms={args.rooms}
                 room={args.room}
@@ -483,11 +618,42 @@ const ItemWindow = (args) => {
                 selectedIcon={selectedIcon}
                 setSelectedIcon={setSelectedIcon}
                 closeRequired={setCloseRequired}
-            />
+            /> : null}
             <div className="item-window__back" />
             <div className={`item-window__header ${settingsVisible ? "item-window__header--hidden" : ""}`}>
                 <div className="item-window__item-icon">{renderItemIcon(args.device)}</div>
-                <p className="item-window__header-title">{args.device.deviceName}</p>
+                {device.batteryLevel !== null ?
+                    <div className='item-window__battery-wrapper'>
+                        <div className='item-window__battery'>
+                            <BatteryGauge value={device.batteryLevel} size={30} customization={{
+                                batteryBody: {
+                                    strokeWidth: 6,
+                                    cornerRadius: 12,
+                                    strokeColor: "rgba(255, 255, 255, 0.2)"
+                                },
+                                batteryCap: {
+                                    fill: 'none',
+                                    strokeWidth: 4,
+                                    strokeColor: "rgba(255, 255, 255, 0.2)",
+                                    cornerRadius: 2,
+                                    capToBodyRatio: 0.4
+                                },
+                                batteryMeter: {
+                                    fill: "rgba(255, 255, 255, 0.8)",
+                                    lowBatteryValue: 20,
+                                    lowBatteryFill: 'red',
+                                    outerGap: 6,
+                                    interCellsGap: 1
+                                },
+                                readingText: {
+                                    fontSize: 0,
+                                    showPercentage: true
+                                },
+                            }} />
+                        </div>
+                        <p className='item-window__battery-percentage'>{device.batteryLevel}%</p>
+                    </div>
+                    : null}
                 <p className="item-window__close-btn" onClick={() => args.idFunc(0)}>Готово</p>
             </div>
             <div
@@ -495,11 +661,11 @@ const ItemWindow = (args) => {
                 className={`item-window__content ${settingsVisible ? "item-window__content--hidden" : ""}`}
             >
                 <div className="item-window__item-info" onClick={handleContentClick}>
-                    <p className="item-window__item-name">{args.device.name}</p>
-                    <p className="item-window__room-name">
+                    <p className="item-window__item-name">{device.name}</p>
+                    {!args.actionWindow ? <p className="item-window__room-name">
                         {args.room.name || "Неизвестная комната"}
-                    </p>
-                    {deviceStatus ?
+                    </p> : null}
+                    {deviceStatus && !args.actionWindow ?
                         <div className="item-window__item-status" style={{ width: statusWidth }}>
                             <p ref={statusRef} className={isFading ? "fading" : ""}>{deviceStatus}</p>
                         </div>
@@ -511,7 +677,7 @@ const ItemWindow = (args) => {
                     {renderDeviceControls()}
                 </div>
             </div>
-            <div className={`item-window__toolbar ${settingsVisible ? "item-window__toolbar--hidden" : ""}`}>
+            {!args.actionWindow ? <div className={`item-window__toolbar ${settingsVisible ? "item-window__toolbar--hidden" : ""}`}>
                 <div
                     className="item-window__tool-btn item-window__tool-btn--circle"
                     onClick={() => {
@@ -533,7 +699,7 @@ const ItemWindow = (args) => {
                     </p>
                     {/* <Gear size="1.2rem" color="white" /> */}
                 </div>
-            </div>
+            </div> : null}
         </div>
     );
 

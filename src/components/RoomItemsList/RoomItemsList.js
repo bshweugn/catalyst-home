@@ -2,7 +2,7 @@ import React from 'react';
 import './RoomItemsList.scss';
 import ItemsList from '../ItemsList/ItemsList';
 
-const RoomItemsList = ({ rooms, setSelectedRoomId, setItemId, itemId, currentRoomId, editMode, className, toDeleteId }) => {
+const RoomItemsList = ({ rooms, setSelectedRoomId, setItemId, itemId, currentRoomId, editMode, className, toDeleteId, toDeleteRoomId, token }) => {
     const finalClassName = 'room-items-list ' + (className || '');
 
     return (
@@ -21,6 +21,8 @@ const RoomItemsList = ({ rooms, setSelectedRoomId, setItemId, itemId, currentRoo
                         openedID={itemId}
                         hiddenTitle={currentRoomId !== 0}
                         toDeleteId={toDeleteId}
+                        toDeleteRoomId={toDeleteRoomId}
+                        token={token}
                     />
                 ))}
         </div>

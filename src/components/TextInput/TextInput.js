@@ -1,8 +1,7 @@
 import React from 'react';
 import './TextInput.scss';
 
-
-const TextInput = ({ value, label, setValue, placeholder, light, separated, bottomSeparated }) => {
+const TextInput = ({ value, label, setValue, placeholder, light, separated, bottomSeparated, onBlur, onFocus }) => {
   return (
     <div className={`text-input ${light ? 'text-input--light' : ''} ${separated ? 'text-input--separated' : ''} ${bottomSeparated ? 'text-input--bottom-separated' : ''}`}>
         <p className='text-input__label'>{label}</p>
@@ -12,6 +11,8 @@ const TextInput = ({ value, label, setValue, placeholder, light, separated, bott
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder || "Введите текст"}
+        onBlur={onBlur} // Добавлен onBlur для обработки завершения ввода
+        onFocus={onFocus} // Добавлен onFocus для активации редактирования
       />
     </div>
   );

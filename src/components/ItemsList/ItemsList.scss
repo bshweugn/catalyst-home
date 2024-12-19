@@ -7,9 +7,16 @@
     margin-top: 1rem;
     padding-bottom: 0.2rem;
     width: 100%;
+    transition: .3s;
 
-    &--separated{
+    &--separated {
         margin-top: 2rem;
+    }
+
+    &--to-delete {
+        transform: scale(0.9);
+        opacity: 0 !important;
+        filter: blur(1rem);
     }
 
     &--light &__room-name {
@@ -21,7 +28,7 @@
         font-size: 1rem;
     }
 
-    &--atomic-selection &__room-name{
+    &--atomic-selection &__room-name {
         padding: 0;
         background-color: transparent;
     }

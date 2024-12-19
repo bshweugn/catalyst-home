@@ -12,7 +12,6 @@ import {
     REGISTER,
 } from 'redux-persist';
 
-// Создание слайсов
 const devicesSlice = createSlice({
     name: 'devices',
     initialState: {},
@@ -31,6 +30,13 @@ const devicesSlice = createSlice({
         removeDevice: (state, action) => {
             const { id } = action.payload;
             delete state[id];
+        },
+
+        updateDeviceProperty: (state, action) => {
+            const { id, property, value } = action.payload;
+            if (state[id]) {
+                state[id][property] = value;
+            }
         },
     },
 });
@@ -112,6 +118,7 @@ export const {
     setDevice,
     setFav,
     removeDevice,
+    updateDeviceProperty,
 } = devicesSlice.actions;
 
 export const {
@@ -132,7 +139,6 @@ export const {
     removeFloorFromHouse,
 } = housesSlice.actions;
 
-// Комбинируем редьюсеры
 const rootReducer = combineReducers({
     devices: devicesSlice.reducer,
     rooms: roomsSlice.reducer,
@@ -140,7 +146,6 @@ const rootReducer = combineReducers({
     houses: housesSlice.reducer,
 });
 
-// Конфигурация persist
 const persistConfig = {
     key: 'root',
     storage,
@@ -148,7 +153,6 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Создание хранилища
 const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
