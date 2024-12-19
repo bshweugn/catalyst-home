@@ -11,8 +11,12 @@ import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
 import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHandler;
+import itmo.localpiper.backend.service.handling.abstr.AbstractCurtainHandler;
+import itmo.localpiper.backend.service.handling.abstr.AbstractFanHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLampHandler;
 import itmo.localpiper.backend.service.handling.concr.CameraHandler;
+import itmo.localpiper.backend.service.handling.concr.CurtainHandler;
+import itmo.localpiper.backend.service.handling.concr.FanHandler;
 import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.util.DeviceTypeHandlerService;
 import lombok.AllArgsConstructor;
@@ -27,11 +31,23 @@ public class HandlerFactory {
     private final VideoRecordingService videoRecordingService;
     private final DeviceTypeHandlerService deviceTypeHandlerService;
 
-    public AbstractLampHandler getLampHandler(Device device) {
+    private List<String> getCommands(Device device) {
         String serialNumber = deviceTypeHandlerService.extractSerialNumber(device.getDeviceType());
         List<String> commands = actionRegistry.get(serialNumber);
         if (commands == null) throw new IllegalArgumentException("Unknown device number: " + serialNumber);
-        return new LampHandler(commands, device, deviceRepository);
+        return commands;
+    }
+
+    public AbstractLampHandler getLampHandler(Device device) {
+        return new LampHandler(getCommands(device), device, deviceRepository);
+    }
+
+    public AbstractCurtainHandler getCurtainHandler(Device device) {
+        return new CurtainHandler(getCommands(device), device, deviceRepository);
+    }
+
+    public AbstractFanHandler getFanHandler(Device device) {
+        return new FanHandler(getCommands(device), device, deviceRepository);
     }
 
     public AbstractCameraHandler getCameraHandler(Camera camera) {
@@ -40,4 +56,6 @@ public class HandlerFactory {
         if (commands == null) throw new IllegalArgumentException("Unknown device number: " + serialNumber);
         return new CameraHandler(commands, camera, videoRecordingService, cameraRepository);
     }
+
+
 }
