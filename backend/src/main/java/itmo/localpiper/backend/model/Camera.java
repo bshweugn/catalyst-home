@@ -71,6 +71,10 @@ public class Camera {
     @JsonManagedReference
     private List<UserCameraActionRel> userCameraActionRels;
 
+    @OneToMany(mappedBy = "camera", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<VideoRecording> videoRecordings;
+
     @ManyToMany(mappedBy="cameras")
     private List<TriggerCondition> triggerConditions;
     
