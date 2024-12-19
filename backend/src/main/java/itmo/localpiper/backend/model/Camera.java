@@ -73,7 +73,7 @@ public class Camera {
 
     @ManyToMany(mappedBy="cameras")
     private List<TriggerCondition> triggerConditions;
-
+    
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode node = objectMapper.createObjectNode();

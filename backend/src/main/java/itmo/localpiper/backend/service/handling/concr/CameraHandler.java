@@ -10,6 +10,7 @@ import itmo.localpiper.backend.model.Camera;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
 import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHanlder;
+import itmo.localpiper.backend.service.handling.state.CameraChargeManager;
 import itmo.localpiper.backend.service.handling.state.RecordingStateManager;
 
 public class CameraHandler extends AbstractCameraHanlder {
@@ -18,6 +19,7 @@ public class CameraHandler extends AbstractCameraHanlder {
     private final CameraRepository repository;
     private final VideoRecordingService service;
     private final RecordingStateManager recordingStateManager = RecordingStateManager.getInstance();
+    private final CameraChargeManager chargeManager = CameraChargeManager.getInstance();
 
     public CameraHandler(List<String> commands, Camera camera, VideoRecordingService videoRecordingService, CameraRepository cameraRepository) {
         super(commands);
@@ -35,8 +37,8 @@ public class CameraHandler extends AbstractCameraHanlder {
             case "STOP_RECORDING" -> stopRecording();
             case "ENABLE_MS" -> enableMotionSensor();
             case "DISABLE_MS" -> disableMotionSensor();
-            case "ROTATE_X" -> rotateX((int)arg);
-            case "ROTATE_Y" -> rotateY((int)arg);
+            case "ROTATE_X" -> rotateX((boolean)arg);
+            case "ROTATE_Y" -> rotateY((boolean)arg);
             case "CHARGE" -> charge();
             case "UNPLUG" -> unplug();
             default -> {
@@ -47,41 +49,47 @@ public class CameraHandler extends AbstractCameraHanlder {
     @Override
     protected void turnOn() {
         checkCommand("TURN_ON");
+        if (!"OFF".equals(camera.getStatus())) return;
         camera.setStatus("ON");
         repository.save(camera);
+        chargeManager.registerCamera(camera, repository, service);
     }
 
     @Override
     protected void turnOff() {
         checkCommand("TURN_OFF");
+        if (!"ON".equals(camera.getStatus())) return;
         stopRecording();
         camera.setStatus("OFF");
         repository.save(camera);
+        chargeManager.deregisterCamera(camera.getId());
     }
 
     @Override
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     protected void startRecording() {
         checkCommand("START_RECORDING");
-        if (!"OFF".equals(camera.getStatus())) {
-            camera.setIsRecording(true);
-            repository.save(camera);
-            if (!recordingStateManager.isRecording(camera.getId())) recordingStateManager.startRecording(camera.getId());
-        }
+        if (!"ON".equals(camera.getStatus()) || camera.getIsRecording()) return;
+        camera.setIsRecording(true);
+        repository.save(camera);
+        chargeManager.deregisterCamera(camera.getId());
+        chargeManager.registerCamera(camera, repository, service);
+        recordingStateManager.startRecording(camera.getId());
     }
 
     @Override
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     protected void stopRecording() {
         checkCommand("STOP_RECORDING");
-        if (!"OFF".equals(camera.getStatus())) {
-            camera.setIsRecording(false);
-            repository.save(camera);
-            if (recordingStateManager.isRecording(camera.getId())) {
-                ZonedDateTime startTime = recordingStateManager.getRecordingStartTime(camera.getId());
-                service.create(camera.getId(), startTime, ZonedDateTime.now());
-                recordingStateManager.stopRecording(camera.getId());
-            }
+        if (!camera.getIsRecording()) return;
+        camera.setIsRecording(false);
+        repository.save(camera);
+        if (recordingStateManager.isRecording(camera.getId())) {
+            ZonedDateTime startTime = recordingStateManager.getRecordingStartTime(camera.getId());
+            service.create(camera.getId(), startTime, ZonedDateTime.now());
+            chargeManager.deregisterCamera(camera.getId());
+            chargeManager.registerCamera(camera, repository, service);
+            recordingStateManager.stopRecording(camera.getId());
         }
     }
 
@@ -104,35 +112,52 @@ public class CameraHandler extends AbstractCameraHanlder {
     }
 
     @Override
-    protected void rotateX(int x) {
+    protected void rotateX(boolean neg) {
         checkCommand("ROTATE_X");
-        if (x < 0 || x > 100) throw new IllegalArgumentException("X must be between 0 and 100");
         if (!"OFF".equals(camera.getStatus())) {
-            camera.setXRotatePercent(x);
+            if (!neg) {
+                camera.setYRotatePercent(Math.max(100, camera.getYRotatePercent() + 8));
+            } else {
+                camera.setYRotatePercent(Math.min(0, camera.getYRotatePercent() - 8));
+            }
         }
         repository.save(camera);
     }
 
     @Override
-    protected void rotateY(int y) {
+    protected void rotateY(boolean neg) {
         checkCommand("ROTATE_Y");
-        if (y < 0 || y > 100) throw new IllegalArgumentException("Y must be between 0 and 100");
         if (!"OFF".equals(camera.getStatus())) {
-            camera.setXRotatePercent(y);
+            if (!neg) {
+                camera.setYRotatePercent(Math.max(100, camera.getYRotatePercent() + 8));
+            } else {
+                camera.setYRotatePercent(Math.min(0, camera.getYRotatePercent() - 8));
+            }
         }
         repository.save(camera);
     }
 
     @Override
     protected void charge() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'charge'");
+        checkCommand("CHARGE");
+        if ("ON".equals(camera.getStatus())) {
+            turnOff();
+        }
+        if (camera.getBatteryLevel() == 100) return; 
+        camera.setCharging(true);
+        repository.save(camera);
+
+        chargeManager.registerCamera(camera, repository, service);
     }
 
     @Override
     protected void unplug() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'unplug'");
+        checkCommand("UNPLUG");
+
+        camera.setCharging(false);
+        repository.save(camera);
+
+        chargeManager.deregisterCamera(camera.getId());
     }
     
 }

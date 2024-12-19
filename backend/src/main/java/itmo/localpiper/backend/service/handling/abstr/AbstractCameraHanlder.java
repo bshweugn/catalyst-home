@@ -25,8 +25,8 @@ public abstract class AbstractCameraHanlder implements Handler {
     protected abstract void stopRecording();
     protected abstract void enableMotionSensor();
     protected abstract void disableMotionSensor();
-    protected abstract void rotateX(int x);
-    protected abstract void rotateY(int y);
+    protected abstract void rotateX(boolean neg);
+    protected abstract void rotateY(boolean neg);
     protected abstract void charge();
     protected abstract void unplug();   
 }
