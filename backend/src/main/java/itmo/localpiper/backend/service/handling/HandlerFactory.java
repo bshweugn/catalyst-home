@@ -17,6 +17,7 @@ import itmo.localpiper.backend.service.handling.abstr.AbstractLampHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLeakDetectorHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractRelayHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractTemperatureSensorHandler;
+import itmo.localpiper.backend.service.handling.abstr.AbstractThermostatHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractValveHandler;
 import itmo.localpiper.backend.service.handling.concr.CameraHandler;
 import itmo.localpiper.backend.service.handling.concr.CurtainHandler;
@@ -25,6 +26,7 @@ import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.handling.concr.LeakDetectorHandler;
 import itmo.localpiper.backend.service.handling.concr.RelayHandler;
 import itmo.localpiper.backend.service.handling.concr.TemperatureSensorHandler;
+import itmo.localpiper.backend.service.handling.concr.ThermostatHandler;
 import itmo.localpiper.backend.service.handling.concr.ValveHandler;
 import itmo.localpiper.backend.util.DeviceTypeHandlerService;
 import lombok.AllArgsConstructor;
@@ -64,6 +66,11 @@ public class HandlerFactory {
     // 04XXXX
     public AbstractValveHandler getValveHandler(Device device) {
         return new ValveHandler(getCommands(device), device, deviceRepository);
+    }
+
+    // 05XXXX
+    public AbstractThermostatHandler getThermostatHandler(Device device) {
+        return new ThermostatHandler(getCommands(device), device, deviceRepository);
     }
 
     // 08XXXX

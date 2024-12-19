@@ -15,6 +15,7 @@ import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.handling.concr.LeakDetectorHandler;
 import itmo.localpiper.backend.service.handling.concr.RelayHandler;
 import itmo.localpiper.backend.service.handling.concr.TemperatureSensorHandler;
+import itmo.localpiper.backend.service.handling.concr.ThermostatHandler;
 import itmo.localpiper.backend.service.handling.concr.ValveHandler;
 import itmo.localpiper.backend.service.processing.AbstractProcessor;
 import itmo.localpiper.backend.util.AccessValidationService;
@@ -65,6 +66,10 @@ public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair
             case VALVE -> {
                 ValveHandler valveHandler = (ValveHandler)handlerFactory.getValveHandler(device);
                 valveHandler.pickCommand(command, arg);
+            }
+            case THERMOSTAT -> {
+                ThermostatHandler thermostatHandler = (ThermostatHandler)handlerFactory.getThermostatHandler(device);
+                thermostatHandler.pickCommand(command, arg);
             }
             case LEAK_DETECTOR -> {
                 LeakDetectorHandler leakDetectorHandler = (LeakDetectorHandler)handlerFactory.getLeakDetectorHandler(device);

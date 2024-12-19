@@ -10,6 +10,7 @@ import itmo.localpiper.backend.service.handling.state.manager.CameraChargeManage
 import itmo.localpiper.backend.service.handling.state.manager.LeakDetectorChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.RelayChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.TemperatureSensorChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.ThermostatHeatManager;
 import itmo.localpiper.backend.service.handling.state.manager.ValveChargeManager;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.annotation.PreDestroy;
@@ -58,16 +59,27 @@ public class ApplicationConfig {
         return manager;
     }
 
+    @Bean
+    @SuppressWarnings("unused")
+    ThermostatHeatManager thermostatHeatManager() {
+        ThermostatHeatManager manager = ThermostatHeatManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
     @PreDestroy
-    public void stopManagers() {
+    @SuppressWarnings("unused")
+    void stopManagers() {
         CameraChargeManager cameraChargeManager = CameraChargeManager.getInstance();
         RelayChargeManager relayChargeManager = RelayChargeManager.getInstance();
         ValveChargeManager valveChargeManager = ValveChargeManager.getInstance();
+        ThermostatHeatManager thermostatHeatManager = ThermostatHeatManager.getInstance();
         LeakDetectorChargeManager leakDetectorChargeManager = LeakDetectorChargeManager.getInstance();
         TemperatureSensorChargeManager temperatureSensorChargeManager = TemperatureSensorChargeManager.getInstance();
         cameraChargeManager.stop();
         relayChargeManager.stop();
         valveChargeManager.stop();
+        thermostatHeatManager.stop();
         leakDetectorChargeManager.stop();
         temperatureSensorChargeManager.stop();
     }

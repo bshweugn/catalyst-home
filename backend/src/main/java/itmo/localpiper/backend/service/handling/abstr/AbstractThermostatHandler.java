@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.handling.abstr;
 import java.util.List;
 
 import itmo.localpiper.backend.service.handling.Handler;
-import itmo.localpiper.backend.util.enums.WorkMode;
 
 public abstract class AbstractThermostatHandler implements Handler{
 
@@ -24,5 +23,5 @@ public abstract class AbstractThermostatHandler implements Handler{
     protected abstract void turnOff();
     protected abstract void heat(int target);
     protected abstract void cool(int target);
-    protected abstract void changeMode(WorkMode mode);
+    protected abstract void changeMode(String mode);
 }
