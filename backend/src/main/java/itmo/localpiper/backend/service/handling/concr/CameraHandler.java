@@ -98,8 +98,9 @@ public class CameraHandler extends AbstractCameraHanlder {
         checkCommand("ENABLE_MS");
         if (!"OFF".equals(camera.getStatus())) {
             camera.setMotionSensorEnabled(true);
+            repository.save(camera);
         }
-        repository.save(camera);
+        
     }
 
     @Override
@@ -107,8 +108,9 @@ public class CameraHandler extends AbstractCameraHanlder {
         checkCommand("DISABLE_MS");
         if (!"OFF".equals(camera.getStatus())) {
             camera.setMotionSensorEnabled(false);
+            repository.save(camera);
         }
-        repository.save(camera);
+        
     }
 
     @Override
@@ -120,8 +122,9 @@ public class CameraHandler extends AbstractCameraHanlder {
             } else {
                 camera.setYRotatePercent(Math.min(0, camera.getYRotatePercent() - 8));
             }
+            repository.save(camera);
         }
-        repository.save(camera);
+        
     }
 
     @Override
@@ -133,8 +136,9 @@ public class CameraHandler extends AbstractCameraHanlder {
             } else {
                 camera.setYRotatePercent(Math.min(0, camera.getYRotatePercent() - 8));
             }
+            repository.save(camera);
         }
-        repository.save(camera);
+        
     }
 
     @Override

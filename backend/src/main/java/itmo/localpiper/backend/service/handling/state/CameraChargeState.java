@@ -64,6 +64,11 @@ public class CameraChargeState {
     }
 
     private void persistState() {
+        Camera latestState = repository.findById(camera.getId()).orElseThrow();
+        camera.setMotionSensorEnabled(latestState.getMotionSensorEnabled());
+        camera.setXRotatePercent(latestState.getXRotatePercent());
+        camera.setYRotatePercent(latestState.getYRotatePercent());
+        
         repository.save(camera);
     }
 }
