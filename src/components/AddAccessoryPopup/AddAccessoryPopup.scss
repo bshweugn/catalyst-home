@@ -79,6 +79,7 @@
 
     &__buttons-group {
         position: relative;
+        z-index: 10;
 
         &--bottom {
             position: absolute;
@@ -89,6 +90,27 @@
         }
     }
 
+    &__scrollable-list{
+        overflow-y: scroll;
+        overflow-x: hidden;
+        width: calc(100% + 3rem);
+        padding: 0 1.5rem;
+        padding-bottom: 6rem;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    &__scrollable-list-tint{
+        height: 3rem;
+        width: 100%;
+        position: fixed;
+        left: 0;
+        top: 6.5rem;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+        z-index: 5;
+    }
+
     &__spinner-wrapper{
         height: 8rem;
         display: flex;
@@ -97,15 +119,13 @@
     }
 
     &__buttons-group-tint {
-        height: 100%;
+        height: calc(100% + 2rem);
         width: 100%;
         position: absolute;
         left: 0;
-        right: 0;
-        top: 0;
         bottom: 0;
         background: rgb(255, 255, 255);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%);
         z-index: -1;
     }
 

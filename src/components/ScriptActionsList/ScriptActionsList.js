@@ -63,7 +63,7 @@ const ScriptActionsList = (args) => {
                     </div>
                 </div>
             )) : null}
-            <div className='script-actions-list__add-button' onClick={args.addFunc}>
+            <div className='script-actions-list__add-button' onClick={() => args.openDevicesList()}>
                 <PlusIcon className='script-actions-list__add-icon' size="1rem" fill="black" />
                 <p className='script-actions-list__add-label'>Добавить действие</p>
             </div>

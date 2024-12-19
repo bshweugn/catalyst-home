@@ -39,7 +39,7 @@ const VerticalSlider = ({ sliderIcon: SliderIconComponent, setValue, value }) =>
                 <div className="vertical-slider__thumb" style={{ height: `${value}%` }}></div>
 
             </div>
-            <SliderIconComponent className="vertical-slider__icon" size="2.25rem" color="black" />
+            <SliderIconComponent className="vertical-slider__icon" size="2rem" color="white" />
         </div>
     );
 };

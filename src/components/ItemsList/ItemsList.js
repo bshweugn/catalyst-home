@@ -8,7 +8,7 @@ import CustomDragLayer from '../CustomDragLayer/CustomDragLayer';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { isSensor } from '../../itemInfo';
 
-const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, multipleSelection, conditionWindow, setCondition, canSave, atomicSelected, hiddenTitle = false }) => {
+const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, openedID, light, preview, setter, selected, multipleSelection, conditionWindow, setCondition, canSave, atomicSelected, hiddenTitle = false, toDeleteId }) => {
     const [cards, setCards] = useState(devices);
 
     const moveCard = (fromIndex, toIndex) => {
@@ -61,6 +61,7 @@ const ItemsList = ({ roomName, roomID, func, devices, editMode, setItemID, opene
                             setCondition={setCondition}
                             canSave={canSave}
                             atomicSelected={atomicSelected === device.id}
+                            toDelete={toDeleteId === device.id}
                         />
                     ))}
                 </div>

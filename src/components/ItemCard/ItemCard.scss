@@ -29,6 +29,12 @@
         opacity: 0!important;
     }
 
+    &--to-delete{
+        transform: scale(0.7);
+        opacity: 0!important;
+        filter: blur(1rem);
+    }
+
     &__item-info {
         // height: calc(100% - 0.75rem * 2);
         position: absolute;

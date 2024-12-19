@@ -2,13 +2,13 @@ import React from 'react';
 import './RoomItemsList.scss';
 import ItemsList from '../ItemsList/ItemsList';
 
-const RoomItemsList = ({rooms, setSelectedRoomId, setItemId, itemId, currentRoomId, editMode, className}) => {
-    const finalClassName = 'room-items-list ' + (className || '')
+const RoomItemsList = ({ rooms, setSelectedRoomId, setItemId, itemId, currentRoomId, editMode, className, toDeleteId }) => {
+    const finalClassName = 'room-items-list ' + (className || '');
 
     return (
         <div className={finalClassName}>
             {Object.values(rooms)
-                .filter((room) => currentRoomId === 0 || room.id === currentRoomId)
+                .filter((room) => (currentRoomId === 0 || room.id === currentRoomId) && room.devices?.length > 0) // Фильтрация по наличию устройств
                 .map((room) => (
                     <ItemsList
                         key={room.id}
@@ -20,8 +20,8 @@ const RoomItemsList = ({rooms, setSelectedRoomId, setItemId, itemId, currentRoom
                         setItemID={setItemId}
                         openedID={itemId}
                         hiddenTitle={currentRoomId !== 0}
+                        toDeleteId={toDeleteId}
                     />
-                    // <p>{JSON.stringify(room)}</p>
                 ))}
         </div>
     );

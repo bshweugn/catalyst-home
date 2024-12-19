@@ -71,6 +71,7 @@ const AddAccessoryPopup = (args) => {
     const [pageBackground, setPageBackground] = useState(background);
 
     const [deviceSelectMode, setDeviceSelectMode] = useState(false);
+    const [scriptDeviceSelectMode, setScriptDeviceSelectMode] = useState(false);
     const [selectedDevicesIds, setSelectedDevicesIds] = useState([]);
     const [selectedDevices, setSelectedDevices] = useState([]);
     const [selectedDevice, setSelectedDevice] = useState(-1);
@@ -97,6 +98,7 @@ const AddAccessoryPopup = (args) => {
         setView("default");
         setManualInput(false);
         setDeviceSelectMode(false);
+        setScriptDeviceSelectMode(false);
         createTrigger(-1, '', '')
         handleToggleChange(0, false);
         args.func(false);
@@ -294,19 +296,11 @@ const AddAccessoryPopup = (args) => {
 
     useEffect(() => {
         console.log(selectedDevice);
-        // console.log(trigger.id, trigger.id != -1, trigger.action, trigger.action !== "", devices["id" + selectedDevice], devices["id" + selectedDevice].isSensor)
-        // if(trigger.id && trigger.id != -1 && trigger.action !== "" && devices["id" + selectedDevice]){
-        //     if()
-        // }
     }, [selectedDevice]);
 
     useEffect(() => {
         console.log(trigger);
         setCondition(trigger.condition)
-        // console.log(trigger.id, trigger.id != -1, trigger.action, trigger.action !== "", devices["id" + selectedDevice], devices["id" + selectedDevice].isSensor)
-        // if(trigger.id && trigger.id != -1 && trigger.action !== "" && devices["id" + selectedDevice]){
-        //     if()
-        // }
     }, [trigger]);
 
     const actions = []
@@ -574,33 +568,77 @@ const AddAccessoryPopup = (args) => {
             }
             case "automation": {
                 if (!deviceSelectMode) {
-                    return (
-                        <>
-                            <CurrentTrigger trigger={trigger} addFunc={() => { setDeviceSelectMode(true); animate() }} />
-                            <Description text="Сценарий будет запущен при соблюдении выбранного условия активации." />
-                            <ScriptActionsList actions={actions} />
-                            {/* <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
+                    if (!scriptDeviceSelectMode) {
+                        return (
+                            <>
+                                <CurrentTrigger trigger={trigger} addFunc={() => { setDeviceSelectMode(true); animate() }} />
+                                <Description text="Сценарий будет запущен при соблюдении выбранного условия активации." />
+                                <ScriptActionsList actions={actions} openDevicesList={() => { setScriptDeviceSelectMode(true); animate() }} />
+                                {/* <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
                             <VisibilityWrapper defaultState={true} visible={!toggleStates[0].value}>
                                 <ItemsShortPreview label={"Выбор аксессуаров"} devices={devices} action={() => { setDeviceSelectMode(true); animate() }} />
                             </VisibilityWrapper> */}
-                            <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                                <Button primary label="Поделиться" onClick={() => { setView('invite-sent'); animate() }} />
-                                {/* <Button onClick={() => setView("default")} label="Назад" /> */}
-                                <Button label="" />
-                                <div className='add-accessory-popup__buttons-group-tint' />
-                            </div>
-                        </>
-                    );
+                                <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
+                                    <Button primary label="Готово" onClick={() => { setView('invite-sent'); animate() }} />
+                                    {/* <Button onClick={() => setView("default")} label="Назад" /> */}
+                                    <Button label="" />
+                                    <div className='add-accessory-popup__buttons-group-tint' />
+                                </div>
+                            </>
+                        );
+                    } else {
+                        return (
+                            <>
+                                <div className='add-accessory-popup__scrollable-list'>
+                                    <div className='add-accessory-popup__scrollable-list-tint'/>
+                                    {Object.values(args.rooms).map((room) => {
+                                        const filteredDevices = room.devices.filter(
+                                            (device) => !isSensor(device)
+                                        );
+
+                                        if (filteredDevices.length === 0) return null;
+
+                                        return (
+                                            <ItemsList
+                                                light
+                                                preview
+                                                openedID={selectedDevice}
+                                                setItemID={setSelectedDevice}
+                                                key={room.id}
+                                                roomName={room.name}
+                                                roomID={room.id}
+                                                devices={filteredDevices}
+                                                conditionWindow={renderConditionContent}
+                                                setCondition={setCondition}
+                                                atomicSelected={trigger.id}
+                                                canSave={
+                                                    trigger.id &&
+                                                    trigger.id !== -1 &&
+                                                    trigger.action !== "" &&
+                                                    devices[selectedDevice]
+                                                }
+                                            />
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
+                                    <Button primary label="Готово" onClick={() => { setScriptDeviceSelectMode(false); animate() }} />
+                                    {/* <Button onClick={() => setView("default")} label="Назад" /> */}
+                                    <Button label="" />
+                                    <div className='add-accessory-popup__buttons-group-tint' />
+                                </div>
+                            </>
+                        );
+                    }
                 } else {
                     return (
                         <>
                             {Object.values(args.rooms).map((room) => {
-                                // Фильтруем устройства, исключая сенсоры
                                 const filteredDevices = room.devices.filter(
                                     (device) => isSensor(device)
                                 );
 
-                                // Если после фильтрации устройств не осталось — не рендерим комнату
                                 if (filteredDevices.length === 0) return null;
 
                                 return (
@@ -612,7 +650,7 @@ const AddAccessoryPopup = (args) => {
                                         key={room.id}
                                         roomName={room.name}
                                         roomID={room.id}
-                                        devices={filteredDevices} // Передаем отфильтрованные устройства
+                                        devices={filteredDevices}
                                         conditionWindow={renderConditionContent}
                                         setCondition={setCondition}
                                         atomicSelected={trigger.id}

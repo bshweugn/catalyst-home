@@ -1,5 +1,5 @@
 // housesService.js
-import { addFloorRequest, addHouseRequest, addRoomRequest, getHousesData } from '../api/housesAPI';
+import { addFloorRequest, addHouseRequest, addRoomRequest, getHousesData, moveRoomToFloorRequest } from '../api/housesAPI';
 import { setFloor, setHouse, setRoom } from '../store';
 
 
@@ -28,10 +28,20 @@ export const createFloor = async (dispatch, token, name, houseId) => {
 export const createRoom = async (dispatch, token, name, floorId) => {
     try {
         const result = await addRoomRequest(token, name, floorId);
-        dispatch(setRoom({ houseId: null, floorId, room: result.data }));
+        // dispatch(setRoom({ houseId: null, floorId, room: result.data }));
         return result.data;
     } catch (error) {
         console.error('Ошибка при добавлении комнаты:', error);
+        throw error;
+    }
+};
+
+export const moveRoomToFloor = async (token, roomId, floorId) => {
+    try {
+        const result = await moveRoomToFloorRequest(token, roomId, floorId);
+        return result.data;
+    } catch (error) {
+        console.error('Ошибка при перемещении комнаты:', error);
         throw error;
     }
 };
@@ -182,6 +192,32 @@ export const getRoomsByHouseId = (houseId, houses) => {
 
     return allRooms;
 };
+
+
+export const getFloorsByHouseId = (houseId, houses) => {
+    const house = houses.find(h => h.id === houseId);
+    if (!house) {
+        console.error(`Дом с id ${houseId} не найден.`);
+        return [];
+    }
+
+    return house.floors || [];
+};
+
+
+export const getFloorByRoomId = (roomId, houses) => {
+    for (const house of houses) {
+        for (const floor of house.floors || []) {
+            if (floor.rooms && floor.rooms.some(room => room.id === roomId)) {
+                return floor;
+            }
+        }
+    }
+
+    console.error(`Этаж с комнатой id ${roomId} не найден.`);
+    return null;
+};
+
 
 
 export const ensureFloorExists = async (dispatch, token, currentHouseId, houses) => {

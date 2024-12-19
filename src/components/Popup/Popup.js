@@ -117,7 +117,7 @@ const Popup = (args) => {
                 </div>
                 <div
                     ref={contentRef}
-                    style={{ opacity: opacity, transition: 'opacity 0.3s ease-in-out', height: args.fullscreen ? "100%" : "auto", display: args.fullscreen ? "flex" : "block", flexDirection: "column", alignItems: "center", paddingBottom: args.fullscreen ? "6rem" : "0", boxSizing: "border-box"}}
+                    style={{ opacity: opacity, transition: 'opacity 0.3s ease-in-out', height: args.fullscreen ? "100%" : "auto", display: args.fullscreen ? "flex" : "block", flexDirection: "column", alignItems: "center", boxSizing: "border-box"}}
                 >
                     <h2 className={`popup__title ${args.smallTitle ? "popup__title--small" : ""}`}>{currentTitle}</h2>
                     <p className="popup__label">{currentLabel}</p>

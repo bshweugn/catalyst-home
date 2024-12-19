@@ -11,7 +11,7 @@ import Checkmark from '../icons/Checkmark/Checkmark';
 import ConditionWindow from '../ConditionWindow/ConditionWindow';
 import SuperEllipse from 'react-superellipse';
 
-const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected }) => {
+const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected, toDelete }) => {
     const [maximized, setMaximized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
     const [active, setActive] = useState(device.active);
@@ -21,7 +21,15 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
     const [selected, setSelected] = useState(false);
 
 
+    const [toDeleteState, setToDeleteState] = useState(false);
+
     const holdTimeout = useRef(null);
+
+
+    useEffect(() => {
+        setTimeout(() => {setToDeleteState(toDelete)}, 700)
+    }, [toDelete]);
+
 
     const [, drop] = useDrop({
         accept: 'item',
@@ -146,7 +154,7 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                 <></>}
             <div
                 ref={(node) => drag(drop(node))}
-                className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected || atomicSelected ? "item-card--selected" : ""}`}
+                className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected || atomicSelected ? "item-card--selected" : ""} ${toDeleteState ? "item-card--to-delete" : ""}`}
                 style={{ opacity }}
                 onClick={handleCardClick}
             >

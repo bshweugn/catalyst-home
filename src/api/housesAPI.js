@@ -43,8 +43,6 @@ export const addRoomRequest = async (token, name, floorId) => {
 };
 
 
-
-
 // Получить данные о домах
 export const getHousesData = async (token) => {
     const response = await fetch(`${API_URL}/api/data/house`, {
@@ -56,3 +54,65 @@ export const getHousesData = async (token) => {
     if (!response.ok) throw new Error('Ошибка получения данных о домах.');
     return response.json();
 };
+
+
+
+export const moveRoomToFloorRequest = async (token, roomId, floorId) => {
+    const response = await fetch(`${API_URL}/api/modify/move`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            id: roomId,
+            toId: floorId,
+            entity: "ROOM"
+        }),
+    });
+    if (!response.ok) throw new Error('Ошибка перемещения комнаты.');
+    return response.json();
+};
+
+export const deleteRoomRequest = async (token, roomId) => {
+    const response = await fetch(`${API_URL}/api/user/deleteRoom`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            roomId: roomId,
+        }),
+    });
+    if (!response.ok) throw new Error('Ошибка удаления комнаты.');
+    return response.json();
+};
+
+
+// export const deleteRoomRequest = async (token, id, houseId, isDevice) => {
+//     try {
+//         const response = await fetch(`${API_URL}/device/deleteDevice`, {
+//             method: 'POST',
+//             headers: {
+//                 'Accept': '*/*',
+//                 'Authorization': `Bearer ${token}`,
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 deviceId: id,
+//                 houseId: houseId,
+//                 type: isDevice ? "DEVICE" : "CAMERA"
+//             })
+//         });
+
+//         if (!response.ok) {
+//             throw new Error('Не удалось удалить устройство');
+//         }
+
+//         return await response.json();
+//     } catch (error) {
+//         console.error('Ошибка при удалении устройства:', error);
+//         throw error;
+//     }
+// };

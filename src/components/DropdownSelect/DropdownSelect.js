@@ -14,7 +14,7 @@ const DropdownSelect = ({ options, selectedOption, setSelectedOption, label, lig
 
 
     return (
-        <div className={`dropdown-select ${light ? "dropdown-select--light" : ""}`}>
+        <div className={`dropdown-select ${light ? "dropdown-select--light" : ""}`} style={{ height: isOpen ? `${48 * (options.length)}px` : "46px" }}>
             {/* <p>{JSON.stringify(options)}</p> */}
             <div
                 className={`dropdown-select__field ${isOpen ? 'dropdown-select__field--open' : ''}`}

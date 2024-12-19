@@ -94,3 +94,21 @@ export const checkDeviceRequest = async (token, serialNumber) => {
         throw error;
     }
 };
+
+
+export const moveDeviceToRoomRequest = async (token, deviceId, roomId, isCamera) => {
+    const response = await fetch(`${API_URL}/modify/move`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            id: deviceId,
+            toId: roomId,
+            entity: isCamera ? "CAMERA" : "DEVICE"
+        }),
+    });
+    if (!response.ok) throw new Error('Ошибка перемещения устройства.');
+    return response.json();
+};

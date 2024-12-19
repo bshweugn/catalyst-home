@@ -18,7 +18,7 @@ import { logout } from './logic/oauth';
 import AuthScreen from './components/AuthScreen/AuthScreen';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { getMyInfo } from './services/usersService';
-import { fetchHousesData, getRoomsByHouseId } from './services/housesService';
+import { fetchHousesData, getFloorsByHouseId, getRoomsByHouseId } from './services/housesService';
 
 
 function App() {
@@ -38,6 +38,7 @@ function App() {
 
   const [houses, setHouses] = useState([]);
   const [devices, setDevices] = useState([]);
+  const [floors, setFloors] = useState([]);
   const [rooms, setRooms] = useState([]);
 
 
@@ -104,7 +105,9 @@ function App() {
       if (data) {
         setHouses(data);
         const roomsData = getRoomsByHouseId(currentHouseID, data);
+        const floorsData = getFloorsByHouseId(currentHouseID, data);
         setRooms(roomsData);
+        setFloors(floorsData);
         // console.log("ROOMS " + roomsData)
       } else {
         console.warn("Данные не были получены");
@@ -133,7 +136,7 @@ function App() {
           <Routes>
             <Route path="/" element={
               <IonApp>
-                <Homepage currentHouseID={currentHouseID} token={token} currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} rooms={rooms} houses={houses} devices={devices} setRooms={setRooms} setHouses={setHouses} setDevices={setDevices} />
+                <Homepage fetchData={fetchData} currentHouseID={currentHouseID} token={token} currentPage={currentPage} setAccessoryMode={setAccessoryMode} openProfileModal={() => setProfileModalOpen(true)} modalOpened={isProfileModalOpen} rooms={rooms} floors={floors} houses={houses} devices={devices} setRooms={setRooms} setFloors={setFloors} setHouses={setHouses} setDevices={setDevices} />
                 <TabBar activeTab={currentPage} setActiveTab={setCurrentPage} />
 
                 <Sheet visible={isProfileModalOpen} func={setProfileModalOpen} title="Профиль">

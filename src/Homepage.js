@@ -68,12 +68,13 @@ import store, {
     getDevicesWithoutCameras,
     getCamerasInHouse,
 } from './store';
-import { fetchHousesData, getRoomsAndDevicesByHouseId, ensureFloorExists } from './services/housesService';
+import { fetchHousesData, getRoomsAndDevicesByHouseId, ensureFloorExists, getFloorByRoomId } from './services/housesService';
 import { getDevicesAndCamerasByRoomAndHouseId, getDevicesByHouseId } from './services/devicesService';
 import CameraView from './components/CameraView/CameraView';
 import CamerasRow from './components/CamerasRow/CamerasRow';
 import RoomSelector from './components/RoomSelector/RoomSelector';
 import RoomItemsList from './components/RoomItemsList/RoomItemsList';
+import CameraStream from './components/CameraStream';
 
 
 
@@ -132,6 +133,8 @@ function Homepage(args) {
     const [selectedRoomID, setSelectedRoomID] = useState(-1);
     const [currentRoomId, setCurrentRoomId] = useState(0);
 
+    const [toDeleteId, setToDeleteId] = useState(0);
+
 
     const navigate = useNavigate();
 
@@ -139,6 +142,12 @@ function Homepage(args) {
     useEffect(() => {
         console.log(currentRoomId);
     }, [currentRoomId]);
+
+
+    useEffect(() => {
+        setTimeout(() => { args.fetchData() }, 600);
+    }, [toDeleteId]);
+
 
 
     // useEffect(() => {
@@ -152,6 +161,7 @@ function Homepage(args) {
     // useEffect(() => {
     //     console.log(roomsWithDevices)
     // }, [roomsWithDevices]);
+
 
 
 
@@ -288,6 +298,11 @@ function Homepage(args) {
 
     }, [args.token]);
 
+    useEffect(() => {
+        console.log(selectedRoomID)
+
+    }, [selectedRoomID]);
+
 
     return (
         <>
@@ -297,6 +312,7 @@ function Homepage(args) {
                 room.devices && room.devices.length > 0 && room.devices.map(device => (
                     <ItemWindow
                         key={`window-${device.id}`}
+                        fetchData={args.fetchData}
                         device={device}
                         rooms={args.rooms}
                         room={room}
@@ -304,26 +320,18 @@ function Homepage(args) {
                         idFunc={setItemID}
                         houseId={args.currentHouseID}
                         token={args.token}
+                        setToDeleteId={setToDeleteId}
                     />
                 ))
             ))}
-
-
-            {/* {Object.keys(cameras).map(cameraId => (
-                <CameraWindow
-                    key={`window-${cameraId}`}
-                    camera={cameras[cameraId]}
-                    rooms={rooms}
-                    visible={cameras[cameraId].id === cameraID}
-                    idFunc={setCameraID}
-                />
-            ))} */}
 
 
             {args.rooms.map(room => (
                 room.cameras && room.cameras.length > 0 && room.cameras.map(camera => (
                     <CameraWindow
                         key={`window-${camera.id}`}
+                        fetchData={args.fetchData}
+                        token={args.token}
                         camera={camera}
                         rooms={args.rooms}
                         room={room}
@@ -333,10 +341,10 @@ function Homepage(args) {
                 ))
             ))}
 
-            {/* {Object.keys(rooms)
-                .map(roomId => (
-                    <RoomWindow room={rooms[roomId]} visible={selectedRoomID === rooms[roomId].idx} idFunc={setSelectedRoomID} />
-                ))} */}
+            {args.rooms
+                .map(room => (
+                    <RoomWindow fetchData={args.fetchData} token={args.token} room={room} visible={selectedRoomID === room.id} idFunc={setSelectedRoomID} floors={args.floors} floor={getFloorByRoomId(room.id, args.houses)}/>
+                ))}
 
             {/* <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} /> */}
 
@@ -443,6 +451,7 @@ function Homepage(args) {
                             itemId={itemID}
                             currentRoomId={currentRoomId}
                             editMode={editMode}
+                            toDeleteId={toDeleteId}
                         />
                     </div>
 
@@ -450,9 +459,9 @@ function Homepage(args) {
 
                 </Section>
 
-                {/* <Section visible={args.currentPage === 1}>
+                <Section visible={args.currentPage === 1}>
                     <div className='page'>
-                        {Object.keys(rooms)
+                        {/* {Object.keys(rooms)
                             .sort((a, b) => rooms[a].order - rooms[b].order)
                             .map(roomId => {
                                 const roomCameras = Object.keys(cameras)
@@ -476,10 +485,11 @@ function Homepage(args) {
                                         openedID={cameraID}
                                     />
                                 );
-                            })}
+                            })} */}
+                            <CameraStream token={args.token}/>
                     </div>
 
-                </Section> */}
+                </Section>
 
                 {/* <Section visible={args.currentPage === 2}>
                     <div className='page'>

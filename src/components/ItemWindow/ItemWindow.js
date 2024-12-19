@@ -24,6 +24,7 @@ import IconSelect from '../IconSelect/IconSelect';
 import DialLow from '../icons/DialLow/DialLow';
 import Curtains from '../icons/Curtains/Curtains';
 import VerticalToggle from '../VerticalToggle/VerticalToggle';
+import Fan from '../icons/Fan/Fan';
 
 
 
@@ -38,6 +39,7 @@ const ItemWindow = (args) => {
         console.log("REQUIRED")
         if (closeRequired) {
             args.idFunc(0);
+            args.setToDeleteId(args.device.id)
             setCloseRequired(false);
         }
     }, [closeRequired]);
@@ -155,6 +157,7 @@ const ItemWindow = (args) => {
     const [currentHum, setCurrentHum] = useState(0);
     const [targetHum, setTargetHum] = useState(0);
 
+    const [fanSpeed, setFanSpeed] = useState(0);
 
     const [curtainPercentage, setCurtainPercentage] = useState(0);
 
@@ -203,6 +206,10 @@ const ItemWindow = (args) => {
             case "CURTAIN":
                 if (args.device.features.PERCENTAGE !== undefined) {
                     setCurtainPercentage(args.device.features.PERCENTAGE);
+                }
+            case "FAN":
+                if (args.device.features.SPEED !== undefined) {
+                    setFanSpeed(args.device.features.SPEED);
                 }
         }
     }
@@ -347,7 +354,7 @@ const ItemWindow = (args) => {
                             options={humidifierPowerOptions}
                             selectedOption={getThermoOrHumMode()}
                             setSelectedOption={setThermoOrHumMode}
-                        /> : null
+                        /> : <ActionButton active={getState()} setActive={setStateWithToggle} icon={Power} labels={["Вкл.", "Выкл."]} />
                     }
                     {/* <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} /> */}
                 </>
@@ -389,6 +396,22 @@ const ItemWindow = (args) => {
                     <VerticalToggle setValue={setValveOrCurtainStateWithToggle} value={getValveOrCurtainState()} />
                 </>
             );
+        }
+
+        if (mainType === 'FAN') {
+            if (args.device.features.SPEED === undefined) {
+                return (
+                    <>
+                        <VerticalToggle setValue={setValveOrCurtainStateWithToggle} value={getValveOrCurtainState()} />
+                    </>
+                )
+            } else {
+                return (
+                    <>
+                        <VerticalSlider sliderIcon={Fan} setValue={setFanSpeed} value={fanSpeed} />
+                    </>
+                )
+            }
         }
 
         if (isSensor(args.device)) {
@@ -446,11 +469,13 @@ const ItemWindow = (args) => {
                 ${isVerticalControls(args.device) ? "item-window--vertical" : ""}`}
         >
             <ItemSettings
-                rooms={Object.values(args.rooms).map(room => room.roomName)}
-                room={args.room.name || "Неизвестная комната"}
+                fetchData={args.fetchData}
+                rooms={args.rooms}
+                room={args.room}
                 name={args.device.name}
                 token={args.token}
                 itemId={args.device.id}
+                device={args.device}
                 houseId={args.houseId}
                 visible={settingsVisible}
                 visibilityFunc={setSettingsVisible}

@@ -1,4 +1,4 @@
-import { checkDeviceRequest, deleteDeviceRequest, importDeviceRequest, syncDevicesRequest } from "../api/devicesAPI";
+import { checkDeviceRequest, deleteDeviceRequest, importDeviceRequest, moveDeviceToRoomRequest, syncDevicesRequest } from "../api/devicesAPI";
 import { setDevice, removeDevice } from "../store";
 
 export const addDevice = async (dispatch, token, deviceData) => {
@@ -142,4 +142,15 @@ export const getDevicesAndCamerasByRoomAndHouseId = (houseId, roomId, houses) =>
     }
 
     return [...devices, ...cameras];
+};
+
+
+export const moveDeviceToRoom = async (token, deviceId, roomId, isCamera) => {
+    try {
+        const result = await moveDeviceToRoomRequest(token, deviceId, roomId, isCamera);
+        return result;
+    } catch (error) {
+        console.error('Ошибка при перемещении устройства: ', error);
+        throw error;
+    }
 };

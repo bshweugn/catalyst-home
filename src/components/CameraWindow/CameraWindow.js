@@ -50,7 +50,7 @@ const CameraWindow = (args) => {
             setBaseTime(new Date().getTime());
         }, 1000);
 
-        return () => clearInterval(timer); // Очищаем таймер при размонтировании
+        return () => clearInterval(timer);
     }, []);
 
     useEffect(() => {
@@ -58,7 +58,7 @@ const CameraWindow = (args) => {
         const deltaSeconds = delta * SECONDS_PER_PIXEL;
         const newTime = baseTime + deltaSeconds * 1000;
         setDisplayedTime(newTime);
-    }, [baseTime, delta, isLive, isManualScroll]); // Зависимость от baseTime и delta
+    }, [baseTime, delta, isLive, isManualScroll]);
 
 
     useEffect(() => {
@@ -88,13 +88,13 @@ const CameraWindow = (args) => {
             const maxScrollLeft = scrubberWrapper.scrollWidth - scrubberWrapper.clientWidth;
 
             if (scrollLeft < maxScrollLeft) {
-                scrubberWrapper.scrollLeft += 1; // Прокрутка на 1 пиксель
+                scrubberWrapper.scrollLeft += 1;
             } else {
                 clearInterval(interval); // Останавливаем прокрутку, когда достигнут конец
                 setIsScrolling(false);
-                setIsLive(true); // Устанавливаем LIVE
+                setIsLive(true);
             }
-        }, 1000); // 1 пиксель в секунду
+        }, 1000);
     };
 
     const startManualScroll = () => {
@@ -155,11 +155,9 @@ const CameraWindow = (args) => {
             y: touchY,
         });
 
-        // Размер центрального квадрата
         const centralSize = 30;
         const halfCentralSize = centralSize / 2;
 
-        // Определяем зону
         let zone;
         if (
             touchX > -halfCentralSize &&
@@ -258,13 +256,14 @@ const CameraWindow = (args) => {
 
     return (
         <div className={`camera-window ${!args.visible ? "camera-window--hidden" : ""}`}>
-            <CameraSettings rooms={Object.values(args.rooms).map(room => room.roomName)} room={args.room.roomName || "Неизвестная комната"} name={args.camera.name} visible={settingsVisible} visibilityFunc={setSettingsVisible} />
-            
+            <CameraSettings fetchData={args.fetchData} token={args.token} camera={args.camera} rooms={args.rooms}
+                room={args.room} name={args.camera.name} visible={settingsVisible} visibilityFunc={setSettingsVisible} />
+
             <div className='camera-window__back' />
             <div className={`camera-window__header ${settingsVisible ? "camera-window__header--hidden" : ""}`}>
                 <div className='camera-window__item-info'>
                     <p className='camera-window__item-name'>{args.camera.name}</p>
-                    <p className='camera-window__room-name'>{args.room.roomName} · {args.camera.isRecording ? 'Запись' : 'Запись приостановлена'}</p>
+                    <p className='camera-window__room-name'>{args.room.name} · {args.camera.isRecording ? 'Запись' : 'Запись приостановлена'}</p>
                 </div>
                 <div className='camera-window__item-icon'>
                     {renderItemIcon(args.camera)}
