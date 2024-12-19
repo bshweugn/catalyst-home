@@ -32,13 +32,14 @@ public class CurtainHandler extends AbstractCurtainHandler {
     protected void open() {
         checkCommand("OPEN");
         curtain.setStatus("OPENED");
-        curtain.getFeatures().put("PERCENTAGE", 100);
+        curtain.getFeatures().put("PERCENTAGE", !curtain.getFeatures().containsKey("BUFFER")? 100 : curtain.getFeatures().get("BUFFER"));
         repository.save(curtain);
     }
 
     @Override
     protected void close() {
         checkCommand("CLOSE");
+        if (curtain.getFeatures().containsKey("BUFFER")) curtain.getFeatures().put("BUFFER", curtain.getFeatures().get("PERCENTAGE"));
         curtain.getFeatures().put("PERCENTAGE", 0);
         curtain.setStatus("CLOSED");
         repository.save(curtain);
@@ -50,10 +51,14 @@ public class CurtainHandler extends AbstractCurtainHandler {
         if (percentage < 0 || percentage > 100) {
             throw new IllegalArgumentException("Percentage must be between 0 and 100");
         }
-        if (!"CLOSED".equals(curtain.getStatus())) {
-            curtain.getFeatures().put("PERCENTAGE", percentage);
-            repository.save(curtain);
+        curtain.getFeatures().put("PERCENTAGE", percentage);
+        if (curtain.getFeatures().containsKey("BUFFER")) curtain.getFeatures().put("BUFFER", percentage);
+        if (percentage > 0) {
+            curtain.setStatus("OPENED");
+        } else {
+            curtain.setStatus("CLOSED");
         }
+        repository.save(curtain);
         
     }
     

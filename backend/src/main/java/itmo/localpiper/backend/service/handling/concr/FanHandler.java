@@ -32,13 +32,14 @@ public class FanHandler extends AbstractFanHandler {
     protected void turnOn() {
         checkCommand("TURN_ON");
         fan.setStatus("ON");
-        fan.getFeatures().put("SPEED", 100);
+        fan.getFeatures().put("SPEED", !fan.getFeatures().containsKey("BUFFER")? 100 : fan.getFeatures().get("BUFFER"));
         repository.save(fan);
     }
 
     @Override
     protected void turnOff() {
         checkCommand("TURN_OFF");
+        if (fan.getFeatures().containsKey("BUFFER")) fan.getFeatures().put("BUFFER", fan.getFeatures().get("SPEED"));
         fan.getFeatures().put("SPEED", 0);
         fan.setStatus("OFF");
         repository.save(fan);
@@ -50,10 +51,14 @@ public class FanHandler extends AbstractFanHandler {
         if (speed < 0 || speed > 100) {
             throw new IllegalArgumentException("Speed must be between 0 and 100");
         }
-        if (!"OFF".equals(fan.getStatus())) {
-            fan.getFeatures().put("SPEED", speed);
-            repository.save(fan);
+        fan.getFeatures().put("SPEED", speed);
+        if (fan.getFeatures().containsKey("BUFFER")) fan.getFeatures().put("BUFFER", speed);
+        if (speed > 0) {
+            fan.setStatus("ON");
+        } else {
+            fan.setStatus("OFF");
         }
+        repository.save(fan);
     }
     
 }

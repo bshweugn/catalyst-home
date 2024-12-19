@@ -83,6 +83,10 @@ public class TransactionalImportDeviceService {
                 device.setCharging(false);
                 continue;
             }
+            if ("BUFFER".equals(entry.getKey())) {
+                features.put("BUFFER", 100);
+                continue;
+            }
             features.put(entry.getKey(), determineDefaultValue(entry.getValue()));
         }
         device.setFeatures(features);
