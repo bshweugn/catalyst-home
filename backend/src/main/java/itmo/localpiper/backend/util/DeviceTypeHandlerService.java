@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,12 +37,14 @@ public class DeviceTypeHandlerService {
     }
 
     public DeviceType extractDeviceType(String typeString) {
-        return DeviceType.valueOf(typeString.split("_")[0]);
+        String[] parts = typeString.split("_");
+        String type = String.join("_", Arrays.copyOf(parts, parts.length - 2));
+        return DeviceType.valueOf(type);
     }
 
     public String extractSerialNumber(String deviceType) {
-        String[] parts = deviceType.split("_");
-        return parts[1] + parts[2];
+        List<String> l = new ArrayList<>(Arrays.asList(deviceType.split("_")));
+        return l.get(l.size() - 2) + l.get(l.size() - 1);
     }
 
     public List<String> retrieveFeatures(String number) {
