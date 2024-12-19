@@ -23,6 +23,5 @@ public abstract class AbstractTemperatureSensorHandler implements Handler {
     protected abstract void turnOff();
     protected abstract void charge();
     protected abstract void unplug();
-    protected abstract int readHeat();
     
 }

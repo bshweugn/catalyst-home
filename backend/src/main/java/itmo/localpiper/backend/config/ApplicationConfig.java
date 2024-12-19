@@ -7,6 +7,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import itmo.localpiper.backend.aspect.ValidateUserAspect;
 import itmo.localpiper.backend.repository.UserRepository;
 import itmo.localpiper.backend.service.handling.state.CameraChargeManager;
+import itmo.localpiper.backend.service.handling.state.LeakDetectorChargeManager;
+import itmo.localpiper.backend.service.handling.state.RelayChargeManager;
+import itmo.localpiper.backend.service.handling.state.TemperatureSensorChargeManager;
+import itmo.localpiper.backend.service.handling.state.ValveChargeManager;
 import itmo.localpiper.backend.util.JwtService;
 import jakarta.annotation.PreDestroy;
 
@@ -22,10 +26,50 @@ public class ApplicationConfig {
         return manager;
     }
 
+    @Bean
+    @SuppressWarnings("unused")
+    RelayChargeManager relayChargeManager() {
+        RelayChargeManager manager = RelayChargeManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
+    @Bean
+    @SuppressWarnings("unused")
+    ValveChargeManager valveChargeManager() {
+        ValveChargeManager manager = ValveChargeManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
+    @Bean
+    @SuppressWarnings("unused")
+    LeakDetectorChargeManager leakDetectorChargeManager() {
+        LeakDetectorChargeManager manager = LeakDetectorChargeManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
+    @Bean
+    @SuppressWarnings("unused")
+    TemperatureSensorChargeManager temperatureSensorChargeManager() {
+        TemperatureSensorChargeManager manager = TemperatureSensorChargeManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
     @PreDestroy
-    public void stopCameraChargeManager() {
-        CameraChargeManager manager = CameraChargeManager.getInstance();
-        manager.stop();
+    public void stopManagers() {
+        CameraChargeManager cameraChargeManager = CameraChargeManager.getInstance();
+        RelayChargeManager relayChargeManager = RelayChargeManager.getInstance();
+        ValveChargeManager valveChargeManager = ValveChargeManager.getInstance();
+        LeakDetectorChargeManager leakDetectorChargeManager = LeakDetectorChargeManager.getInstance();
+        TemperatureSensorChargeManager temperatureSensorChargeManager = TemperatureSensorChargeManager.getInstance();
+        cameraChargeManager.stop();
+        relayChargeManager.stop();
+        valveChargeManager.stop();
+        leakDetectorChargeManager.stop();
+        temperatureSensorChargeManager.stop();
     }
     
     @Bean 
