@@ -10,18 +10,22 @@ import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.CameraRepository;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.entity.VideoRecordingService;
+import itmo.localpiper.backend.service.handling.abstr.AbstractACHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractCameraHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractCurtainHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractFanHandler;
+import itmo.localpiper.backend.service.handling.abstr.AbstractHumidifierHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLampHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLeakDetectorHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractRelayHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractTemperatureSensorHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractThermostatHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractValveHandler;
+import itmo.localpiper.backend.service.handling.concr.ACHandler;
 import itmo.localpiper.backend.service.handling.concr.CameraHandler;
 import itmo.localpiper.backend.service.handling.concr.CurtainHandler;
 import itmo.localpiper.backend.service.handling.concr.FanHandler;
+import itmo.localpiper.backend.service.handling.concr.HumidifierHandler;
 import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.handling.concr.LeakDetectorHandler;
 import itmo.localpiper.backend.service.handling.concr.RelayHandler;
@@ -71,6 +75,16 @@ public class HandlerFactory {
     // 05XXXX
     public AbstractThermostatHandler getThermostatHandler(Device device) {
         return new ThermostatHandler(getCommands(device), device, deviceRepository);
+    }
+
+    // 06XXXX
+    public AbstractACHandler getACHandler(Device device) {
+        return new ACHandler(getCommands(device), device, deviceRepository);
+    }
+
+    // 07XXXX
+    public AbstractHumidifierHandler getHumidifierHandler(Device device) {
+        return new HumidifierHandler(getCommands(device), device, deviceRepository);
     }
 
     // 08XXXX

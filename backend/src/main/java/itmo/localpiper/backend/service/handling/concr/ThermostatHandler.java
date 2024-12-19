@@ -11,7 +11,7 @@ public class ThermostatHandler extends AbstractThermostatHandler {
 
     private final Device thermostat;
     private final DeviceRepository repository;
-    private final ThermostatHeatManager chargeManager = ThermostatHeatManager.getInstance();
+    private final ThermostatHeatManager heatManager = ThermostatHeatManager.getInstance();
 
     public ThermostatHandler(List<String> commands, Device device, DeviceRepository deviceRepository) {
         super(commands);
@@ -46,7 +46,7 @@ public class ThermostatHandler extends AbstractThermostatHandler {
         if (!"ON".equals(thermostat.getStatus())) return;
         thermostat.setStatus("OFF");
         repository.save(thermostat);
-        chargeManager.deregisterThermostat(thermostat.getId());
+        heatManager.deregisterThermostat(thermostat.getId());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ThermostatHandler extends AbstractThermostatHandler {
         checkCommand("HEAT");
         if (!"ON".equals(thermostat.getStatus())) return;
         if ((int)thermostat.getFeatures().get("CURRENT_TEMP") >= target) return;
-        chargeManager.registerHeating(thermostat, repository, target);
+        heatManager.registerHeating(thermostat, repository, target);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ThermostatHandler extends AbstractThermostatHandler {
         checkCommand("COOL");
         if (!"ON".equals(thermostat.getStatus())) return;
         if ((int)thermostat.getFeatures().get("CURRENT_TEMP") <= target) return;
-        chargeManager.registerCooling(thermostat, repository, target);
+        heatManager.registerCooling(thermostat, repository, target);
     }
 
     @Override
@@ -71,6 +71,6 @@ public class ThermostatHandler extends AbstractThermostatHandler {
         if (!"ON".equals(thermostat.getStatus())) return;
         thermostat.getFeatures().put("MODE", mode);
         repository.save(thermostat);
-        chargeManager.updateMode(thermostat.getId(), mode);
+        heatManager.updateMode(thermostat.getId(), mode);
     }
 }

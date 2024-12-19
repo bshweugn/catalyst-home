@@ -9,8 +9,10 @@ import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
 import itmo.localpiper.backend.service.handling.HandlerFactory;
+import itmo.localpiper.backend.service.handling.concr.ACHandler;
 import itmo.localpiper.backend.service.handling.concr.CurtainHandler;
 import itmo.localpiper.backend.service.handling.concr.FanHandler;
+import itmo.localpiper.backend.service.handling.concr.HumidifierHandler;
 import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.handling.concr.LeakDetectorHandler;
 import itmo.localpiper.backend.service.handling.concr.RelayHandler;
@@ -70,6 +72,14 @@ public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair
             case THERMOSTAT -> {
                 ThermostatHandler thermostatHandler = (ThermostatHandler)handlerFactory.getThermostatHandler(device);
                 thermostatHandler.pickCommand(command, arg);
+            }
+            case AC -> {
+                ACHandler acHandler = (ACHandler)handlerFactory.getACHandler(device);
+                acHandler.pickCommand(command, arg);
+            }
+            case HUMIDIFIER -> {
+                HumidifierHandler humidifierHandler = (HumidifierHandler)handlerFactory.getHumidifierHandler(device);
+                humidifierHandler.pickCommand(command, arg);
             }
             case LEAK_DETECTOR -> {
                 LeakDetectorHandler leakDetectorHandler = (LeakDetectorHandler)handlerFactory.getLeakDetectorHandler(device);

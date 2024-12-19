@@ -3,7 +3,6 @@ package itmo.localpiper.backend.service.handling.abstr;
 import java.util.List;
 
 import itmo.localpiper.backend.service.handling.Handler;
-import itmo.localpiper.backend.util.enums.WorkMode;
 
 public abstract class AbstractHumidifierHandler implements Handler {
     
@@ -22,6 +21,6 @@ public abstract class AbstractHumidifierHandler implements Handler {
     public abstract void pickCommand(String command, Object arg);
     protected abstract void turnOn();
     protected abstract void turnOff();
-    protected abstract void humidify();
-    protected abstract void changeMode(WorkMode mode);
+    protected abstract void humidify(int target);
+    protected abstract void changeMode(String mode);
 }

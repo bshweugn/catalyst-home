@@ -2,22 +2,22 @@ package itmo.localpiper.backend.service.handling.state;
 
 import itmo.localpiper.backend.model.Device;
 import itmo.localpiper.backend.repository.DeviceRepository;
-import itmo.localpiper.backend.service.handling.state.manager.ThermostatHeatManager;
+import itmo.localpiper.backend.service.handling.state.manager.ACHeatManager;
 
-public class ThermostatHeatState {
+public class ACHeatState {
 
-    private final Device thermostat;
+    private final Device ac;
     private final DeviceRepository repository;
     private final int targetTemperature;
     private String mode;
     private final String operation;
 
-    public ThermostatHeatState(Device thermostat, DeviceRepository repository, int targetTemperature, String operation) {
-        this.thermostat = thermostat;
+    public ACHeatState(Device ac, DeviceRepository repository, int targetTemperature, String operation) {
+        this.ac = ac;
         this.repository = repository;
         this.targetTemperature = targetTemperature;
         this.operation = operation;
-        this.mode = thermostat.getFeatures().containsKey("MODE")? (String)thermostat.getFeatures().get("MODE") : "SOFT";
+        this.mode = ac.getFeatures().containsKey("MODE")? (String)ac.getFeatures().get("MODE") : "SOFT";
     }
 
     public synchronized void setMode(String mode) {
@@ -25,7 +25,7 @@ public class ThermostatHeatState {
     }
 
     public synchronized void update() {
-        int currentTemperature = (int)thermostat.getFeatures().get("CURRENT_TEMP");
+        int currentTemperature = (int)ac.getFeatures().get("CURRENT_TEMP");
         int adjustment = 1;
         if ("NORMAL".equals(mode)) {
             adjustment = 2;
@@ -38,18 +38,18 @@ public class ThermostatHeatState {
             currentTemperature = Math.max(currentTemperature - adjustment, targetTemperature);
         }
 
-        thermostat.getFeatures().put("CURRENT_TEMP",currentTemperature);
+        ac.getFeatures().put("CURRENT_TEMP",currentTemperature);
         persistState();
 
         if (currentTemperature == targetTemperature) {
-            ThermostatHeatManager.getInstance().deregisterThermostat(thermostat.getId());
+            ACHeatManager.getInstance().deregisterAC(ac.getId());
         }
     }
 
     private void persistState() {
-        Device prev = repository.findById(thermostat.getId()).get();
-        if (thermostat.getFeatures().containsKey("MODE")) thermostat.getFeatures().put("MODE", prev.getFeatures().get("MODE"));
-        repository.save(thermostat);
+        Device prev = repository.findById(ac.getId()).get();
+        if (ac.getFeatures().containsKey("MODE")) ac.getFeatures().put("MODE", prev.getFeatures().get("MODE"));
+        if (ac.getFeatures().containsKey("WIND_MODE")) ac.getFeatures().put("WIND_MODE", prev.getFeatures().get("WIND_MODE"));
+        repository.save(ac);
     }
 }
-

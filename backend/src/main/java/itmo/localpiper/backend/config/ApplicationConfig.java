@@ -6,7 +6,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import itmo.localpiper.backend.aspect.ValidateUserAspect;
 import itmo.localpiper.backend.repository.UserRepository;
+import itmo.localpiper.backend.service.handling.state.manager.ACHeatManager;
 import itmo.localpiper.backend.service.handling.state.manager.CameraChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.HumidifierManager;
 import itmo.localpiper.backend.service.handling.state.manager.LeakDetectorChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.RelayChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.TemperatureSensorChargeManager;
@@ -67,19 +69,39 @@ public class ApplicationConfig {
         return manager;
     }
 
+    @Bean
+    @SuppressWarnings("unused")
+    ACHeatManager achHeatManager() {
+        ACHeatManager manager = ACHeatManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
+    @Bean
+    @SuppressWarnings("unused")
+    HumidifierManager humidifierManager() {
+        HumidifierManager manager = HumidifierManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
     @PreDestroy
     @SuppressWarnings("unused")
     void stopManagers() {
-        CameraChargeManager cameraChargeManager = CameraChargeManager.getInstance();
         RelayChargeManager relayChargeManager = RelayChargeManager.getInstance();
         ValveChargeManager valveChargeManager = ValveChargeManager.getInstance();
         ThermostatHeatManager thermostatHeatManager = ThermostatHeatManager.getInstance();
+        ACHeatManager acHeatManager = ACHeatManager.getInstance();
+        HumidifierManager humidifierManager = HumidifierManager.getInstance();
         LeakDetectorChargeManager leakDetectorChargeManager = LeakDetectorChargeManager.getInstance();
         TemperatureSensorChargeManager temperatureSensorChargeManager = TemperatureSensorChargeManager.getInstance();
+        CameraChargeManager cameraChargeManager = CameraChargeManager.getInstance();
         cameraChargeManager.stop();
         relayChargeManager.stop();
         valveChargeManager.stop();
         thermostatHeatManager.stop();
+        acHeatManager.stop();
+        humidifierManager.stop();
         leakDetectorChargeManager.stop();
         temperatureSensorChargeManager.stop();
     }
