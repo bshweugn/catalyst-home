@@ -1,5 +1,7 @@
 package itmo.localpiper.backend.controller.usermode;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.request.TriggerScriptRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
+import itmo.localpiper.backend.model.TriggerCondition;
+import itmo.localpiper.backend.repository.TriggerConditionRepository;
 import itmo.localpiper.backend.service.processing.scripts.AddTriggerScriptProcessorService;
+import itmo.localpiper.backend.util.AccessValidationService;
+import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.RequestTransformer;
+import itmo.localpiper.backend.util.enums.AccessMode;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -25,6 +32,12 @@ public class TriggerScriptController {
     private RequestTransformer requestTransformer;
 
     @Autowired
+    private AccessValidationService accessValidationService;
+
+    @Autowired
+    private TriggerConditionRepository triggerConditionRepository;
+
+    @Autowired
     private AddTriggerScriptProcessorService addTriggerScriptProcessorService;
     
     @PostMapping("/addTriggerScript")
@@ -33,8 +46,10 @@ public class TriggerScriptController {
     }
 
     @GetMapping("/getTriggerScriptsByHouse")
-    public String getTriggerScriptsByHouse(@RequestParam Long houseId, HttpServletRequest servletRequest) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<TriggerCondition>> getTriggerScriptsByHouse(@RequestParam Long houseId, HttpServletRequest servletRequest) {
+        RequestPair<Long> rp = requestTransformer.transform(houseId, servletRequest);
+        accessValidationService.validateAccess(rp.getEmail(), houseId, AccessMode.LIGHT);
+        return ResponseEntity.ok(triggerConditionRepository.findByHouseId(houseId));
     }
 
     @PostMapping("/deleteTriggerScript")
