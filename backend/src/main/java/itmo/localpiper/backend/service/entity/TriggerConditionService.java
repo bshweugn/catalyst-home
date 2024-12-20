@@ -24,12 +24,13 @@ public class TriggerConditionService {
         return triggerConditionRepository.findAll();
     }
     
-    public void create(String name, String condition) {
+    public TriggerCondition create(String name, String condition) {
         TriggerCondition triggerCondition = new TriggerCondition();
         triggerCondition.setName(name);
         triggerCondition.setCondition(condition);
 
         triggerConditionRepository.save(triggerCondition);
+        return triggerCondition;
     }
 
     public void delete(Long id) {

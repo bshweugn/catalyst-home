@@ -2,6 +2,7 @@ package itmo.localpiper.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -10,7 +11,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,11 +40,15 @@ public class TriggerCondition {
     @ManyToMany
     private List<Script> scripts;
 
-    @ManyToMany
-    private List<Camera> cameras;
+    @ManyToOne
+    @JoinColumn(name="camera_id", nullable=true)
+    @JsonBackReference
+    private Camera camera;
 
-    @ManyToMany
-    private List<Device> devices;
+    @ManyToOne
+    @JoinColumn(name="device_id", nullable=true)
+    @JsonBackReference
+    private Device device;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();

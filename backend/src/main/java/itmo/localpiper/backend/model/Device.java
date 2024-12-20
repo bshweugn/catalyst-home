@@ -18,7 +18,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -66,7 +65,8 @@ public class Device {
     @JsonManagedReference
     private List<UserDeviceActionRel> userDeviceActionRels;
 
-    @ManyToMany(mappedBy="devices")
+    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<TriggerCondition> triggerConditions;
 
     public String toJson() {
