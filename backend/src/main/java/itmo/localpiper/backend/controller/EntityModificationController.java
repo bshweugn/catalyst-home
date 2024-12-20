@@ -12,6 +12,8 @@ import itmo.localpiper.backend.dto.request.EntityRenameRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
 import itmo.localpiper.backend.service.processing.ModifyMoveProcessorService;
 import itmo.localpiper.backend.service.processing.ModifyRenameProcessorService;
+import itmo.localpiper.backend.util.RequestTransformer;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
@@ -25,15 +27,18 @@ public class EntityModificationController {
     @Autowired
     private ModifyMoveProcessorService modifyMoveProcessorService;
 
+    @Autowired
+    private RequestTransformer requestTransformer;
+
     @PostMapping("/rename")
     public ResponseEntity<OperationResultResponse> renameEntity(
-        @Valid @RequestBody EntityRenameRequest request) {
-        return ResponseEntity.ok(modifyRenameProcessorService.process(request));
+        @Valid @RequestBody EntityRenameRequest request, HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(modifyRenameProcessorService.process(requestTransformer.transform(request, servletRequest)));
     }
 
     @PostMapping("/move")
     public ResponseEntity<OperationResultResponse> moveEntity(
-        @Valid @RequestBody EntityMoveRequest request) {
-        return ResponseEntity.ok(modifyMoveProcessorService.process(request));
+        @Valid @RequestBody EntityMoveRequest request, HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(modifyMoveProcessorService.process(requestTransformer.transform(request, servletRequest)));
     }
 }
