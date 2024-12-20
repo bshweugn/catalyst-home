@@ -1,7 +1,6 @@
 package itmo.localpiper.backend.model;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -34,18 +32,18 @@ public class Script {
     @Column(name="name")
     private String name;
 
-    @Column(name="file")
-    private String file;
-
-    @Column(name="is_active", nullable=false)
-    private Boolean isActive;
+    @Column(name="action")
+    private String action;
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
-    @ManyToMany(mappedBy="scripts")
-    private List<TriggerCondition> triggerConditions;
+    @ManyToOne
+    @JoinColumn(name="trigger_condition_id", nullable = false)
+    @JsonBackReference
+    private TriggerCondition triggerCondition;
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -53,8 +51,7 @@ public class Script {
 
         node.put("id", id);
         node.put("name", name);
-        node.put("file", file);
-        node.put("is_active", isActive);
+        node.put("action", action);
         try {
             node.set("user", objectMapper.readTree(user.toJson()));
         } catch (JsonProcessingException e) {
