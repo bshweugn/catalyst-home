@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import itmo.localpiper.backend.dto.request.VideoStreamingRequest;
+import itmo.localpiper.backend.dto.response.OperationResultResponse;
+import itmo.localpiper.backend.service.processing.video.DeleteVideosService;
 import itmo.localpiper.backend.service.processing.video.GetRecordingIntervalsService;
 import itmo.localpiper.backend.service.processing.video.VideoStreamingService;
 import itmo.localpiper.backend.util.RecordingInterval;
@@ -37,7 +39,16 @@ public class VideoStreamingController {
     private VideoStreamingService videoStreamingService;
 
     @Autowired
+    private DeleteVideosService deleteVideosService;
+
+    @Autowired
     private RequestTransformer requestTransformer;
+
+    @PostMapping("/deleteRecordings")
+    public ResponseEntity<OperationResultResponse> deleteCameraRecordings(@RequestBody Long cameraId, HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(deleteVideosService.deleteVideos(requestTransformer.transform(cameraId, servletRequest)));
+    }
+    
 
     @GetMapping("/getRecordingIntervals")
     public ResponseEntity<Map<Long, List<RecordingInterval>>> getRecordingIntervals(@RequestParam Long houseId, HttpServletRequest servletRequest) {
