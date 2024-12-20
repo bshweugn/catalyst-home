@@ -15,6 +15,7 @@ import itmo.localpiper.backend.service.handling.concr.FanHandler;
 import itmo.localpiper.backend.service.handling.concr.HumidifierHandler;
 import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.handling.concr.LeakDetectorHandler;
+import itmo.localpiper.backend.service.handling.concr.RCHandler;
 import itmo.localpiper.backend.service.handling.concr.RelayHandler;
 import itmo.localpiper.backend.service.handling.concr.TemperatureSensorHandler;
 import itmo.localpiper.backend.service.handling.concr.ThermostatHandler;
@@ -92,6 +93,10 @@ public class DeviceCommandProcessorService extends AbstractProcessor<RequestPair
             case TEMPERATURE_SENSOR -> {
                 TemperatureSensorHandler temperatureSensorHandler = (TemperatureSensorHandler)handlerFactory.getTemperatureSensorHandler(device);
                 temperatureSensorHandler.pickCommand(command, arg);
+            }
+            case ROBOT_VACUUM -> {
+                RCHandler rcHandler = (RCHandler)handlerFactory.getRCHandler(device);
+                rcHandler.pickCommand(command, arg);
             }
             default -> {
             }

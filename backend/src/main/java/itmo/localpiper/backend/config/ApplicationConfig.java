@@ -10,6 +10,7 @@ import itmo.localpiper.backend.service.handling.state.manager.ACHeatManager;
 import itmo.localpiper.backend.service.handling.state.manager.CameraChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.HumidifierManager;
 import itmo.localpiper.backend.service.handling.state.manager.LeakDetectorChargeManager;
+import itmo.localpiper.backend.service.handling.state.manager.RCChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.RelayChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.TemperatureSensorChargeManager;
 import itmo.localpiper.backend.service.handling.state.manager.ThermostatHeatManager;
@@ -85,6 +86,14 @@ public class ApplicationConfig {
         return manager;
     }
 
+    @Bean
+    @SuppressWarnings("unused")
+    RCChargeManager rcManager() {
+        RCChargeManager manager = RCChargeManager.getInstance();
+        manager.start();
+        return manager;
+    }
+
     @PreDestroy
     @SuppressWarnings("unused")
     void stopManagers() {
@@ -95,6 +104,7 @@ public class ApplicationConfig {
         HumidifierManager humidifierManager = HumidifierManager.getInstance();
         LeakDetectorChargeManager leakDetectorChargeManager = LeakDetectorChargeManager.getInstance();
         TemperatureSensorChargeManager temperatureSensorChargeManager = TemperatureSensorChargeManager.getInstance();
+        RCChargeManager rcChargeManager = RCChargeManager.getInstance();
         CameraChargeManager cameraChargeManager = CameraChargeManager.getInstance();
         cameraChargeManager.stop();
         relayChargeManager.stop();
@@ -104,6 +114,7 @@ public class ApplicationConfig {
         humidifierManager.stop();
         leakDetectorChargeManager.stop();
         temperatureSensorChargeManager.stop();
+        rcChargeManager.stop();
     }
     
     @Bean 

@@ -17,6 +17,7 @@ import itmo.localpiper.backend.service.handling.abstr.AbstractFanHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractHumidifierHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLampHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractLeakDetectorHandler;
+import itmo.localpiper.backend.service.handling.abstr.AbstractRCHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractRelayHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractTemperatureSensorHandler;
 import itmo.localpiper.backend.service.handling.abstr.AbstractThermostatHandler;
@@ -28,6 +29,7 @@ import itmo.localpiper.backend.service.handling.concr.FanHandler;
 import itmo.localpiper.backend.service.handling.concr.HumidifierHandler;
 import itmo.localpiper.backend.service.handling.concr.LampHandler;
 import itmo.localpiper.backend.service.handling.concr.LeakDetectorHandler;
+import itmo.localpiper.backend.service.handling.concr.RCHandler;
 import itmo.localpiper.backend.service.handling.concr.RelayHandler;
 import itmo.localpiper.backend.service.handling.concr.TemperatureSensorHandler;
 import itmo.localpiper.backend.service.handling.concr.ThermostatHandler;
@@ -100,6 +102,11 @@ public class HandlerFactory {
     // 10XXXX
     public AbstractTemperatureSensorHandler getTemperatureSensorHandler(Device device) {
         return new TemperatureSensorHandler(getCommands(device), device, deviceRepository);
+    }
+
+    // 11XXXX
+    public AbstractRCHandler getRCHandler(Device device) {
+        return new RCHandler(getCommands(device), device, deviceRepository);
     }
 
     // 12XXXX

@@ -20,11 +20,11 @@ public abstract class AbstractRCHandler implements Handler {
     public abstract void pickCommand(String command, Object arg);
     protected abstract void turnOn();
     protected abstract void turnOff();
-    protected abstract void run();
+    protected abstract void run(int duration);
     protected abstract void stop();
     protected abstract void continueRun();
     protected abstract void finish();
     protected abstract void charge();
     protected abstract void unplug();
-    protected abstract void changeSuctionPower();
+    protected abstract void changeSuctionPower(String suctionPower);
 }
