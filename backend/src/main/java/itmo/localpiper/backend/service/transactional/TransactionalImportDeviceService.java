@@ -87,6 +87,14 @@ public class TransactionalImportDeviceService {
                 features.put("BUFFER", 100);
                 continue;
             }
+            if ("CURRENT_TEMP".equals(entry.getKey())) {
+                features.put("CURRENT_TEMP", 25);
+                continue;
+            }
+            if ("TARGET_TEMP".equals(entry.getKey())) {
+                features.put("TARGET_TEMP", 25);
+                continue;
+            }
             features.put(entry.getKey(), determineDefaultValue(entry.getValue()));
         }
         device.setFeatures(features);
