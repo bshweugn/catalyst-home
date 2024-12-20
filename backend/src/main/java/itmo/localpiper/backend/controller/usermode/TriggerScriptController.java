@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import itmo.localpiper.backend.dto.request.TriggerScriptRequest;
 import itmo.localpiper.backend.dto.response.OperationResultResponse;
+import itmo.localpiper.backend.model.House;
 import itmo.localpiper.backend.model.TriggerCondition;
 import itmo.localpiper.backend.repository.TriggerConditionRepository;
 import itmo.localpiper.backend.service.processing.scripts.AddTriggerScriptProcessorService;
@@ -20,6 +21,7 @@ import itmo.localpiper.backend.util.AccessValidationService;
 import itmo.localpiper.backend.util.RequestPair;
 import itmo.localpiper.backend.util.RequestTransformer;
 import itmo.localpiper.backend.util.enums.AccessMode;
+import itmo.localpiper.backend.util.enums.ProcessingStatus;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -54,6 +56,16 @@ public class TriggerScriptController {
 
     @PostMapping("/deleteTriggerScript")
     public ResponseEntity<OperationResultResponse> deleteTriggerScript(@RequestBody Long triggerId, HttpServletRequest servletRequest) {
-        throw new UnsupportedOperationException();
+        TriggerCondition tc = triggerConditionRepository.findById(triggerId).get();
+        RequestPair<Long> rp = requestTransformer.transform(triggerId, servletRequest);
+        House house;
+        if (tc.getCamera() == null) {
+            house = tc.getDevice().getRoom().getFloor().getHouse();
+        } else {
+            house = tc.getCamera().getRoom().getFloor().getHouse();
+        }
+        accessValidationService.validateAccess(rp.getEmail(), house.getId(), AccessMode.STRICT);
+        triggerConditionRepository.delete(tc);
+        return ResponseEntity.ok(new OperationResultResponse(ProcessingStatus.SUCCESS, "Trigger deleted"));
     }
 }
