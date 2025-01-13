@@ -66,22 +66,30 @@ export function renderItemStatus(device, concise) {
         case 'THERMOSTAT': // Термостат
             const current = device.features.CURRENT_TEMP;
             const target = device.features.TARGET_TEMP;
-            if (current !== undefined && target !== undefined) {
-                if (current < target) return `Подогрев до ${target}°C`;
-                if (current > target) return `Охлаждение до ${target}°C`;
-                return concise ? "Поддержание" : 'Поддержание температуры';
+            if (device.status !== "OFF") {
+                if (current !== undefined && target !== undefined) {
+                    if (current < target) return `Подогрев до ${target}°C`;
+                    if (current > target) return `Охлаждение до ${target}°C`;
+                    return concise ? "Поддержание" : 'Поддержание температуры';
+                }
+                return 'Нет данных';
+            } else {
+                return 'Выключен'
             }
-            return 'Нет данных';
 
         case 'AC': // Термостат
             const currentAC = device.features.CURRENT_TEMP;
             const targetAC = device.features.TARGET_TEMP;
-            if (currentAC !== undefined && targetAC !== undefined) {
-                if (currentAC < targetAC) return `Подогрев до ${target}°C`;
-                if (currentAC > targetAC) return `Охлаждение до ${target}°C`;
-                return concise ? "Поддержание" : 'Поддержание температуры';
+            if (device.status !== "OFF") {
+                if (currentAC !== undefined && targetAC !== undefined) {
+                    if (currentAC < targetAC) return `Подогрев до ${targetAC}°C`;
+                    if (currentAC > targetAC) return `Охлаждение до ${targetAC}°C`;
+                    return concise ? "Поддержание" : 'Поддержание температуры';
+                }
+                return 'Нет данных';
+            } else {
+                return 'Выключен'
             }
-            return 'Нет данных';
 
         case 'HUMIDIFIER': // Увлажнитель
             const currentHum = device.features.CURRENT_HUM;
@@ -100,11 +108,17 @@ export function renderItemStatus(device, concise) {
             return device.status === 'ON' ? 'Камера включена' : 'Камера выключена';
 
         case 'ROBOT': // Робот-пылесос
-            return device.status === 'CLEANING'
+            return device.status === 'WORKING'
                 ? 'Уборка'
-                : device.status === 'CHARGING'
-                    ? 'Зарядка'
-                    : 'Ожидание';
+                : device.status === 'PAUSED'
+                    ? 'Пауза'
+                    : device.status === 'ERROR'
+                        ? 'Ошибка'
+                        : device.status === 'RETURNING'
+                            ? 'Возврат'
+                            : device.status === 'ON'
+                                ? 'Ожидание' :
+                                'Выключен';
 
         default:
             return 'Неизвестное устройство';

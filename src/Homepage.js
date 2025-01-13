@@ -115,7 +115,7 @@ function Homepage(args) {
         fetchData(args.token);
     }, [dispatch, args.token, args.currentHouseID]);
 
-    const [pageBackground, setPageBackground] = useState(background6); // TODO: settings.background.image
+    const [pageBackground, setPageBackground] = useState(background);
 
     const [editMode, setEditMode] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -213,13 +213,8 @@ function Homepage(args) {
         },
         {
             image: Tema,
-            name: 'Тёма Сорокин',
+            name: 'Тёма',
             role: 'Жилец',
-        },
-        {
-            image: Egor,
-            name: 'Егор Булко',
-            role: 'Гость',
         },
     ];
 
@@ -273,26 +268,26 @@ function Homepage(args) {
                 </>
             ),
         },
-        {
-            title: "Уведомления",
-            label: "Настройки уведомлений",
-            icon: Bell,
-            content: (
-                <>
-                    <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
-                </>
-            ),
-        },
-        {
-            title: "Glance",
-            label: "Настройка отображения Glance",
-            icon: Glance,
-            content: (
-                <>
-                    <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
-                </>
-            ),
-        }
+        // {
+        //     title: "Уведомления",
+        //     label: "Настройки уведомлений",
+        //     icon: Bell,
+        //     content: (
+        //         <>
+        //             <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
+        //         </>
+        //     ),
+        // },
+        // {
+        //     title: "Glance",
+        //     label: "Настройка отображения Glance",
+        //     icon: Glance,
+        //     content: (
+        //         <>
+        //             <TextInput value={houseName} label="Имя комнаты" setValue={setHouseName} placeholder={""} />
+        //         </>
+        //     ),
+        // }
     ]
 
 
@@ -310,7 +305,7 @@ function Homepage(args) {
 
     return (
         <>
-            <Background image={pageBackground} />
+            <Background />
 
             {args.rooms.map(room => (
                 room.devices && room.devices.length > 0 && room.devices.map(device => (
@@ -350,7 +345,7 @@ function Homepage(args) {
                     <RoomWindow key={`window-${room.id}`} fetchData={args.fetchData} setToDeleteId={setToDeleteRoomId} token={args.token} room={room} visible={selectedRoomID === room.id} idFunc={setSelectedRoomID} floors={args.floors} floor={getFloorByRoomId(room.id, args.houses)} />
                 ))}
 
-            {/* <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} /> */}
+            <Window title={houseName} visible={moreMode} idFunc={setMoreMode} currentIndex={optionIndex} setCurrentIndex={setOptionIndex} cards={cards} />
 
             <IonHeader>
                 <Header
@@ -368,7 +363,7 @@ function Homepage(args) {
 
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">{args.currentPage === 0 ? houseName : args.currentPage === 1 ? "Аксессуары" : args.currentPage === 2 ? "Камеры" : "Автоматизации"}</IonTitle>
+                        <IonTitle size="large">{args.currentPage === 0 ? houseName : args.currentPage === 1 ? "Камеры" : "Автоматизации"}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
 
@@ -467,32 +462,50 @@ function Homepage(args) {
 
                 <Section visible={args.currentPage === 1}>
                     <div className='page'>
-                        {/* {Object.keys(rooms)
-                            .sort((a, b) => rooms[a].order - rooms[b].order)
-                            .map(roomId => {
-                                const roomCameras = Object.keys(cameras)
-                                    .filter(deviceId =>
-                                        cameras[deviceId].roomID === rooms[roomId].id
-                                    )
-                                    .map(deviceId => cameras[deviceId]);
+                        <CamerasList
+                            rooms={args.rooms}
+                            editMode={editMode}
+                            setItemID={setCameraID}
+                            openedID={cameraID}
+                            roomId={currentRoomId}
+                            vertical
+                        />
+                        {/* {args.rooms
+                            .map(room => {
+                                // const roomCameras = Object.keys(room.cameras)
 
-                                if (roomCameras.length === 0) return null;
+                                // if (roomCameras.length === 0) return null;
 
-                                return (
-                                    <CamerasVerticalList
-                                        key={roomId}
-                                        roomName={rooms[roomId].name}
-                                        roomID={rooms[roomId].id}
-                                        func={setSelectedRoomID}
-                                        cameras={roomCameras}
-                                        rooms={rooms}
-                                        editMode={editMode}
-                                        setItemID={setCameraID}
-                                        openedID={cameraID}
-                                    />
-                                );
+                                // return (
+                                //     <CamerasVerticalList
+                                //         key={room.id}
+                                //         roomName={room.name}
+                                //         roomID={room.id}
+                                //         func={setSelectedRoomID}
+                                //         cameras={roomCameras}
+                                //         rooms={args.rooms}
+                                //         editMode={editMode}
+                                //         setItemID={setCameraID}
+                                //         openedID={cameraID}
+                                //     />
+                                // );
+                                <p>{JSON.stringify(room)}</p>
                             })} */}
-                        <CameraStream token={args.token} />
+                        {/* <CameraStream token={args.token} /> */}
+                        {/* {args.rooms.map(room => (
+                            room.cameras && room.cameras.length > 0 && room.cameras.map(camera => (
+                                <CameraWindow
+                                    key={`window-${camera.id}`}
+                                    fetchData={args.fetchData}
+                                    token={args.token}
+                                    camera={camera}
+                                    rooms={args.rooms}
+                                    room={room}
+                                    visible={camera.id === cameraID}
+                                    idFunc={setCameraID}
+                                />
+                            ))
+                        ))} */}
                     </div>
 
                 </Section>

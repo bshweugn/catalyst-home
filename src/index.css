@@ -21,7 +21,7 @@ body {
   width: 100vw;
   box-sizing: border-box;
   background-size: contain;
-  padding: 0rem 1rem 12rem 1rem;
+  padding: 0rem 0.75rem 12rem 0.75rem;
   overflow-y: scroll;
 }
 

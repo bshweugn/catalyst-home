@@ -67,6 +67,8 @@ const AddAccessoryPopup = (args) => {
     const [device, setDevice] = useState(null);
 
     const [conditionValue, setConditionValue] = useState('');
+    const [scriptRight, setScriptRight] = useState("");
+    const [scriptLeft, setScriptLeft] = useState("");
 
     const [inputValue, setInputValue] = useState("");
     const [pageBackground, setPageBackground] = useState(background);
@@ -300,9 +302,13 @@ const AddAccessoryPopup = (args) => {
     }, [selectedDevice]);
 
     useEffect(() => {
-        console.log(trigger);
-        setCondition(trigger.condition)
+        if (trigger && trigger.device) {
+            console.log(trigger);
+            setCondition(trigger.condition);
+            setScriptLeft(`[${trigger.device.id}, "${trigger.condition}", "${trigger.parameter}"] -> `);
+        }
     }, [trigger]);
+    
 
     const actions = []
 
@@ -574,13 +580,13 @@ const AddAccessoryPopup = (args) => {
                             <>
                                 <CurrentTrigger trigger={trigger} addFunc={() => { setDeviceSelectMode(true); animate() }} />
                                 <Description text="Сценарий будет запущен при соблюдении выбранного условия активации." />
-                                <ScriptActionsList actions={actions} openDevicesList={() => { setScriptDeviceSelectMode(true); animate() }} />
+                                <ScriptActionsList actions={actions} openDevicesList={() => { setScriptDeviceSelectMode(true); animate() }} houses={args.houses} actionsString={scriptRight}/>
                                 {/* <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
                             <VisibilityWrapper defaultState={true} visible={!toggleStates[0].value}>
                                 <ItemsShortPreview label={"Выбор аксессуаров"} devices={devices} action={() => { setDeviceSelectMode(true); animate() }} />
                             </VisibilityWrapper> */}
                                 <div className="add-accessory-popup__buttons-group add-accessory-popup__buttons-group--bottom">
-                                    <Button primary label="Готово" onClick={() => { setView('invite-sent'); animate() }} />
+                                    <Button primary label="Готово" onClick={() => { console.log(scriptLeft + scriptRight) }} />
                                     {/* <Button onClick={() => setView("default")} label="Назад" /> */}
                                     <Button label="" />
                                     <div className='add-accessory-popup__buttons-group-tint' />
@@ -628,7 +634,7 @@ const AddAccessoryPopup = (args) => {
                                             <div className='add-accessory-popup__buttons-group-tint' />
                                         </div>
                                     </>
-                                    : <ActionWindow device={getDeviceById(selectedDevice, args.houses)} idFunc={setSelectedDevice}/>}
+                                    : <ActionWindow device={getDeviceById(selectedDevice, args.houses)} idFunc={setSelectedDevice} setString={setScriptRight} string={scriptRight}/>}
                             </>
                         );
                     }

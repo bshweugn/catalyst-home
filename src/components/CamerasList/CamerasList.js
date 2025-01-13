@@ -3,7 +3,7 @@ import './CamerasList.scss';
 import CameraView from '../CameraView/CameraView';
 import CamerasRow from '../CamerasRow/CamerasRow';
 
-const CamerasList = ({ rooms, editMode, setItemID, openedID, roomId }) => {
+const CamerasList = ({ rooms, editMode, setItemID, openedID, roomId, vertical }) => {
     // console.log('Rooms:', rooms);
     // console.log('Selected Room ID:', roomId);
 
@@ -17,22 +17,47 @@ const CamerasList = ({ rooms, editMode, setItemID, openedID, roomId }) => {
 
     // console.log('Filtered Cameras Array:', camerasArray);
 
-    return (
-        <CamerasRow>
-            {camerasArray.map((cameraWithRoom, index) => (
-                <CameraView
-                    key={cameraWithRoom.id}
-                    index={index}
-                    camera={cameraWithRoom}
-                    room={cameraWithRoom.room}
-                    editMode={editMode}
-                    idFunc={setItemID}
-                    id={cameraWithRoom.id}
-                    opened={cameraWithRoom.id === openedID}
-                />
-            ))}
-        </CamerasRow>
-    );
+    if (!vertical) {
+        return (
+            <CamerasRow>
+                {
+                    camerasArray.map((cameraWithRoom, index) => (
+                        <CameraView
+                            key={cameraWithRoom.id}
+                            index={index}
+                            camera={cameraWithRoom}
+                            room={cameraWithRoom.room}
+                            editMode={editMode}
+                            idFunc={setItemID}
+                            id={cameraWithRoom.id}
+                            opened={cameraWithRoom.id === openedID}
+                        />
+                    ))
+                }
+            </CamerasRow>
+        )
+    } else {
+        return (
+            <>
+                <div className='cameras-list__vertical-list'>
+                    {
+                        camerasArray.map((cameraWithRoom, index) => (
+                            <CameraView
+                                key={cameraWithRoom.id}
+                                index={index}
+                                camera={cameraWithRoom}
+                                room={cameraWithRoom.room}
+                                editMode={editMode}
+                                idFunc={setItemID}
+                                id={cameraWithRoom.id}
+                                opened={cameraWithRoom.id === openedID}
+                            />
+                        ))
+                    }
+                </div>
+            </>
+        )
+    }
 };
 
 export default CamerasList;

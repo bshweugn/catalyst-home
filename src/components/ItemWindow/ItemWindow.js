@@ -7,13 +7,10 @@ import ActionButton from '../ActionButton/ActionButton';
 import Sun from '../icons/Sun/Sun';
 import Power from '../icons/Power/Power';
 import { useDispatch } from 'react-redux';
-import { setFav, setThermostatTemp, toggleDeviceStatus } from '../../store';
 import { isSensor, isVerticalControls, itemPrimaryType, renderItemIcon, renderItemStatus } from '../../itemInfo';
-import TextInput from '../TextInput/TextInput';
 import StarOutline from '../icons/StarOutline/StarOutline';
 import Star from '../icons/Star/Star';
 import TempIndicator from '../TempIndicator/TempIndicator';
-import Gear from '../icons/Gear/Gear';
 import ItemSettings from '../ItemSettings/ItemSettings';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Lightbulb from '../icons/Lightbulb/Lightbulb';
@@ -38,7 +35,7 @@ const ItemWindow = (args) => {
     const [deviceStatus, setDeviceStatus] = useState(renderItemStatus(args.device));
     const [statusWidth, setStatusWidth] = useState('auto');
     const [isFading, setIsFading] = useState(false);
-    const [isFav, setIsFav] = useState(args.device.favourite);
+    const [isFav, setIsFav] = useState(false);
     const statusRef = useRef(null);
 
     const [settingsVisible, setSettingsVisible] = useState(false);
@@ -47,10 +44,23 @@ const ItemWindow = (args) => {
 
     const [closeRequired, setCloseRequired] = useState(false);
 
+
+    const getSetter = (deviceType) => {
+        console.log(args.setters)
+        if (args.setters !== undefined) {
+            const device = args.setters.find(item => item.deviceType === deviceType);
+            return device ? device?.setters : null;
+        } else {
+            return null;
+        }
+    }
+
+
+
     useEffect(() => {
         if (closeRequired) {
             args.idFunc(0);
-            args.setToDeleteId(args.device.id)
+            args.setToDeleteId(args.device?.id)
             setCloseRequired(false);
         }
     }, [closeRequired]);
@@ -163,29 +173,69 @@ const ItemWindow = (args) => {
     ];
 
 
+    const RobotPowerOptions = [
+        {
+            label: "Мин.",
+            icon: DialLow,
+            value: "LOW",
+        },
+        {
+            label: "Норм.",
+            icon: DialLow,
+            value: "NORMAL",
+        },
+        {
+            label: "Макс.",
+            icon: DialLow,
+            value: "MAX",
+        },
+    ];
+
+
     /* ----- БЛОК ПЕРЕМЕННЫХ ------*/
 
-    const [state, setState] = useState(device.state);
-    const [toggleState, setToggleState] = useState(device.state);
+    const [state, setState] = useState(device?.state ?? '');
+const [toggleState, setToggleState] = useState(device?.state ?? '');
 
-    const [mode, setMode] = useState("");
+const [mode, setMode] = useState(device?.features?.MODE ?? "NORMAL");
+const [windMode, setWindMode] = useState(device?.features?.WIND_MODE ?? "SWING");
 
-    const [windMode, setWindMode] = useState("");
+const [brightness, setBrightness] = useState(
+    device?.features?.BRIGHTNESS !== undefined 
+        ? device.status !== "OFF" 
+            ? device.features.BRIGHTNESS 
+            : 0 
+        : 0
+);
 
-    const [brightness, setBrightness] = useState(device.features !== undefined && device.features.BRIGHTNESS !== undefined ? device.status !== "OFF" ? device.features.BRIGHTNESS : 0 : 0);
-    const [colorTemp, setColorTemp] = useState(device.features !== undefined && device.features.COLOR_TEMP !== undefined ? device.features.COLOR_TEMP : 0);
+const [colorTemp, setColorTemp] = useState(device?.features?.COLOR_TEMP ?? 0);
 
-    const [targetTemp, setTargetTemp] = useState(0);
-    const [currentTemp, setCurrentTemp] = useState(0);
+const [targetTemp, setTargetTemp] = useState(device?.features?.TARGET_TEMP ?? 27);
+const [currentTemp, setCurrentTemp] = useState(device?.features?.CURRENT_TEMP ?? 25);
 
-    const [currentHum, setCurrentHum] = useState(0);
-    const [targetHum, setTargetHum] = useState(0);
+const [currentHum, setCurrentHum] = useState(device?.features?.CURRENT_HUM ?? 35);
+const [targetHum, setTargetHum] = useState(device?.features?.TARGET_HUM ?? 40);
 
-    const [fanSpeed, setFanSpeed] = useState(0);
+const [fanSpeed, setFanSpeed] = useState(
+    device?.features?.SPEED !== undefined 
+        ? device.status !== "OFF" 
+            ? device.features.SPEED 
+            : 0 
+        : 0
+);
 
-    const [curtainPercentage, setCurtainPercentage] = useState(0);
+const [curtainPercentage, setCurtainPercentage] = useState(
+    device?.features?.PERCENTAGE !== undefined 
+        ? device.status !== "OPENED" 
+            ? device.features.PERCENTAGE 
+            : 0 
+        : 0
+);
 
-    const timerRef = useRef(null);
+const [suctionPower, setSuctionPower] = useState(device?.features?.SUCTION_POWER ?? "NORMAL");
+
+const timerRef = useRef(null);
+
 
     /* -----------*/
 
@@ -195,7 +245,7 @@ const ItemWindow = (args) => {
             const result = await fetchHousesData(args.token);
 
             if (result) {
-                setDevice(getDeviceById(device.id, result));
+                setDevice(getDeviceById(device?.id, result));
                 console.log(device);
             }
         } catch (error) {
@@ -203,53 +253,53 @@ const ItemWindow = (args) => {
         }
 
 
-        if (device.status !== undefined) {
-            setState(device.status);
+        if (device?.status !== undefined) {
+            setState(device?.status);
         }
         switch (itemPrimaryType(device)) {
             case "LAMP":
-                if (device.features.COLOR_TEMP !== undefined) {
-                    setColorTemp(device.features.COLOR_TEMP);
+                if (device?.features.COLOR_TEMP !== undefined) {
+                    setColorTemp(device?.features.COLOR_TEMP);
                 }
-                if (device.features.BRIGHTNESS !== undefined) {
-                    if (device.status !== "OFF") {
-                        setBrightness(device.features.BRIGHTNESS);
+                if (device?.features.BRIGHTNESS !== undefined) {
+                    if (device?.status !== "OFF") {
+                        setBrightness(device?.features.BRIGHTNESS);
                     }
                 }
             case "THERMOSTAT":
-                if (device.features.TARGET_TEMP !== undefined) {
-                    setTargetTemp(device.features.TARGET_TEMP);
+                if (device?.features.TARGET_TEMP !== undefined) {
+                    setTargetTemp(device?.features.TARGET_TEMP);
                 }
-                if (device.features.CURRENT_TEMP !== undefined) {
-                    setCurrentTemp(device.features.CURRENT_TEMP);
+                if (device?.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(device?.features.CURRENT_TEMP);
                 }
-                if (device.features.MODE !== undefined) {
-                    setMode(device.features.MODE);
+                if (device?.features.MODE !== undefined) {
+                    setMode(device?.features.MODE);
                 }
             case "AC":
-                if (device.features.TARGET_TEMP !== undefined) {
-                    setTargetTemp(device.features.TARGET_TEMP);
+                if (device?.features.TARGET_TEMP !== undefined) {
+                    setTargetTemp(device?.features.TARGET_TEMP);
                 }
-                if (device.features.CURRENT_TEMP !== undefined) {
-                    setCurrentTemp(device.features.CURRENT_TEMP);
+                if (device?.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(device?.features.CURRENT_TEMP);
                 }
-                if (device.features.MODE !== undefined) {
-                    setMode(device.features.MODE);
+                if (device?.features.MODE !== undefined) {
+                    setMode(device?.features.MODE);
                 }
-                if (device.features.WIND_MODE !== undefined) {
-                    setWindMode(device.features.WIND_MODE);
+                if (device?.features.WIND_MODE !== undefined) {
+                    setWindMode(device?.features.WIND_MODE);
                 }
             case "TEMPERATURE":
-                if (device.features.CURRENT_TEMP !== undefined) {
-                    setCurrentTemp(device.features.CURRENT_TEMP);
+                if (device?.features.CURRENT_TEMP !== undefined) {
+                    setCurrentTemp(device?.features.CURRENT_TEMP);
                 }
             case "CURTAIN":
-                if (device.features.PERCENTAGE !== undefined) {
-                    setCurtainPercentage(device.features.PERCENTAGE);
+                if (device?.features.PERCENTAGE !== undefined) {
+                    setCurtainPercentage(device?.features.PERCENTAGE);
                 }
             case "FAN":
-                if (device.features.SPEED !== undefined) {
-                    setFanSpeed(device.features.SPEED);
+                if (device?.features.SPEED !== undefined) {
+                    setFanSpeed(device?.features.SPEED);
                 }
         }
     }
@@ -283,7 +333,7 @@ const ItemWindow = (args) => {
     /* ----------*/
 
 
-    /* ----- ПЕРЕКЛЮЧАТЕЛЬ КЛАПАНА -----*/
+    /* ----- ПЕРЕКЛЮЧАТЕЛЬ КЛАПАНА И ШТОР -----*/
 
     const setValveOrCurtainStateWithToggle = (state) => {
         if (!state) {
@@ -327,7 +377,7 @@ const ItemWindow = (args) => {
     useEffect(() => {
         const handleBrightnessChange = async () => {
             try {
-                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_BRIGHTNESS", Math.round(brightness));
+                const result = await executeDeviceCommand(args.token, device?.id, "CHANGE_BRIGHTNESS", Math.round(brightness));
                 if (result) {
                     console.log(result);
                     updateStatus(renderItemStatus(result.data));
@@ -350,7 +400,12 @@ const ItemWindow = (args) => {
         }
 
         timerRef.current = setTimeout(() => {
-            if(!args.actionWindow) handleBrightnessChange();
+            if (!args.actionWindow) {
+                handleBrightnessChange();
+            } else {
+                getSetter("LAMP").brightness(Math.round(brightness));
+                args.setActiveDeviceId(device?.id);
+            }
         }, 200);
 
         return () => {
@@ -363,7 +418,7 @@ const ItemWindow = (args) => {
     useEffect(() => {
         const handleColorTempChange = async () => {
             try {
-                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_COLOR_TEMPERATURE", colorTemp);
+                const result = await executeDeviceCommand(args.token, device?.id, "CHANGE_COLOR_TEMPERATURE", colorTemp);
                 if (result) {
                     console.log(result);
                     setDevice((prevDevice) => ({
@@ -385,7 +440,12 @@ const ItemWindow = (args) => {
         }
 
         timerRef.current = setTimeout(() => {
-            if(!args.actionWindow) handleColorTempChange();
+            if (!args.actionWindow) {
+                handleColorTempChange();
+            } else {
+                getSetter("LAMP").colorTemp(colorTemp);
+                args.setActiveDeviceId(device?.id);
+            }
         }, 200);
 
         return () => {
@@ -396,10 +456,9 @@ const ItemWindow = (args) => {
     }, [colorTemp]);
 
     useEffect(() => {
-        console.log("haha")
         const handleToggle = async () => {
             try {
-                const result = await executeDeviceCommand(args.token, device.id, toggleState === "ON" ? "TURN_ON" : "TURN_OFF", "");
+                const result = await executeDeviceCommand(args.token, device?.id, toggleState === "ON" ? "TURN_ON" : "TURN_OFF", "");
                 if (result) {
                     console.log(result);
                     setState(result.data.status);
@@ -411,8 +470,199 @@ const ItemWindow = (args) => {
             }
         };
 
-        if(!args.actionWindow) handleToggle();
+        if (!args.actionWindow) {
+            handleToggle();
+        } else {
+            getSetter("COMMON").state(toggleState);
+            args.setActiveDeviceId(device.id);
+
+        }
     }, [toggleState]);
+
+    /* ----------*/
+
+
+    /* ----- ХЕНДЛЕРЫ КОНДИЦИОНЕРА И ТЕРМОСТАТА -----*/
+
+    useEffect(() => {
+        const handleModeChange = async () => {
+            if (mode !== "OFF") {
+                try {
+                    const result = await executeDeviceCommand(args.token, device.id, "CHANGE_MODE", mode);
+                    if (result) {
+                        console.log(result);
+                        setDevice((prevDevice) => ({
+                            ...prevDevice,
+                            features: {
+                                ...prevDevice.features,
+                                MODE: mode,
+                            },
+                        }));
+
+                        if (device.status === "OFF") {
+                            const result1 = await executeDeviceCommand(args.token, device.id, "TURN_ON", "");
+                            if (result1) {
+                                console.log(result1);
+                                setDevice((prevDevice) => ({
+                                    ...prevDevice,
+                                    status: result1.data.status,
+                                }));
+
+                                updateStatus(renderItemStatus(result.data));
+                            }
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Ошибка при изменении цветовой температуры:', error);
+                }
+            } else {
+                console.log("OFF")
+                try {
+                    const result = await executeDeviceCommand(args.token, device.id, "TURN_OFF", "");
+                    if (result) {
+                        console.log(result);
+                        setDevice((prevDevice) => ({
+                            ...prevDevice,
+                            status: result.data.status,
+                        }));
+                    }
+
+                } catch (error) {
+                    console.error('Ошибка при изменении цветовой температуры:', error);
+                }
+            }
+        };
+
+
+        if (!args.actionWindow) {
+            handleModeChange();
+        } else {
+            getSetter("AC").mode(mode);
+            args.setActiveDeviceId(device.id);
+        }
+
+    }, [mode]);
+
+    useEffect(() => {
+        const handleWindModeChange = async () => {
+            try {
+                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_WIND_MODE", windMode);
+                if (result) {
+                    console.log(result);
+                    setDevice((prevDevice) => ({
+                        ...prevDevice,
+                        features: {
+                            ...prevDevice.features,
+                            WIND_MODE: windMode,
+                        },
+                    }));
+                }
+
+            } catch (error) {
+                console.error('Ошибка при изменении цветовой температуры:', error);
+            }
+        };
+
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+
+        timerRef.current = setTimeout(() => {
+            if (!args.actionWindow) {
+                handleWindModeChange();
+            } else {
+                getSetter("AC").windMode(windMode);
+                args.setActiveDeviceId(device.id);
+            }
+        }, 200);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [windMode]);
+
+    useEffect(() => {
+        const handleTargetTempChange = async () => {
+            try {
+                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_TARGET_TEMP", targetTemp);
+                if (result) {
+                    console.log(result);
+                    setDevice((prevDevice) => ({
+                        ...prevDevice,
+                        features: {
+                            ...prevDevice.features,
+                            TARGET_TEMP: targetTemp,
+                        },
+                    }));
+                }
+
+            } catch (error) {
+                console.error('Ошибка при изменении цветовой температуры:', error);
+            }
+        };
+
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+
+        timerRef.current = setTimeout(() => {
+            if (!args.actionWindow) {
+                handleTargetTempChange();
+            } else {
+                getSetter("AC").targetTemp(targetTemp);
+                args.setActiveDeviceId(device.id);
+            }
+        }, 200);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [targetTemp]);
+
+    useEffect(() => {
+        const handleTargetHumChange = async () => {
+            try {
+                const result = await executeDeviceCommand(args.token, device.id, "CHANGE_TARGET_HUM", targetHum);
+                if (result) {
+                    console.log(result);
+                    setDevice((prevDevice) => ({
+                        ...prevDevice,
+                        features: {
+                            ...prevDevice.features,
+                            TARGET_HUM: targetHum,
+                        },
+                    }));
+                }
+
+            } catch (error) {
+                console.error('Ошибка при изменении цветовой температуры:', error);
+            }
+        };
+
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+
+        timerRef.current = setTimeout(() => {
+            if (!args.actionWindow) {
+                handleTargetHumChange();
+            } else {
+                getSetter("HUMIDIFIER").targetHum(targetHum);
+                args.setActiveDeviceId(device.id);
+            }
+        }, 200);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [targetHum]);
 
     /* ----------*/
 
@@ -476,8 +726,8 @@ const ItemWindow = (args) => {
                     <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={targetTemp} setValue={setTargetTemp} />
                     {args.device.features.MODE !== undefined ? <IconSelect
                         options={thermostatPowerOptions}
-                        selectedOption={getThermoOrHumMode()}
-                        setSelectedOption={setThermoOrHumMode}
+                        selectedOption={mode}
+                        setSelectedOption={setMode}
                     /> : <ActionButton active={getState()} setActive={setStateWithToggle} icon={Power} labels={["Вкл.", "Выкл."]} />}
                     {/* <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} /> */}
                 </>
@@ -492,8 +742,8 @@ const ItemWindow = (args) => {
                     {args.device.features.MODE !== undefined ?
                         <IconSelect
                             options={humidifierPowerOptions}
-                            selectedOption={getThermoOrHumMode()}
-                            setSelectedOption={setThermoOrHumMode}
+                            selectedOption={mode}
+                            setSelectedOption={setMode}
                         /> : <ActionButton active={getState()} setActive={setStateWithToggle} icon={Power} labels={["Вкл.", "Выкл."]} />
                     }
                     {/* <ActionButton active={args.device.status === 'HEATING'} icon={Power} labels={["Вкл.", "Выкл."]} /> */}
@@ -508,8 +758,8 @@ const ItemWindow = (args) => {
                     <HorizontalSelector values={[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]} append={"°"} selectedValue={targetTemp} setValue={setTargetTemp} />
                     {args.device.features.MODE !== undefined ? <IconSelect
                         options={ACPowerOptions}
-                        selectedOption={getThermoOrHumMode()}
-                        setSelectedOption={setThermoOrHumMode}
+                        selectedOption={mode}
+                        setSelectedOption={setMode}
                     /> : null}
                     {args.device.features.WIND_MODE !== undefined ? <IconSelect
                         options={ACWindOptions}
@@ -588,7 +838,7 @@ const ItemWindow = (args) => {
                 });
             }, 300);
         }
-    }, [device.status, device.features]);
+    }, [device?.status, device?.features]);
 
     useEffect(() => {
         requestAnimationFrame(() => {
@@ -607,9 +857,9 @@ const ItemWindow = (args) => {
                 fetchData={args.fetchData}
                 rooms={args.rooms}
                 room={args.room}
-                name={args.device.name}
+                name={args.device?.name}
                 token={args.token}
-                itemId={args.device.id}
+                itemId={args.device?.id}
                 device={args.device}
                 houseId={args.houseId}
                 visible={settingsVisible}
@@ -622,10 +872,10 @@ const ItemWindow = (args) => {
             <div className="item-window__back" />
             <div className={`item-window__header ${settingsVisible ? "item-window__header--hidden" : ""}`}>
                 <div className="item-window__item-icon">{renderItemIcon(args.device)}</div>
-                {device.batteryLevel !== null ?
+                {device?.batteryLevel !== null ?
                     <div className='item-window__battery-wrapper'>
                         <div className='item-window__battery'>
-                            <BatteryGauge value={device.batteryLevel} size={30} customization={{
+                            <BatteryGauge value={device?.batteryLevel} size={30} customization={{
                                 batteryBody: {
                                     strokeWidth: 6,
                                     cornerRadius: 12,
@@ -651,7 +901,7 @@ const ItemWindow = (args) => {
                                 },
                             }} />
                         </div>
-                        <p className='item-window__battery-percentage'>{device.batteryLevel}%</p>
+                        <p className='item-window__battery-percentage'>{device?.batteryLevel}%</p>
                     </div>
                     : null}
                 <p className="item-window__close-btn" onClick={() => args.idFunc(0)}>Готово</p>
@@ -661,7 +911,7 @@ const ItemWindow = (args) => {
                 className={`item-window__content ${settingsVisible ? "item-window__content--hidden" : ""}`}
             >
                 <div className="item-window__item-info" onClick={handleContentClick}>
-                    <p className="item-window__item-name">{device.name}</p>
+                    <p className="item-window__item-name">{device?.name}</p>
                     {!args.actionWindow ? <p className="item-window__room-name">
                         {args.room.name || "Неизвестная комната"}
                     </p> : null}

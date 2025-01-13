@@ -90,9 +90,9 @@ const AuthScreen = (args) => {
                     <h1 className='auth-screen__title'>Создать аккаунт Catalyst</h1>
                     <p className='auth-screen__label'>Теперь придуймате надёжный пароль для входа в аккаунт.</p>
                     <div className='auth-screen__form'>
-                        <TextInput label={"Пароль"} placeholder={" "} light value={password} setValue={setPassword} />
-                        <Description text="Минимум 6 символов. Должен включать латиницу и цифры." />
-                        <TextInput label={"Повторите пароль"} placeholder={" "} light separated />
+                        <TextInput password label={"Пароль"} placeholder={" "} light value={password} setValue={setPassword} />
+                        <Description text="Пароль должен состоять минимум из 6 символов." />
+                        {/* <TextInput password label={"Повторите пароль"} placeholder={" "} light separated /> */}
                     </div>
                     <div className='auth-screen__buttons'>
                         <Button primary label="Далее" onClick={() => setSection(3)} />
@@ -121,7 +121,7 @@ const AuthScreen = (args) => {
                     <p className='auth-screen__label'>Введите данные для входа в аккаунт.</p>
                     <div className='auth-screen__form'>
                         <TextInput label={"Адрес электронной почты"} placeholder={" "} light value={email} setValue={setEmail} />
-                        <TextInput label={"Пароль"} placeholder={" "} light separated value={password} setValue={setPassword} />
+                        <TextInput password label={"Пароль"} placeholder={" "} light separated value={password} setValue={setPassword} />
                     </div>
                     <div className='auth-screen__buttons'>
                         <Button primary label="Войти" onClick={() => handleLogin()} />
