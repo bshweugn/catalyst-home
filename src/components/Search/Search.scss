@@ -1,0 +1,42 @@
+.search {
+    &__wrapper {
+        width: max-content;
+        height: fit-content;
+        padding: 0.875rem 1rem;
+        // background-color: white;
+        border-radius: 0.75rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        transition: .2s;
+        position: relative;
+
+        &:active{
+            transform: scale(0.9);
+        }
+    }
+
+    &__background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+        background-color: white;
+      }
+
+    &__hint{
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    &__input{
+        max-width: 0;
+        overflow: hidden;
+        padding: 0;
+        border: none;
+    }
+
+}

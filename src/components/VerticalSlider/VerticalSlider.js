@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './VerticalSlider.scss';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import SuperEllipse from 'react-superellipse';
 
 const VerticalSlider = ({ sliderIcon: SliderIconComponent, setValue, value }) => {
     const containerRef = useRef(null);
@@ -34,6 +35,11 @@ const VerticalSlider = ({ sliderIcon: SliderIconComponent, setValue, value }) =>
 
     return (
         <div className="vertical-slider" ref={containerRef} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
+            <SuperEllipse
+                    r1={0.1}
+                    r2={0.35}
+                    className={'vertical-slider__background'}
+                />
             <div className="vertical-slider__track">
                 {/* <div className="vertical-slider__thumb" style={{ height: `${value}%`, backgroundColor: color }}></div> */}
                 <div className="vertical-slider__thumb" style={{ height: `${value}%` }}></div>

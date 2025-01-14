@@ -48,6 +48,7 @@ import ScriptDevicesList from '../ScriptDevicesList/ScriptDevicesList';
 import ScriptActionsList from '../ScriptActionsList/ScriptActionsList';
 import { IonSpinner } from '@ionic/react';
 import ActionWindow from '../ActionWindow/ActionWindow';
+import PlusIcon from '../icons/PlusIcon/PlusIcon';
 
 const AddAccessoryPopup = (args) => {
     const dispatch = useDispatch();
@@ -308,7 +309,7 @@ const AddAccessoryPopup = (args) => {
             setScriptLeft(`[${trigger.device.id}, "${trigger.condition}", "${trigger.parameter}"] -> `);
         }
     }, [trigger]);
-    
+
 
     const actions = []
 
@@ -365,28 +366,40 @@ const AddAccessoryPopup = (args) => {
                         <div className="button-group">
                             <div className='add-accessory-popup__cards-wrapper'>
                                 <div className='add-accessory-popup__card' onClick={() => { setView("accessory"); animate() }}>
-                                    <Lightbulb className="add-accessory-popup__card-icon" size="2rem" fill="black" />
-                                    <p className='add-accessory-popup__card-name'>Аксессуар</p>
+                                    <Lightbulb className="add-accessory-popup__card-icon" size="2.25rem" fill="black" />
+                                    <div className='add-accessory-popup__card-pair'>
+                                        <p className='add-accessory-popup__card-name'>Аксессуар</p>
+                                        <p className='add-accessory-popup__card-label'>Отсканировать либо ввести код</p>
+                                    </div>
                                 </div>
                                 <div className='add-accessory-popup__card' onClick={() => { setView("room"); animate() }}>
-                                    <Room className="add-accessory-popup__card-icon" size="1.8rem" fill="black" />
-                                    <p className='add-accessory-popup__card-name'>Комната</p>
-                                </div>
-                                <div className='add-accessory-popup__card' onClick={() => { setView("level"); animate() }}>
-                                    <Stairs className="add-accessory-popup__card-icon" size="2.05rem" fill="black" />
-                                    <p className='add-accessory-popup__card-name'>Этаж</p>
+                                    <Room className="add-accessory-popup__card-icon" size="2rem" fill="black" />
+                                    <div className='add-accessory-popup__card-pair'>
+                                        <p className='add-accessory-popup__card-name'>Этаж или комната</p>
+                                        <p className='add-accessory-popup__card-label'>Удобная группировка аксессуаров</p>
+                                    </div>
                                 </div>
                                 <div className='add-accessory-popup__card' onClick={() => { setView("automation"); animate() }}>
-                                    <Play className="add-accessory-popup__card-icon" size="2rem" fill="black" />
-                                    <p className='add-accessory-popup__card-name'>Автомати-<br />зация</p>
+                                    <Play className="add-accessory-popup__card-icon" size="2.25rem" fill="black" />
+                                    <div className='add-accessory-popup__card-pair'>
+                                        <p className='add-accessory-popup__card-name'>Автоматизация</p>
+                                        <p className='add-accessory-popup__card-label'>Автоматическое выполнение сценариев</p>
+                                    </div>
+                                </div>
+                                <div className='add-accessory-popup__card' onClick={() => { setView("user"); animate() }}>
+                                    <div className='add-accessory-popup__circle-compensation'>
+                                        <div className='add-accessory-popup__avatar' style={{ backgroundImage: `url(${avatar})` }} />
+                                        <div className="add-accessory-popup__card-plus-circle" >
+                                            <PlusIcon lassName="add-accessory-popup__card-plus-icon" size="0.6875rem" fill="black" />
+                                        </div>
+                                    </div>
+                                    <div className='add-accessory-popup__card-pair'>
+                                        <p className='add-accessory-popup__card-name'>Пользователь</p>
+                                        <p className='add-accessory-popup__card-label'>Полный, гостевой доступ</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className='add-accessory-popup__card add-accessory-popup__card--wide' onClick={() => { setView("user"); animate() }}>
-                                <div className='add-accessory-popup__avatar' style={{ backgroundImage: `url(${avatar})` }} />
-                                <User className="add-accessory-popup__card-icon" size="2rem" fill="black" />
-                                <p className='add-accessory-popup__card-name'>Житель или гость</p>
-                            </div>
-                            <Button onClick={() => { setView("home"); animate() }} label="Создать новый Дом" />
+                            {/* <Button onClick={() => { setView("home"); animate() }} label="Создать новый Дом" /> */}
                         </div>
                     </>
                 );
@@ -580,7 +593,7 @@ const AddAccessoryPopup = (args) => {
                             <>
                                 <CurrentTrigger trigger={trigger} addFunc={() => { setDeviceSelectMode(true); animate() }} />
                                 <Description text="Сценарий будет запущен при соблюдении выбранного условия активации." />
-                                <ScriptActionsList actions={actions} openDevicesList={() => { setScriptDeviceSelectMode(true); animate() }} houses={args.houses} actionsString={scriptRight}/>
+                                <ScriptActionsList actions={actions} openDevicesList={() => { setScriptDeviceSelectMode(true); animate() }} houses={args.houses} actionsString={scriptRight} />
                                 {/* <ToggleList separated light toggles={toggleStates} label="Параметры доступа" />
                             <VisibilityWrapper defaultState={true} visible={!toggleStates[0].value}>
                                 <ItemsShortPreview label={"Выбор аксессуаров"} devices={devices} action={() => { setDeviceSelectMode(true); animate() }} />
@@ -634,7 +647,7 @@ const AddAccessoryPopup = (args) => {
                                             <div className='add-accessory-popup__buttons-group-tint' />
                                         </div>
                                     </>
-                                    : <ActionWindow device={getDeviceById(selectedDevice, args.houses)} idFunc={setSelectedDevice} setString={setScriptRight} string={scriptRight}/>}
+                                    : <ActionWindow device={getDeviceById(selectedDevice, args.houses)} idFunc={setSelectedDevice} setString={setScriptRight} string={scriptRight} />}
                             </>
                         );
                     }

@@ -14,7 +14,7 @@ import { executeDeviceCommand, getDeviceById } from '../../services/devicesServi
 import { fetchHousesData } from '../../services/housesService';
 
 const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, selectable, setter, selectedList, conditionWindow, setCondition, canSave, atomicSelected, toDelete, token }) => {
-    const [maximized, setMaximized] = useState(false);
+    const [minimized, setminimized] = useState(false);
     const [shakeClass, setShakeClass] = useState('');
     const [active, setActive] = useState(getItemStatus(device));
     const [status, setStatus] = useState(renderItemStatus(device, true));
@@ -220,20 +220,20 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                 <></>}
             <div
                 ref={(node) => drag(drop(node))}
-                className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${maximized ? "item-card--maximized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected || atomicSelected ? "item-card--selected" : ""} ${toDeleteState ? "item-card--to-delete" : ""}`}
+                className={`item-card ${shakeClass} ${opened ? "item-card--opened" : ""} ${minimized ? "item-card--minimized" : ""} ${active ? "item-card--active" : ""} ${preview ? "item-card--preview" : ""} ${selected || atomicSelected ? "item-card--selected" : ""} ${toDeleteState ? "item-card--to-delete" : ""}`}
                 style={{ opacity }}
                 onClick={handleCardClick}
             >
-                {/* <SuperEllipse
-                    r1={0.07}
-                    r2={0.2}
-                    className={'item-card__background'}
-                /> */}
+                <SuperEllipse
+                    r1={!minimized ? 0.05 : 0.1}
+                    r2={!minimized ? 0.15 : 0.3}
+                    className={`item-card__background ${active ? "item-card__background--active" : ""}`}
+                />
                 <div className={`item-card__select-indicator ${selected || atomicSelected ? "item-card__select-indicator--visible" : ""}`}>
                     <Checkmark className='item-card__checkmark' fill="black" size="1rem" />
                 </div>
-                <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setMaximized(!maximized); }}>
-                    {maximized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
+                <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setminimized(!minimized); }}>
+                    {!minimized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
                 </div>
                 {!isSensor(device) && (
                     <div

@@ -1,0 +1,24 @@
+.glance-component {
+    margin-top: 2rem;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    position: relative;
+
+    &__title {
+        font-weight: 500;
+        margin: 0;
+        font-size: 1.75rem;
+    }
+
+    &__edit-btn{
+        font-size: 0.875rem;
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        padding: 0.5rem 0.75rem;
+        background-color: rgba(255, 255, 255, 0.4);
+        border-radius: 2rem;
+        margin: 0;
+    }
+}

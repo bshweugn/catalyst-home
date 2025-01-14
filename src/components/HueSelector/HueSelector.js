@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import './HueSelector.scss';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Pointer from "../icons/Pointer/Pointer";
+import SuperEllipse from "react-superellipse";
 
 function HueSelector({ colors, color, setColor }) {
     const sliderRef = useRef(null);
@@ -50,6 +51,11 @@ function HueSelector({ colors, color, setColor }) {
                 <Pointer size="0.75rem" color="black" />
             </div>
             <div className="hue-selector__wrapper">
+                <SuperEllipse
+                    r1={0.1}
+                    r2={0.35}
+                    className={'hue-selector__background'}
+                />
                 <div className="hue-selector__fade" />
                 <div className="hue-selector__fade hue-selector__fade--second" />
                 <Slider ref={sliderRef} {...settings}>

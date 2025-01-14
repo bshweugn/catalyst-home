@@ -15,19 +15,19 @@ const TabBar = (args) => {
             <div className={finalClassName}>
                 <div className={`tab-bar__pair ${args.activeTab === 0 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(0)}>
                     <div className='tab-bar__icon'>
-                        <House size='1.5rem' color="white" />
+                        <House size='1.5rem' color="black" />
                     </div>
                     <p className='tab-bar__label'>Мой дом</p>
                 </div>
                 <div className={`tab-bar__pair ${args.activeTab === 1 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(1)}>
                     <div className='tab-bar__icon'>
-                        <VideoIcon size='1.5rem' color="white" />
+                        <VideoIcon size='1.5rem' color="black" />
                     </div>
                     <p className='tab-bar__label'>Камеры</p>
                 </div>
                 <div className={`tab-bar__pair ${args.activeTab === 2 ? "tab-bar__pair--active" : ""}`} onClick={() => args.setActiveTab(2)}>
                     <div className='tab-bar__icon'>
-                        <Play size='1.5rem' color="white" />
+                        <Play size='1.5rem' color="black" />
                     </div>
                     <p className='tab-bar__label'>Автоматизации</p>
                 </div>

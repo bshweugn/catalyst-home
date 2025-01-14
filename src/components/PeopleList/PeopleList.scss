@@ -1,22 +1,29 @@
 .people-list {
-    color: white;
     margin-top: 2rem;
 
-    &__wrapper{
-        background-color: rgba(0, 0, 0, 0.3);
-        border-radius: 0.8rem;
+    &__wrapper {
+        margin-top: 1.5rem;
+        // background-color: rgba(0, 0, 0, 0.3);
+        padding: 0 0.5rem;
+        border-radius: 0.875rem;
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        padding-right: 2rem;
+        overflow-x: scroll;
     }
 
-    &__title{
+    &__title {
         margin: 0 0 0.5rem 0;
         padding-left: 0.5rem;
         font-size: 0.75rem;
         opacity: 0.6;
         text-transform: uppercase;
+        display: none;
     }
 
     &__description {
-        margin: 0.5rem 0 0.5rem 0;
+        margin: 1.5rem 0 1rem 0;
         padding-left: 0.5rem;
         padding-right: 2rem;
         box-sizing: border-box;

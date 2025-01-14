@@ -2,7 +2,7 @@
     height: 3.125rem;
     width: 100vw;
     color: white;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
     transition: .2s;
     display: flex;
     align-items: center;
@@ -13,8 +13,8 @@
 
     &__user-profile-img {
         z-index: 1;
-        height: 2.5rem;
-        width: 2.5rem;
+        height: 2.75rem;
+        width: 2.75rem;
         border-radius: 50%;
         background-size: cover;
         background-position: center;
@@ -41,6 +41,7 @@
 
     &__actions {
         display: flex;
+        z-index: 1;
     }
 
     &__secondary-actions {
@@ -49,19 +50,17 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-end;
+        margin-right: 0.5rem;
     }
 
     &__secondary-action {
-        height: 1.875rem;
-        width: 1.875rem;
+        height: 1.125rem;
+        width: 1.125rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: rgba(255, 255, 255, 0.5);
-        filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.2));
-        backdrop-filter: blur(1rem);
-        border-radius: 50%;
-        margin-right: 0.5rem;
+        // backdrop-filter: blur(1rem);
+        margin-left: 1.5rem;
     }
 
     &__primary-action {

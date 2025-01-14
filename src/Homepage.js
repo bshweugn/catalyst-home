@@ -24,6 +24,10 @@ import background7 from './assets/images/background7.JPG';
 import background8 from './assets/images/background8.JPG';
 import background9 from './assets/images/background9.JPG';
 
+import lightBackground from './assets/images/light.jpg'
+import darkBackground from './assets/images/dark.jpg'
+
+
 import { IonContent, IonHeader, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
 import ItemWindow from './components/ItemWindow/ItemWindow';
 import MainWidgetsRow from './components/MainWidgetsRow/MainWidgetsRow';
@@ -47,6 +51,7 @@ import ToggleList from './components/ToggleList/ToggleList';
 import DraggableList from './components/DraggableList/DraggableList';
 import CameraWindow from './components/CameraWindow/CameraWindow';
 import CamerasList from './components/CamerasList/CamerasList';
+
 import ScriptDevicesList from './components/ScriptDevicesList/ScriptDevicesList';
 import CamerasVerticalList from './components/CamerasVerticalList/CamerasVerticalList';
 import { useNavigate } from 'react-router-dom';
@@ -75,6 +80,7 @@ import CamerasRow from './components/CamerasRow/CamerasRow';
 import RoomSelector from './components/RoomSelector/RoomSelector';
 import RoomItemsList from './components/RoomItemsList/RoomItemsList';
 import CameraStream from './components/CameraStream';
+import GlanceComponent from './components/GlanceComponent/GlanceComponent';
 
 
 
@@ -213,7 +219,7 @@ function Homepage(args) {
         },
         {
             image: Tema,
-            name: 'Тёма',
+            name: 'Тёма Сорокин',
             role: 'Жилец',
         },
     ];
@@ -246,7 +252,7 @@ function Homepage(args) {
                 <>
                     <TextInput value={houseName} label="Имя дома" setValue={setHouseName} placeholder={""} />
                     <PeopleList people={peopleData} />
-                    <BackgroundSelector background={pageBackground} setBackground={setPageBackground} label="Фоновое&nbsp;изображение" images={[background, background1, background2, background3, background4, background5, background6, background7, background8, background9]} />
+                    {/* <BackgroundSelector background={pageBackground} setBackground={setPageBackground} label="Фоновое&nbsp;изображение" images={[background, background1, background2, background3, background4, background5, background6, background7, background8, background9]} /> */}
                 </>
             ),
         },
@@ -305,7 +311,7 @@ function Homepage(args) {
 
     return (
         <>
-            <Background />
+            <Background image={lightBackground}/>
 
             {args.rooms.map(room => (
                 room.devices && room.devices.length > 0 && room.devices.map(device => (
@@ -351,21 +357,21 @@ function Homepage(args) {
                 <Header
                     title={"Мой дом"}
                     transparent={!isScrolled}
-                    secondaryIcons={[PlusIcon, More]}
-                    secondaryActions={[args.setAccessoryMode, setMoreMode]}
-                    primaryLabel={["Править", "Готово"]}
-                    primaryAction={[editMode, setEditMode]}
+                    secondaryIcons={[More, PlusIcon]}
+                    secondaryActions={[setMoreMode, args.setAccessoryMode]}
                     openProfileModal={args.openProfileModal}
                 />
             </IonHeader>
 
             <IonContent className="ion-content" fullscreen={true} ref={pageRef}>
 
-                <IonHeader collapse="condense">
+                {/* <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">{args.currentPage === 0 ? houseName : args.currentPage === 1 ? "Камеры" : "Автоматизации"}</IonTitle>
                     </IonToolbar>
-                </IonHeader>
+                </IonHeader> */}
+
+                <GlanceComponent name={"Евгений"} editAction={[editMode, setEditMode]} />
 
 
                 <Section visible={args.currentPage === 0}>

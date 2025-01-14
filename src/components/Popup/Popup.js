@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Popup.scss';
 import Close from '../icons/Close/Close';
+import SuperEllipse from 'react-superellipse';
 
 const Popup = (args) => {
     const [contentHeight, setContentHeight] = useState(0);
@@ -69,7 +70,7 @@ const Popup = (args) => {
 
         if (!args.visible) setIsInitialRender(true);
         update();
-        
+
     }, [args.visible, args.children, currentChildren, args.title, args.label, args.fullscreen]);
 
 
@@ -100,7 +101,7 @@ const Popup = (args) => {
             const keyboardHeight = documentHeight - windowHeight;
 
             setKeyboardHeight(keyboardHeight > 0 ? keyboardHeight : 0);
-            setKeyboardHeight(() => keyboardHeight);
+            setKeyboardHeight(() => keyboardHeight - 24);
         }
     };
 
@@ -110,18 +111,23 @@ const Popup = (args) => {
         <div className={finalClassName} onClick={handleContentClick}>
             <div
                 className={`popup__window ${args.fullscreen ? "popup__window--fullscreen" : ""}`}
-                style={{ height: `${contentHeight + 64 + 32}px`, bottom: `${keyboardHeight}px` }}
+                style={{ height: `${contentHeight + 64 + 32}px`, bottom: `${keyboardHeight + (!args.fullscreen ? 0 : 0)}px` }}
             >
+                <SuperEllipse
+                    r1={0.04}
+                    r2={0.1}
+                    className={'popup__background'}
+                />
+                <div className='popup__handle' />
                 <div className='popup__close-btn' onClick={() => { args.func(false); setIsInitialRender(true); setPreviousContentHeight(contentHeight) }}>
                     <Close size="0.6rem" fill={"gray"} />
                 </div>
                 <div
                     ref={contentRef}
-                    style={{ opacity: opacity, transition: 'opacity 0.3s ease-in-out', height: args.fullscreen ? "100%" : "auto", display: args.fullscreen ? "flex" : "block", flexDirection: "column", alignItems: "center", boxSizing: "border-box"}}
+                    style={{ opacity: opacity, transition: 'opacity 0.3s ease-in-out', height: args.fullscreen ? "100%" : "auto", display: args.fullscreen ? "flex" : "block", flexDirection: "column", alignItems: "center", boxSizing: "border-box" }}
                 >
                     <h2 className={`popup__title ${args.smallTitle ? "popup__title--small" : ""}`}>{currentTitle}</h2>
                     <p className="popup__label">{currentLabel}</p>
-
                     {currentChildren}
                 </div>
             </div>

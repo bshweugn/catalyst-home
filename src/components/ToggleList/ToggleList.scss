@@ -16,12 +16,13 @@
     }
 
     &__wrapper {
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgb(255, 255, 255);
         padding: 0rem 1rem;
-        border-radius: 0.8rem;
+        border-radius: 0.875rem;
         width: 100%;
         min-width: max-content;
         box-sizing: border-box;
+        padding-bottom: 1rem;
     }
 
     &__toggle-label {
@@ -29,6 +30,7 @@
         width: max-content;
         min-width: max-content;
         position: absolute;
+        margin-top: 0.5rem;
         top: 50%;
         left: 0rem;
         transform: translate(0, -50%);
@@ -46,7 +48,7 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        padding: 0.5rem 0;
+        padding: 1rem 0 0 0;
         position: relative;
 
         &:not(:last-child) {

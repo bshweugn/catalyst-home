@@ -10,9 +10,6 @@ const PersonCard = ({ image, name, role }) => {
                     <p className="person-card__name">{name}</p>
                     <p className="person-card__role">{role}</p>
                 </div>
-                <div className="person-card__arrow">
-                    {/* <span className="person-card__arrow-icon">&gt;</span> */}
-                </div>
             </div>
         </div>
     );

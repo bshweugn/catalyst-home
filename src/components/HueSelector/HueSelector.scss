@@ -1,7 +1,7 @@
 .hue-selector {
     width: 6.5rem;
     height: 18rem;
-    background-color: rgba(0, 0, 0, 0.3);
+    // background-color: rgba(0, 0, 0, 0.3);
     border-radius: 1.8rem;
     overflow: visible;
     // border: 1px solid rgba(0, 0, 0, 0.02);
@@ -26,6 +26,17 @@
         overflow: hidden;
         border-radius: 1.9rem;
         position: relative;
+    }
+
+    &__background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+        transition: .2s;
+        background-color: rgba(0, 0, 0, 0.3);
     }
 
     &__pointer {
@@ -58,7 +69,7 @@
         width: 100%;
         pointer-events: none;
         z-index: 2;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
         transform: rotate(180deg);
         pointer-events: none;
         border: none;
@@ -67,7 +78,7 @@
     &__fade--second {
         bottom: 0;
         transform: rotate(0deg);
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
     }
 
     &__fade:first-of-type {

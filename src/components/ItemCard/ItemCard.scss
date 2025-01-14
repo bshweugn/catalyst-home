@@ -2,14 +2,13 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 0.75rem;
-    height: 6rem;
+    padding: 0.875rem;
+    height: 8.375rem;
     box-sizing: border-box;
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    border-radius: 1rem;
+    background-color: white;
+    border-radius: 1.125rem;
     position: relative;
-    color: white;
+    color: black;
     align-items: flex-start;
     justify-content: flex-start;
     grid-column: span 1;
@@ -23,44 +22,55 @@
         }
     }
 
-    &--opened{
-        transform: scale(1.15);
-        filter: blur(0.5rem);
-        opacity: 0!important;
+    &__background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+        transition: .2s;
+        background-color: rgb(255, 255, 255);
+
+        &--active {
+            background-color: rgb(255, 255, 255);
+            color: black;
+            backdrop-filter: none;
+        }
     }
 
-    &--to-delete{
+    &--opened {
+        transform: scale(1.15);
+        filter: blur(0.5rem);
+        opacity: 0 !important;
+    }
+
+    &--to-delete {
         transform: scale(0.7);
-        opacity: 0!important;
+        opacity: 0 !important;
         filter: blur(1rem);
     }
 
     &__item-info {
-        // height: calc(100% - 0.75rem * 2);
         position: absolute;
         font-size: 0.875rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
         width: calc(100% - 0.75rem * 3);
-        // left: calc(3.125rem + 0.75rem * 2);
+        padding-left: 0;
         bottom: 0.8rem;
+        transition: .2s;
     }
 
-    &--maximized {
+    &--minimized {
         grid-row: 2 span;
-        height: 12.75rem;
+        height: 3.9375rem;
         // border-radius: 1.5rem;
     }
 
-    &--maximized &__temp{
+    &--minimized &__temp {
         font-size: 2.5rem;
-    }
-
-    &--active {
-        background-color: white;
-        color: black;
-        backdrop-filter: none;
     }
 
     &--edit-mode {
@@ -68,12 +78,11 @@
         animation-timing-function: ease-in-out;
     }
 
-    &--maximized &__item-info {
+    &--minimized &__item-info {
         position: absolute;
         height: max-content;
-        bottom: 0.8rem;
-        left: 0.8rem;
-        font-size: 0.875rem;
+        padding-left: 3.125rem;
+        bottom: 1rem;
     }
 
     &__item-name {
@@ -92,12 +101,29 @@
     &__item-icon {
         height: fit-content;
         width: fit-content;
-        // border-radius: 50%;
-        // background-color: rgba(0, 0, 0, 0.2);
         display: flex;
         align-items: center;
         justify-content: center;
+        position: absolute;
+        left: 0.675rem;
+        top: 0.675rem;
+        height: 2.75rem;
+        width: 2.75rem;
+        min-height: 2.75rem;
+        min-width: 2.75rem;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 50%;
         transition: .2s;
+    }
+
+    &--minimized &__item-icon {
+        top: 0.625rem;
+    }
+
+    &__item-icon:has(.item-card__temp){
+        align-items: flex-start;
+        justify-content: flex-start;
+        background-color: transparent;
     }
 
     &__temp {
@@ -105,9 +131,10 @@
         font-weight: 600;
         font-size: 1.6rem;
         line-height: 1;
+        background-color: transparent;
         // transition: .2s;
 
-        &--small{
+        &--small {
             font-size: 1rem;
         }
     }
@@ -130,20 +157,22 @@
         box-shadow: 0 0 1rem rgba(0, 0, 0, 0.0);
         transition: transform 0.3s 0.05s cubic-bezier(0.25, 0.01, 0.04, 1.58), filter 0.2s 0.05s, box-shadow 0.2s 0.05s, background-color 0.2s 0.05s;
 
-        &:active{
+        display: none;
+
+        &:active {
             transform: scale(1.6);
             // backdrop-filter: blur(1rem);
             background-color: rgb(255, 255, 255);
             filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.41));
         }
 
-        &:active svg{
-            fill: black!important;
+        &:active svg {
+            fill: black !important;
         }
 
     }
 
-    &__action-btn svg{
+    &__action-btn svg {
         transition: .2s;
     }
 
@@ -151,7 +180,7 @@
         background-color: rgba(0, 0, 0, 0.08);
         box-shadow: 0 0 1rem rgba(0, 0, 0, 0);
 
-        &:active{
+        &:active {
             background-color: rgb(255, 255, 255);
             box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
         }
@@ -189,37 +218,37 @@
         opacity: 0.7;
     }
 
-    &--preview{
+    &--preview {
         background-color: rgba(0, 0, 0, 0.06);
         color: black;
         height: 5.5rem;
         // border: 2px dashed black;
     }
 
-    &--selected{
+    &--selected {
         background-color: rgba(0, 0, 0, 0.1);
         color: black;
         height: 5.5rem;
         // border: 2px dashed black;
     }
 
-    &--selected &__item-name{
+    &--selected &__item-name {
         opacity: 0.2;
     }
 
-    &--selected &__item-icon{
+    &--selected &__item-icon {
         opacity: 0.2;
     }
 
-    &--preview &__action-btn{
+    &--preview &__action-btn {
         display: none;
     }
 
-    &--preview &__item-status{
+    &--preview &__item-status {
         display: none;
     }
 
-    &__select-indicator{
+    &__select-indicator {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -236,7 +265,7 @@
         transition: .2s;
         z-index: 2;
 
-        &--visible{
+        &--visible {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
         }

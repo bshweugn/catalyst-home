@@ -46,7 +46,7 @@ const BtnCard = ({ shouldClose, ...args }) => {
                 onClick={() => { args.onClick(args.index); handleClick(); }} 
                 className={`btn-card ${args.className || ''} ${isExpanded ? "btn-card--transparent" : ''} ${isExpanded && !isClosing ? "btn-card--invisible-content" : ''} ${isClosing ? 'btn-card--closing' : ''} ${args.hidden ? "btn-card--hidden" : ''}`}
             >
-                <args.icon className="btn-card__icon" size="2.5rem" color="white" />
+                <args.icon className="btn-card__icon" size="2.5rem" color="black" />
                 <div className="btn-card__text">
                     <p className='btn-card__title'>{args.title}</p>
                     <p className='btn-card__label'>{args.label}</p>

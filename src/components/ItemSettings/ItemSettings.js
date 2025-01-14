@@ -83,6 +83,7 @@ const ItemSettings = memo((args) => {
                     placeholder=""
                     onBlur={handleBlur}
                     onFocus={handleFocus}
+                    light
                 />
                 <IconSelector
                     label="Значок устройства"

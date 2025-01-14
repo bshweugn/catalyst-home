@@ -5,7 +5,7 @@
     width: 100vw;
     height: 100vh;
     padding-top: calc(var(--ion-safe-area-top) + 0rem);
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(3rem) saturate(1.6);
     transition: opacity .3s 0s, max-height 0s 0s;
     z-index: 100;
@@ -91,7 +91,7 @@
         font-weight: 500;
         z-index: 20;
         opacity: 1;
-        color: white;
+        color: black;
         transition: .3s;
 
         &--hidden{
@@ -105,7 +105,7 @@
     }
 
     &__close-btn {
-        color: white;
+        color: black;
         margin: 0;
         font-weight: 500;
     }
@@ -116,7 +116,7 @@
         width: 100%;
         height: fit-content;
         text-align: center;
-        color: white;
+        color: black;
         align-items: center;
         transition: .3s .1s;
         margin-bottom: 4rem;
@@ -136,7 +136,7 @@
         font-size: 1rem;
         font-weight: 600;
         margin: 0;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.8);
         border-radius: 1rem;
         width: auto;
         // padding: 0.25rem 0.6rem;
@@ -200,7 +200,8 @@
         padding: 0rem 1rem;
         width: fit-content;
         height: 2.2rem;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.8);
+        color: black;
         display: flex;
         align-items: center;
         justify-content: center;

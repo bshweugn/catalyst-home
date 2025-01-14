@@ -3,13 +3,22 @@
     height: 100vh;
     position: fixed;
     background-color: rgba(0, 0, 0, 0.5);
-    // backdrop-filter: blur(0.25rem);
     top: 0;
     left: 0;
     opacity: 1;
     transition: .3s;
     z-index: 100;
     box-sizing: border-box;
+
+    &__background {
+        position: absolute;
+        background-color: white;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+    }
 
     &--hidden {
         background-color: rgba(0, 0, 0, 0);
@@ -25,18 +34,18 @@
         text-align: center;
         position: absolute;
         width: calc(100% - 0rem);
-        left: 0rem;
+        left: 0;
         bottom: -1rem;
         background-color: white;
-        border-radius: 2.6rem 2.6rem 0 0;
-        padding: 1.5rem;
+        border-radius: 1.2rem 1.2rem 0 0;
+        padding: 1rem 1rem 1rem 1rem;
         transition: 0.4s cubic-bezier(0.22, 0, 0, 0.98);
         box-sizing: border-box;
 
         &--fullscreen {
             border-radius: 0.875rem 0.875rem 0 0rem;
-            height: calc(100% - 0rem - var(--ion-safe-area-top))!important;
-            width: 100%!important;
+            height: calc(100% - 0rem - var(--ion-safe-area-top)) !important;
+            width: 100% !important;
             position: absolute;
             bottom: 0;
             left: 0;
@@ -46,10 +55,15 @@
 
     &__title {
         margin-top: 0rem;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
         font-weight: 600;
+        text-align: left;
+        width: 100%;
+        padding-right: 3rem;
+        box-sizing: border-box;
 
-        &--small{
+
+        &--small {
             font-size: 1rem;
             font-weight: 600;
             margin-top: -.2rem;
@@ -59,7 +73,11 @@
 
     &__label {
         font-size: 0.875rem;
-        margin: 0 0 1rem 0;
+        margin: 0 0 1.5rem 0;
+        text-align: left;
+        width: 100%;
+        padding-right: 3rem;
+        box-sizing: border-box;
     }
 
     &__close-btn {
@@ -74,4 +92,15 @@
         align-items: center;
         justify-content: center;
     }
+
+    // &__handle{
+    //     width: 5.5rem;
+    //     height: 0.25rem;
+    //     background-color: black;
+    //     border-radius: 0.125rem;
+    //     position: absolute;
+    //     left: 50%;
+    //     top: 0.5rem;
+    //     transform: translateX(-50%);
+    // }
 }
