@@ -16,12 +16,31 @@
         // backdrop-filter: blur(2rem);
     }
 
-    &__label{
+    &--with-description {
+        border-radius: 1rem;
+        padding: 1.5rem 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        color: black;
+    }
+
+    &__label {
         margin: 0;
+    }
+
+    &__description {
+        font-size: 0.875rem;
+        opacity: 0.6;
+        margin: 0.25rem 0 0 0;
     }
 
     &--inactive {
         opacity: 0.5;
         pointer-events: none;
     }
+}
+
+.button--primary.button--with-description {
+    background-color: black;
+    border: none;
+    color: white;
 }

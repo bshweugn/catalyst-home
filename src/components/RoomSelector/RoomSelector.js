@@ -92,7 +92,7 @@ const RoomSelector = ({ rooms, setRoomId, roomId, className, setActiveRoom }) =>
                     >
                         Обзор
                     </div>
-                    <div
+                    {/* <div
                         className={`room-selector__room ${roomId === 100 ? "room-selector__room--selected" : ""}`}
                         onClick={() => { setRoomId(100); }}
                     >
@@ -103,7 +103,7 @@ const RoomSelector = ({ rooms, setRoomId, roomId, className, setActiveRoom }) =>
                         onClick={() => { setRoomId(100); }}
                     >
                         Гостиная
-                    </div>
+                    </div> */}
                     <div
                         className={`room-selector__room ${roomId === 100 ? "room-selector__room--selected" : ""}`}
                         onClick={() => { setRoomId(100); }}

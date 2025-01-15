@@ -6,7 +6,7 @@ import Maximize from '../icons/Maximize/Maximize';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Lightbulb from '../icons/Lightbulb/Lightbulb';
 import Power from '../icons/Power/Power';
-import { getItemAction, getItemStatus, isSensor, renderItemIcon, renderItemStatus } from '../../itemInfo';
+import { getItemAction, getItemStatus, isSensor, itemColor, renderItemIcon, renderItemStatus } from '../../itemInfo';
 import Checkmark from '../icons/Checkmark/Checkmark';
 import ConditionWindow from '../ConditionWindow/ConditionWindow';
 import SuperEllipse from 'react-superellipse';
@@ -50,7 +50,7 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                     if (updatedStatus !== active) {
                         console.log("LALA")
                         setActive(updatedStatus);
-                        
+
                     }
 
                     setStatus(renderItemStatus(result.data, true));
@@ -235,7 +235,7 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                 <div className="item-card__max-btn" onClick={(e) => { e.stopPropagation(); setminimized(!minimized); }}>
                     {!minimized ? <Minimize size="0.875rem" fill='black' /> : <Maximize size="0.875rem" fill='black' />}
                 </div>
-                {!isSensor(device) && (
+                {/* {!isSensor(device) && (
                     <div
                         className='item-card__action-btn'
                         onTouchStart={startHold}
@@ -243,8 +243,8 @@ const ItemCard = ({ device, index, moveCard, editMode, opened, idFunc, preview, 
                     >
                         <Power size="1rem" fill={!active ? "white" : "black"} />
                     </div>
-                )}
-                <div className='item-card__item-icon'>
+                )} */}
+                <div className={`item-card__item-icon ${!isSensor(device) ? 'item-card__action-btn' : ''}`} onTouchStart={startHold} onTouchEnd={stopHold} style={{ backgroundColor: active ? itemColor(device) : '' }}>
                     {renderItemIcon(device, true)}
                 </div>
                 <div className='item-card__item-info'>

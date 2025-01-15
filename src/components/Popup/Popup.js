@@ -111,11 +111,11 @@ const Popup = (args) => {
         <div className={finalClassName} onClick={handleContentClick}>
             <div
                 className={`popup__window ${args.fullscreen ? "popup__window--fullscreen" : ""}`}
-                style={{ height: `${contentHeight + 64 + 32}px`, bottom: `${keyboardHeight + (!args.fullscreen ? 0 : 0)}px` }}
+                style={{ height: `${contentHeight + 36 + 32}px`, bottom: `${keyboardHeight + (!args.fullscreen ? 0 : 0)}px` }}
             >
                 <SuperEllipse
-                    r1={0.04}
-                    r2={0.1}
+                    r1={0.02}
+                    r2={0.05}
                     className={'popup__background'}
                 />
                 <div className='popup__handle' />

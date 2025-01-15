@@ -338,6 +338,46 @@ export function renderItemIcon(device, displayText, size, className) {
     }
 }
 
+export function itemColor(device) {
+    const [mainType, subType] = (device.deviceType || device.type || "").split('_');
+
+    if (device !== undefined) {
+        if (mainType === 'LAMP') {
+            return "#ffbf0d";
+        }
+
+        if (mainType === 'CURTAIN') {
+            return "rgb(162 0 226)";
+        }
+
+        if (mainType === 'LEAK') {
+            return "#1290ff";
+        }
+
+        if (mainType === 'FAN') {
+            return "#1290ff";
+        }
+
+        if (mainType === 'HUMIDIFIER') {
+            return "#1290ff";
+        }
+
+        if (mainType === 'RELAY') {
+            return "#1290ff";
+        }
+
+        if (mainType === 'VALVE') {
+            return "#1290ff";
+        }
+
+        if (mainType === 'CAMERA') {
+            return "#1290ff";
+        }
+
+        return null;
+    }
+}
+
 export function itemPrimaryType(device) {
     console.log(device);
     const [mainType, subType] = (device.deviceType).split('_');

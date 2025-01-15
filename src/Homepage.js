@@ -395,13 +395,15 @@ function Homepage(args) {
                         <CameraView name="Улица" isRecording={true} image={background3} delay={2} />
                     </CamerasRow> */}
 
-                    <CamerasList
+                    {/* <CamerasList
                         rooms={args.rooms}
                         editMode={editMode}
                         setItemID={setCameraID}
                         openedID={cameraID}
                         roomId={currentRoomId}
-                    />
+                    /> */}
+
+                    {/* MAIN LIST */}
 
                     <div className="page">
                         {/* <p>{args.token}</p> */}

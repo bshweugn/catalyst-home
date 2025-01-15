@@ -60,8 +60,8 @@ const AuthScreen = (args) => {
                     <h1 className='auth-screen__title'>Добро пожаловать</h1>
                     <p className='auth-screen__label'>Создайте аккаунт, чтобы получить доступ к&nbsp;управлению умным домом и&nbsp;сервисам&nbsp;Catalyst.</p>
                     <div className='auth-screen__buttons'>
-                        <Button primary label="Создать аккаунт" onClick={() => setSection(1)} />
-                        <Button label="Уже меня уже есть аккаунт" onClick={() => setSection(10)} />
+                        <Button primary label="Новый аккаунт" description={"Создать новый аккаунт Catalyst"} onClick={() => setSection(1)} />
+                        <Button label="Существующий аккаунт" description={"Войти в существующий аккаунт"} onClick={() => setSection(10)} />
                     </div>
                 </div>
                 {/* <div className='auth-screen__form'>

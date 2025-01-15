@@ -60,7 +60,8 @@
         width: calc(100% - 0.75rem * 3);
         padding-left: 0;
         bottom: 0.8rem;
-        transition: .2s;
+        box-sizing: border-box;
+        transition: 0.2s cubic-bezier(0.22, 0, 0, 0.98);
     }
 
     &--minimized {
@@ -82,6 +83,7 @@
         position: absolute;
         height: max-content;
         padding-left: 3.125rem;
+        width: calc(100% - 0.75rem * 2);
         bottom: 1rem;
     }
 
@@ -113,6 +115,7 @@
         min-width: 2.75rem;
         background-color: rgba(0, 0, 0, 0.05);
         border-radius: 50%;
+        z-index: 5;
         transition: .2s;
     }
 
@@ -120,7 +123,7 @@
         top: 0.625rem;
     }
 
-    &__item-icon:has(.item-card__temp){
+    &__item-icon:has(.item-card__temp) {
         align-items: flex-start;
         justify-content: flex-start;
         background-color: transparent;
@@ -144,31 +147,32 @@
     }
 
     &__action-btn {
-        height: 2.75rem;
-        width: 2.75rem;
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        // height: 2.75rem;
+        // width: 2.75rem;
+        // position: absolute;
+        // top: 0.5rem;
+        // right: 0.5rem;
+        // border-radius: 50%;
+        // background-color: rgba(0, 0, 0, 0.15);
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
         box-shadow: 0 0 1rem rgba(0, 0, 0, 0.0);
         transition: transform 0.3s 0.05s cubic-bezier(0.25, 0.01, 0.04, 1.58), filter 0.2s 0.05s, box-shadow 0.2s 0.05s, background-color 0.2s 0.05s;
 
-        display: none;
-
         &:active {
             transform: scale(1.6);
-            // backdrop-filter: blur(1rem);
             background-color: rgb(255, 255, 255);
             filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.41));
         }
 
-        &:active svg {
-            fill: black !important;
+        &:has(.item-card__temp) {
+            background-color: transparent!important;
         }
+
+        // &:active svg {
+        //     fill: black !important;
+        // }
 
     }
 
@@ -179,6 +183,10 @@
     &--active &__action-btn {
         background-color: rgba(0, 0, 0, 0.08);
         box-shadow: 0 0 1rem rgba(0, 0, 0, 0);
+
+        svg {
+            fill: rgb(255, 255, 255) !important;
+        }
 
         &:active {
             background-color: rgb(255, 255, 255);
